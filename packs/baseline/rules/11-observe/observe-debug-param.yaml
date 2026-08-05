@@ -1,0 +1,18 @@
+id: observe-debug-param
+name: 'Observe debug params'
+severity: low
+tags: [observe]
+score: 40
+min_level: low
+action: observe
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: query
+      contains: 'debug=true'
+    - field: query
+      contains: 'test=true'
+    - field: uri
+      contains: 'debug=true'
+    - field: uri
+      contains: 'test=true'

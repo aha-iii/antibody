@@ -1,0 +1,785 @@
+- id: sample-bad-log4j-jndi
+  rule_id: bad-log4j-jndi
+  name: Log4Shell JNDI
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=${jndi:ldap
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-log4j-jndi-alt
+  rule_id: bad-log4j-jndi
+  name: Log4Shell JNDI (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=${jndi:ldap
+- id: sample-bad-log4j-lower
+  rule_id: bad-log4j-lower
+  name: Log4Shell lower obfuscation
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id002
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: 'q=${jndi:${lower:'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-log4j-lower-alt
+  rule_id: bad-log4j-lower
+  name: Log4Shell lower obfuscation (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id002
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: 'payload=${jndi:${lower:'
+- id: sample-bad-struts-ognl
+  rule_id: bad-struts-ognl
+  name: Struts OGNL
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id003
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=%{(#_
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-struts-ognl-alt
+  rule_id: bad-struts-ognl
+  name: Struts OGNL (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id003
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=%{(#_
+- id: sample-bad-spring4shell
+  rule_id: bad-spring4shell
+  name: Spring4Shell class.module
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id004
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=class.module.classloader
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-spring4shell-alt
+  rule_id: bad-spring4shell
+  name: Spring4Shell class.module (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id004
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=class.module.classloader
+- id: sample-bad-thinkphp-rce
+  rule_id: bad-thinkphp-rce
+  name: ThinkPHP RCE markers
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id005
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=invokefunction
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-thinkphp-rce-alt
+  rule_id: bad-thinkphp-rce
+  name: ThinkPHP RCE markers (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id005
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=invokefunction
+- id: sample-bad-shiro-remember
+  rule_id: bad-shiro-remember
+  name: Shiro rememberMe probe
+  category: 09-known-bad
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /sample
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Cookie: rememberme=
+    body: ''
+- id: sample-bad-weblogic-uddiexplorer
+  rule_id: bad-weblogic-uddiexplorer
+  name: WebLogic UDDI explorer
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /uddiexplorer/
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-confluence-ognl
+  rule_id: bad-confluence-ognl
+  name: Confluence OGNL
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id006
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=${createengine
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-confluence-ognl-alt
+  rule_id: bad-confluence-ognl
+  name: Confluence OGNL (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id006
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=${createengine
+# 正例：CL:0 + TE:chunked（最可疑的组合）
+- id: sample-bad-proxy-smuggle-cl-zero-te
+  rule_id: bad-proxy-smuggle
+  name: HTTP smuggling - CL:0 + TE:chunked
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - known_bad
+  - cve
+  - http-smuggling
+  request:
+    method: PUT
+    host: example.com
+    uri: /api/resource
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Length: '0'
+      Transfer-Encoding: chunked
+    body: '5\r\nhello\r\n0\r\n\r\n'
+
+# 负例：纯规范化的 chunked 请求（不伴随 CL，合法的流式传输）
+- id: sample-clean-chunked-only
+  rule_id: bad-proxy-smuggle
+  name: Clean - TE chunked without CL (legitimate streaming)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - protocol
+  request:
+    method: POST
+    host: example.com
+    uri: /api/stream
+    query: ''
+    headers:
+      User-Agent: curl/7.68.0
+      Transfer-Encoding: chunked
+    body: ''
+
+# 负例：同时存在 Content-Length 和 Transfer-Encoding: chunked 是 HTTP/1.1 常见合法现象
+- id: sample-clean-cl-with-te
+  rule_id: bad-proxy-smuggle
+  name: Clean - CL with TE chunked (common legitimate request)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - protocol
+  request:
+    method: POST
+    host: example.com
+    uri: /api/upload
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Type: application/json
+      Content-Length: '100'
+      Transfer-Encoding: chunked
+    body: '{"data":"normal"}'
+
+# 负例：单个 Content-Length + 单个 TE，但 TE 值不是 chunked
+- id: sample-clean-te-not-chunked
+  rule_id: bad-proxy-smuggle
+  name: Clean - CL:0 with TE gzip (no chunked)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - protocol
+  request:
+    method: POST
+    host: example.com
+    uri: /api/resource
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Length: '0'
+      Transfer-Encoding: gzip
+    body: ''
+
+# 负例：CL:0 单独存在（如空 POST/OPTIONS 预检）不是走私
+- id: sample-clean-cl-zero-only
+  rule_id: bad-proxy-smuggle
+  name: Clean - CL:0 without Transfer-Encoding
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - protocol
+  request:
+    method: POST
+    host: example.com
+    uri: /api/ping
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Length: '0'
+    body: ''
+
+- id: sample-bad-deserial-java
+  rule_id: bad-deserial-java
+  name: Java deserialization markers
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id007
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=rO0AB
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-deserial-java-alt
+  rule_id: bad-deserial-java
+  name: Java deserialization markers (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id007
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=rO0AB
+- id: sample-bad-ysoserial
+  rule_id: bad-ysoserial
+  name: ysoserial gadget markers
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id008
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=commonscollections
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-ysoserial-alt
+  rule_id: bad-ysoserial
+  name: ysoserial gadget markers (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id008
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=commonscollections
+- id: sample-bad-coldfusion
+  rule_id: bad-coldfusion
+  name: ColdFusion probe
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /cfide/
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-drupalgeddon
+  rule_id: bad-drupalgeddon
+  name: Drupalgeddon markers
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id009
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=#post_render
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-drupalgeddon-alt
+  rule_id: bad-drupalgeddon
+  name: Drupalgeddon markers (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id009
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=#post_render
+- id: sample-bad-fastjson
+  rule_id: bad-fastjson
+  name: Fastjson autoType
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id010
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=@type
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-fastjson-alt
+  rule_id: bad-fastjson
+  name: Fastjson autoType (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id010
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=@type
+- id: sample-bad-jackson-polymorphic
+  rule_id: bad-jackson-polymorphic
+  name: Jackson polymorphic type
+  category: 09-known-bad
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id011
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=com.sun.rowset
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-jackson-polymorphic-alt
+  rule_id: bad-jackson-polymorphic
+  name: Jackson polymorphic type (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id011
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=com.sun.rowset
+- id: sample-nosql-operator-extended-or
+  rule_id: nosql-operator-extended
+  name: NoSQL $or operator in query
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - nosql
+  - injection
+  request:
+    method: GET
+    host: example.com
+    uri: /api/login
+    query: 'user=admin&pass[$or]=1'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-nosql-operator-extended-odata-orderby-pass
+  rule_id: nosql-operator-extended
+  name: OData $orderby (not NoSQL $or)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - odata
+  request:
+    method: GET
+    host: example.com
+    uri: /api/dynamic/new_userlogo
+    query: '$orderby=createdon desc'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-nosql-operator-extended-odata-filter-pass
+  rule_id: nosql-operator-extended
+  name: OData $select/$orderby/$filter
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - odata
+  request:
+    method: GET
+    host: example.com
+    uri: /api/dynamic/timezonedefinition
+    query: '$select=timezonecode,timezonename&$orderby=timezonename&$filter=retiredorder eq 0'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-attack-signature-cluster-select-split
+  rule_id: attack-signature-cluster
+  name: SQLi select keyword split
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - gap
+  - sqli
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: "q=1+sel'+ect+from+users"
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-attack-signature-cluster-odata-select-pass
+  rule_id: attack-signature-cluster
+  name: OData $select/$filter (not select split)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - odata
+  request:
+    method: GET
+    host: example.com
+    uri: /api/dynamic/new_similarset
+    query: '$select=new_robotid&$filter=new_type eq 1'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-proto-smuggle-sql-comment
+  rule_id: proto-smuggle-xss-sqli
+  name: SQLi comment after quote/digit
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - gap
+  - sqli
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: "id=1'--"
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-proto-smuggle-jwt-double-dash-pass
+  rule_id: proto-smuggle-xss-sqli
+  name: JWT base64url with -- must not block
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - jwt
+  request:
+    method: GET
+    host: example.com
+    uri: /api/systemparameter/getfrontendparameters
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Authorization: Bearer aaa.bbb.OynyIECy4g9u--a9tiw_XBtpge
+    body: ''
+- id: sample-proto-smuggle-chat-service-pass
+  rule_id: proto-smuggle-xss-sqli
+  name: Business chat-service path must not block
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - api
+  request:
+    method: GET
+    host: example.com
+    uri: /api/webresource/chat-service-status
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ws-path-smuggle-combo-query
+  rule_id: websocket-path-smuggle-combo
+  name: /chat path segment with TE smuggle in query
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - websocket
+  - smuggle
+  request:
+    method: GET
+    host: example.com
+    uri: /api/chat
+    query: 'x=transfer-encoding:%20chunked'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ws-path-smuggle-combo-path-only-pass
+  rule_id: websocket-path-smuggle-combo
+  name: Bare /chat path without smuggle markers
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - websocket
+  request:
+    method: GET
+    host: example.com
+    uri: /chat
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ws-path-smuggle-combo-chatroom-pass
+  rule_id: websocket-path-smuggle-combo
+  name: /chatroom is not path-segment chat
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - api
+  request:
+    method: GET
+    host: example.com
+    uri: /api/chatroom
+    query: 'x=transfer-encoding:%20chunked'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

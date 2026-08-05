@@ -1,0 +1,14 @@
+id: sqli-session-input
+name: SQLi via DVWA session-input body
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [sqli, blazehttp_gap]
+transforms: [url_decode_uni, html_entity_decode, lowercase]
+when:
+  all:
+    - field: uri
+      contains: 'session-input.php'
+    - field: body
+      regex: "(?i)(?:'|%27|or\\b|and\\b|union\\b|select\\b|sleep\\s*\\(|benchmark\\s*\\(|--|/\\*|1\\s*=\\s*1)"

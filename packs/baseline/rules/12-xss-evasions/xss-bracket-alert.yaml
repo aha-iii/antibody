@@ -1,0 +1,16 @@
+id: xss-bracket-alert
+name: 'XSS window/top/parent bracket alert'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, js_unescape, html_entity_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(?:window|top|parent|self|frames)\\s*\\[\\s*['\\\"][^'\\\"]{0,40}['\\\"]\\s*\\]"
+    - field: query
+      regex: "(?i)(?:window|top|parent|self|frames)\\s*\\[\\s*['\\\"][^'\\\"]{0,40}['\\\"]\\s*\\]"
+    - field: body
+      regex: "(?i)(?:window|top|parent|self|frames)\\s*\\[\\s*['\\\"][^'\\\"]{0,40}['\\\"]\\s*\\]"

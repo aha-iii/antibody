@@ -1,0 +1,33 @@
+# 注入：query/uri 参数内 CRLF / 日志注入 / Redis·Mongo / LDAP 命令探测
+id: query-injection-crlf-command
+name: CRLF log injection and command probes in query
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [injection, crlf, nosql, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[&?][^=&]*=)[^&]*(?:%0d%0a|%0a|%0d|[\\r\\n])(?:\\[[a-z]+\\]|set\\s+|get\\s+|success|127\\.0\\.0\\.1|user |pass |login )"
+    - field: query
+      contains: '%0d%0a[success]'
+    - field: query
+      regex: "(?i)^user=[^&]*(?:%0d%0a|%0a|[\\r\\n])"
+    - field: query
+      regex: "(?i)(?:^|[&?][^=&]*=)[^&]*(?:%0d%0a|%0a|%0d|[\\r\\n]).{0,60}(?:set-cookie|access-control-allow-origin|host)\\s*:"
+    - field: query
+      regex: "(?i)(?:^|[&])(?:user|file|folder|key|de|data|type)=[^&]*(?:%0d%0a|%0a|%0d|[\\r\\n])"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*(?:lpush|zadd|scan\\s|dump\\s|debug\\s|set\\s+__session|db\\.(?:admincommand|createuser|getcollectionnames))"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*(?:%5c2a|%5c%32%61|openrowset|copy\\s+\\w+\\s+to\\s+|procedure\\s+analyse|utl_http\\.request)"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*(?:%3e%20|%3e/)tmp/|content-type%3a[^&]*%0a.*(?:%3c%3fphp|<\\?php)"
+    - field: uri
+      regex: "(?i)^//user\\[(?:contains|starts-with)\\("
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*(?:<!doctype|<\\?xml|&a\\s+\\[|public\\s+\")"
+    - field: query
+      regex: "(?i)(?:^|[&])q=count\\s*\\(\\s*/"

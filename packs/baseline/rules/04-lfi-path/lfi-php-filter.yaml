@@ -1,0 +1,28 @@
+id: lfi-php-filter
+name: 'LFI php://filter'
+severity: high
+tags: [lfi, path, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'php://filter'
+    - field: uri
+      contains: 'php://input'
+    - field: uri
+      contains: 'php://stdin'
+    - field: query
+      contains: 'php://filter'
+    - field: query
+      contains: 'php://input'
+    - field: query
+      contains: 'php://stdin'
+    - field: body
+      contains: 'php://filter'
+    - field: body
+      contains: 'php://input'
+    - field: body
+      contains: 'php://stdin'

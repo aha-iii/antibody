@@ -1,0 +1,11 @@
+id: proxy-x-original-url-allow
+name: Allow proxy X-Original-URL header (not TE smuggle)
+severity: low
+score: 35
+action: allow
+min_level: low
+tags: [fp, proxy]
+transforms: []
+when:
+  all:
+    - feature: proxy_x_original_url

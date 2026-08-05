@@ -1,0 +1,16 @@
+id: lfi-env-file
+name: 'LFI .env secrets'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(^|[/=])\\.env($|\\?)"
+    - field: query
+      regex: "(?i)(^|[/=])\\.env($|\\?)"
+    - field: body
+      regex: "(?i)(^|[/=])\\.env($|\\?)"

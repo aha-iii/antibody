@@ -1,0 +1,9 @@
+id = "community-crs"
+version = "4.25.0-translated"
+name = "OWASP CRS Translated (Nerve Native DSL)"
+min_engine = "0.1.0"
+
+[policy]
+# CRS 评分偏累加；阈值略高以控制误报
+block_threshold = 50
+observe_only = false

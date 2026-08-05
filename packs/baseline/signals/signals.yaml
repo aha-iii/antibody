@@ -1,0 +1,50 @@
+# Baseline 声明式信号包（与内置 feature/fingerprint 叠加；规则可通过 feature:/fingerprint: 引用）。
+version: "1.0.0"
+
+features:
+  # 常见调试/追踪头
+  - name: has_x_request_id
+    kind: header_present
+    header: x-request-id
+  - name: has_x_forwarded_for
+    kind: header_present
+    header: x-forwarded-for
+  # OAuth / 令牌交换相关 body 标记（扩展内置 oauth_token_exchange）
+  - name: body_has_client_id
+    kind: body_contains
+    value: client_id=
+  - name: body_has_scope
+    kind: body_contains
+    value: scope=
+  # 查询参数探测
+  - name: query_has_access_token
+    kind: query_param_present
+    param: access_token
+  - name: query_has_redirect_uri
+    kind: query_param_present
+    param: redirect_uri
+  # 超长 Authorization（辅助 jwt 类规则）
+  - name: long_authorization
+    kind: length_gt
+    target: header
+    header: authorization
+    threshold: 2048
+  - name: long_query
+    kind: length_gt
+    target: query
+    threshold: 512
+
+fingerprints:
+  # 与内置 oauth_auth_path / api_open_path 对齐的扩展前缀
+  - name: auth_realm_path
+    kind: path_prefix
+    prefix: /auth/realms/
+  - name: open_api_v1_path
+    kind: path_prefix
+    prefix: /open/api/v1/
+  - name: oauth_authorize_path
+    kind: path_prefix
+    prefix: /oauth/authorize
+  - name: well_known_path
+    kind: path_prefix
+    prefix: /.well-known/

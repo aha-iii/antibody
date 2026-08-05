@@ -1,0 +1,19 @@
+id: bad-proxy-smuggle
+name: HTTP request smuggling - CL:0 with TE:chunked conflict
+severity: high
+tags: [known_bad, cve-444, http-smuggling]
+score: 40
+min_level: low
+action: block
+transforms: [lowercase]
+when:
+  all:
+    # 仅针对可能带请求体的方法；GET 等方法出现 TE 本身已由 proto-anomaly 覆盖。
+    - field: method
+      regex: '^(POST|PUT|PATCH|DELETE)$'
+    # Content-Length: 0 与 Transfer-Encoding: chunked 同时存在是矛盾的：
+    # chunked 流不需要 Content-Length，而 CL:0 意味着没有 body。
+    - field: header
+      regex: '(?m)^content-length:\s*0\s*$'
+    - field: header
+      regex: '(?m)^transfer-encoding:[^\n]*\bchunked\b'

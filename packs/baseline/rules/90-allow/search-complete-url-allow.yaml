@@ -1,0 +1,21 @@
+# 放行：浏览器/搜索补全 API 的 url= 参数（非开放重定向）
+id: search-complete-url-allow
+name: Allow search autocomplete URL parameters
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, redirect, search]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)(?:^|/)(?:complete/search|suggest|autosuggest|search/suggest)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])url=https?"
+    - all:
+        - field: uri
+          contains: '/complete/search'
+        - field: query
+          regex: "(?i)(?:^|[&])url=https"

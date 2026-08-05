@@ -1,0 +1,14 @@
+id: admin-solr
+name: 'Admin Solr admin'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/solr/admin'
+    - field: uri
+      contains: '/solr/#/'

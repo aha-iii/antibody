@@ -1,0 +1,30 @@
+id: nosql-operator-bypass
+name: NoSQL operator login bypass
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [nosql, auth, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)[\"']?\\$(?:ne|gt|gte|lt|lte|regex|where|or|nin|in|type|mod|all|size|eval)\\b"
+    - field: body
+      regex: "(?i)[\"']?\\$(?:ne|gt|gte|lt|lte|regex|where|or|nin|in|type|mod|all|size|eval)\\b"
+    - field: query
+      regex: "(?i)\\|\\|\\s*['\"][a-z0-9]['\"]\\s*=="
+    - field: body
+      regex: "(?i)\\|\\|\\s*['\"][a-z0-9]['\"]\\s*=="
+    - field: query
+      contains: '$where'
+    - field: body
+      contains: '$where'
+    - field: query
+      regex: "(?i)\\b(?:flushall|flushdb|config\\s+set|slaveof)\\b"
+    - field: body
+      regex: "(?i)\\b(?:flushall|flushdb|config\\s+set|slaveof)\\b"
+    - field: query
+      contains: '$eval'
+    - field: body
+      contains: '$eval'

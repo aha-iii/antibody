@@ -1,0 +1,22 @@
+id: rce-wget-curl
+name: 'RCE wget/curl download'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(wget|curl)\\s+https?://"
+    - field: uri
+      regex: "(?i)(wget|curl)\\s+.*\\|\\s*(sh|bash)"
+    - field: query
+      regex: "(?i)(wget|curl)\\s+https?://"
+    - field: query
+      regex: "(?i)(wget|curl)\\s+.*\\|\\s*(sh|bash)"
+    - field: body
+      regex: "(?i)(wget|curl)\\s+https?://"
+    - field: body
+      regex: "(?i)(wget|curl)\\s+.*\\|\\s*(sh|bash)"

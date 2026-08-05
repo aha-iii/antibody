@@ -1,0 +1,16 @@
+id: sqli-exec-sp
+name: 'MSSQL EXEC sp_'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bexec\\s*(sp_|xp_)"
+    - field: query
+      regex: "(?i)\\bexec\\s*(sp_|xp_)"
+    - field: body
+      regex: "(?i)\\bexec\\s*(sp_|xp_)"

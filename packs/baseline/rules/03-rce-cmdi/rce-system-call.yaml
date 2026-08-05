@@ -1,0 +1,28 @@
+id: rce-system-call
+name: 'RCE system()/passthru'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bsystem\\s*\\("
+    - field: uri
+      regex: "(?i)\\bpassthru\\s*\\("
+    - field: uri
+      regex: "(?i)\\bshell_exec\\s*\\("
+    - field: query
+      regex: "(?i)\\bsystem\\s*\\("
+    - field: query
+      regex: "(?i)\\bpassthru\\s*\\("
+    - field: query
+      regex: "(?i)\\bshell_exec\\s*\\("
+    - field: body
+      regex: "(?i)\\bsystem\\s*\\("
+    - field: body
+      regex: "(?i)\\bpassthru\\s*\\("
+    - field: body
+      regex: "(?i)\\bshell_exec\\s*\\("

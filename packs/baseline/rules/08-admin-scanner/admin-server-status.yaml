@@ -1,0 +1,16 @@
+id: admin-server-status
+name: 'Admin server-status'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/server-status'
+    - field: uri
+      contains: '/server-info'
+    - field: uri
+      contains: '/nginx_status'

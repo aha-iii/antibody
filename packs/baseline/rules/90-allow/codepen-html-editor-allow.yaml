@@ -1,0 +1,20 @@
+# 放行：在线 HTML/JS 编辑器保存（CodePen / StackBlitz — URI 门闩，避免 body 解码后仍撞 xss.script-tag）
+id: codepen-html-editor-allow
+name: Allow online HTML editor save endpoints
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, xss, editor]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/pen/define(?:/|$|\\?)"
+    - all:
+        - field: uri
+          regex: "(?i)^/pen(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&?])file="
+    - field: uri
+      regex: "(?i)^/cpe/boomboom/store(?:/|$|\\?)"

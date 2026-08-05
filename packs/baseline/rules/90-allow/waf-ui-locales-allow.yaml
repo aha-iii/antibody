@@ -1,0 +1,23 @@
+# 放行：WAF/安全产品 Console UI（DetectLog、i18n locales、静态资源）
+id: waf-ui-locales-allow
+name: Allow WAF console UI and locale JSON paths
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, admin, locales, waf-ui]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/locales/(?:zh(?:-cn)?|en)(?:/|$)"
+    - field: uri
+      regex: "(?i)^/api/detectlog(?:list|detail)?(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/api/(?:ipgroup|behaviour)(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/assets/(?:[a-z0-9._-]+)(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/console/(?:home|core-runtime|performance-reporter|userpool)(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/api/internal/blog/esinfo/blog/\\d+"

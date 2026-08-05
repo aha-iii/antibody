@@ -1,0 +1,21 @@
+id: proto-crlf-protocol-inject
+name: CRLF protocol / log command injection
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [proto, crlf, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    # Redis/Memcached/FTP/IMAP/SMTP/日志伪造
+    - field: query
+      regex: "(?i)(?:%0d%0a|%0a|%0d|[\\r\\n]).{0,8}(?:set|user|pass|login|subject|sec-websocket|\\[success\\]|\\d{1,3}(?:\\.\\d{1,3}){3}\\s+-)"
+    - field: body
+      regex: "(?i)(?:%0d%0a|%0a|%0d|[\\r\\n]).{0,8}(?:set|user|pass|login|subject|sec-websocket|\\[success\\]|\\d{1,3}(?:\\.\\d{1,3}){3}\\s+-)"
+    - field: header
+      regex: "(?i)(?:%0d%0a|%0a|[\\r\\n]).{0,8}(?:set|sec-websocket|subject)\\b"
+    - field: query
+      regex: "(?i)(?:%0d%0a|[\\r\\n])(?:set|get|del)\\s+\\w+"
+    - field: body
+      regex: "(?i)(?:%0d%0a|[\\r\\n])(?:set|get|del)\\s+\\w+"

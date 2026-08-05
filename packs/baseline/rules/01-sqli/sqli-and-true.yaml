@@ -1,0 +1,23 @@
+id: sqli-and-true
+name: 'SQL AND tautology'
+severity: high
+tags: [sqli, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    # 前缀锚：引号/括号/数字，避免搜索文案 “and 1=1”
+    - field: uri
+      regex: "(?i)(?:['\"]|\\)|\\d)\\s*and\\s+(?:\\d+\\s*=\\s*\\d+|true\\b|\\d+\\s+like\\s+\\d+)"
+    - field: query
+      regex: "(?i)(?:['\"]|\\)|\\d)\\s*and\\s+(?:\\d+\\s*=\\s*\\d+|true\\b|\\d+\\s+like\\s+\\d+)"
+    - field: body
+      regex: "(?i)(?:['\"]|\\)|\\d)\\s*and\\s+(?:\\d+\\s*=\\s*\\d+|true\\b|\\d+\\s+like\\s+\\d+)"
+    - field: uri
+      regex: "(?i)(?:['\"]|\\)|\\d)\\s*and\\s+['\"][^'\"]{0,16}['\"]\\s*=\\s*['\"][^'\"]{0,16}['\"]"
+    - field: query
+      regex: "(?i)(?:['\"]|\\)|\\d)\\s*and\\s+['\"][^'\"]{0,16}['\"]\\s*=\\s*['\"][^'\"]{0,16}['\"]"
+    - field: body
+      regex: "(?i)(?:['\"]|\\)|\\d)\\s*and\\s+['\"][^'\"]{0,16}['\"]\\s*=\\s*['\"][^'\"]{0,16}['\"]"

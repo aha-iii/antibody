@@ -1,0 +1,18 @@
+id: path-semicolon-bypass
+name: Semicolon path / Spring matrix parameter bypass
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [bypass, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)/(?:admin|administrator|console|manager|phpmyadmin)\\s*;"
+    - field: uri
+      regex: "(?i);(?:\\.js|\\.css|\\.png|\\.jpg|/)"
+    - field: uri
+      regex: "(?i)^/https?://"
+    - field: uri
+      regex: "(?i)/redirect/https?://"

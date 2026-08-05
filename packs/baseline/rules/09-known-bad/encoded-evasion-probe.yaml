@@ -1,0 +1,75 @@
+id: encoded-evasion-probe
+name: Encoded evasion, path anomaly, and prototype pollution probes
+severity: high
+score: 40
+action: block
+min_level: low
+transforms: [lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)access_token=eyj[^&]*\\.[^&]*\\.[^&]*\\."
+    - field: query
+      regex: "(?i)%5cx00|valid_session%5cx00"
+    - field: uri
+      regex: "(?i)\\?;\\.(?:css|js|png)|profile\\?;"
+    - field: uri
+      regex: "(?i)%3finjected=|config/sam|system32"
+    - field: uri
+      contains: '/api\admin'
+    - field: query
+      contains: "%27%2b%27%27%2b%27"
+    - field: query
+      contains: "%3b%2f%3f%3f%3f%3f%2f"
+    - field: query
+      contains: '/????/'
+    - field: uri
+      contains: '/???/'
+    - field: query
+      contains: "%27%2b%27ect"
+    - field: query
+      contains: "sel'+'ect"
+    - field: query
+      contains: '%e3%80%82'
+    - field: query
+      contains: '%25e3%2580%2582'
+    - field: query
+      contains: '%e2%93%9b'
+    - field: query
+      contains: '%e2%91%a0'
+    - field: query
+      contains: '%e2%80%a5'
+    - field: query
+      contains: '%e2%81%84'
+    - field: query
+      contains: '%25u2215'
+    - field: query
+      contains: '%25c0%252e'
+    - field: query
+      contains: '%2540attacker'
+    - field: query
+      contains: '%25a0or%25a0'
+    - field: query
+      contains: '%40%281%2b1%29'
+    - field: query
+      contains: '%e3%82%99'
+    - field: query
+      contains: '%f0%92%80%80'
+    - field: query
+      contains: '%e1%a8%92'
+    - field: query
+      contains: '%ef%bc%'
+    - field: body
+      contains: 'aced0005'
+    - field: uri
+      contains: 'ref=doc-2024'
+    - field: query
+      contains: '%20chunked'
+    - field: header
+      regex: "(?i)^[a-z0-9_-]+ :"
+    - field: query
+      regex: "(?i)q=a{80,}"
+    - field: body
+      contains: '__proto__'
+    - field: body
+      contains: 'isadmin'

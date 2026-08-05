@@ -1,0 +1,22 @@
+id: xss-object-param
+name: 'XSS object/embed/param payloads'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_entity_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)<(?:object|embed|applet)\\b"
+    - field: query
+      regex: "(?i)<(?:object|embed|applet)\\b"
+    - field: body
+      regex: "(?i)<(?:object|embed|applet)\\b"
+    - field: uri
+      contains: '<param'
+    - field: query
+      contains: '<param'
+    - field: body
+      contains: '<param'

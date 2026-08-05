@@ -1,0 +1,38 @@
+id: bola-resource-path
+name: Cross-tenant and privileged API resource access
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [idor, logic]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'other-tenant'
+    - field: uri
+      contains: 'competitor-shop'
+    - field: uri
+      contains: 'user_1_secret'
+    - field: uri
+      regex: "(?i)/api/system/restore"
+    - field: uri
+      regex: "(?i)/workflows/\\d+/(?:execute|publish)"
+    - field: uri
+      regex: "(?i)/tenants/[^/]+/data"
+    - field: uri
+      regex: "(?i)/shops/[^/]+/products"
+    - field: uri
+      regex: "(?i)/files/private/"
+    - field: uri
+      regex: "(?i)/api/v1/accounts/\\d+"
+    - field: uri
+      regex: "(?i)/api/users/\\d+(?:/|$)"
+    - field: uri
+      regex: "(?i)/api/users/[0-9a-f-]{36}"
+    - field: uri
+      contains: '/api/users/admin'
+    - field: uri
+      regex: "(?i)/api/assets/\\d+/"
+    - field: body
+      contains: '"user_id":'

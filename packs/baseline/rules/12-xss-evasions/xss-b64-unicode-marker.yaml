@@ -1,0 +1,23 @@
+id: xss-b64-unicode-marker
+name: Base64 unicode-escape XSS markers in form bodies
+severity: high
+score: 40
+action: block
+min_level: high
+tags: [xss, evasion, self]
+transforms: []
+when:
+  any:
+    # base64 text embedding \u00xx sequences (blaze evasions)
+    - field: body
+      contains: 'XHUwMDYxXHUwMDZjXHUwMDY1XHUwMDcyXHUwMDc0'
+    - field: body
+      contains: 'cdTAwNjFcdTAwNmNcdTAwNjVcdTAwNzJcdTAwNzQ'
+    - field: body
+      contains: 'JcdTAwNmZcdTAwNmNcdTAwNmNcdTAwNmN'
+    - field: body
+      regex: "(?i)(?:XHUwMDA|cdTAw){6,}"
+    - field: body
+      contains: 'onmouseenter'
+    - field: body
+      contains: '&#x75;&#x30;'

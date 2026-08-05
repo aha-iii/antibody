@@ -1,0 +1,22 @@
+id: http-smuggle-cl-te
+name: HTTP request smuggling CL.TE / TE anomalies
+severity: high
+score: 45
+action: block
+min_level: low
+tags: [protocol, smuggle, self]
+transforms: [lowercase]
+when:
+  any:
+    - field: header
+      regex: "(?is)content-length\\s*:.*transfer-encoding\\s*:|transfer-encoding\\s*:.*content-length\\s*:"
+    - field: header
+      regex: "(?i)transfer-encoding\\s*:[^\\n]*\\n[^\\n]*transfer-encoding\\s*:"
+    - field: header
+      regex: "(?i)content-length\\s*:[^\\n]*\\n[^\\n]*content-length\\s*:"
+    - field: header
+      regex: "(?i)transfer-encoding\\s*:\\s*(?:cow|identity|compress|deflate|gzip|[a-z]{1,12})\\s*$"
+    - field: header
+      regex: "(?i)content-length\\s*:\\s*(?:-\\d|\\+\\d)"
+    - field: header
+      regex: "(?i)transfer-encoding\\s*:\\s*$"

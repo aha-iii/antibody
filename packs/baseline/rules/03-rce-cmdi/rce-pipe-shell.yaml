@@ -1,0 +1,22 @@
+id: rce-pipe-shell
+name: 'RCE pipe to shell/commands'
+severity: high
+tags: [rce, cmdi, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\|\\s*(?:/bin/)?(?:ba)?sh\\b"
+    - field: query
+      regex: "(?i)\\|\\s*(?:/bin/)?(?:ba)?sh\\b"
+    - field: body
+      regex: "(?i)\\|\\s*(?:/bin/)?(?:ba)?sh\\b"
+    - field: uri
+      regex: "(?i)\\|\\s*(?:cat|id|whoami|wget|curl|ncat?|python|perl|bash)(?:\\s|/|$)"
+    - field: query
+      regex: "(?i)\\|\\s*(?:cat|id|whoami|wget|curl|ncat?|python|perl|bash)(?:\\s|/|$)"
+    - field: body
+      regex: "(?i)\\|\\s*(?:cat|id|whoami|wget|curl|ncat?|python|perl|bash)(?:\\s|/|$)"

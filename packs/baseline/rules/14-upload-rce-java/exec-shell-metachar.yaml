@@ -1,0 +1,23 @@
+id: exec-shell-metachar
+name: 'Command injection shell metachar'
+severity: high
+tags: [rce, cmdi, blazehttp_gap, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    # 禁止裸 &；命令后禁止紧跟 =（防 ;cat= 广告参数）
+    - field: query
+      regex: "(?i)(?:;|\\|\\||&&|`|\\$\\()\\s*(?:/bin/)?(?:cat|ls|id|whoami|uname|wget|curl|ncat?|bash|sh|python|perl|ping|rm|chmod|touch|reboot|kill)(?:\\s|/|[;&|<>]|$)"
+    - field: body
+      regex: "(?i)(?:;|\\|\\||&&|`|\\$\\()\\s*(?:/bin/)?(?:cat|ls|id|whoami|uname|wget|curl|ncat?|bash|sh|python|perl|ping|rm|chmod|touch|reboot|kill)(?:\\s|/|[;&|<>]|$)"
+    - field: uri
+      regex: "(?i)(?:;|\\|\\||&&|`|\\$\\()\\s*(?:/bin/)?(?:cat|ls|id|whoami|uname|wget|curl|ncat?|bash|sh|python|perl|ping|rm|chmod|touch|reboot|kill)(?:\\s|/|[;&|<>]|$)"
+    - field: query
+      regex: "(?i)\\|\\s*(?:/bin/)?(?:ba)?sh\\b|\\|\\s*(?:cat|id|whoami|wget|curl|ncat?)\\s"
+    - field: body
+      regex: "(?i)\\|\\s*(?:/bin/)?(?:ba)?sh\\b|\\|\\s*(?:cat|id|whoami|wget|curl|ncat?)\\s"
+    - field: uri
+      regex: "(?i)\\|\\s*(?:/bin/)?(?:ba)?sh\\b|\\|\\s*(?:cat|id|whoami|wget|curl|ncat?)\\s"

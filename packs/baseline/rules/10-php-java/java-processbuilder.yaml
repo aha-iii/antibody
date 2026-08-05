@@ -1,0 +1,22 @@
+id: java-processbuilder
+name: 'Java ProcessBuilder'
+severity: high
+tags: [php, java, app]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'java.lang.processbuilder'
+    - field: uri
+      contains: 'processbuilder('
+    - field: query
+      contains: 'java.lang.processbuilder'
+    - field: query
+      contains: 'processbuilder('
+    - field: body
+      contains: 'java.lang.processbuilder'
+    - field: body
+      contains: 'processbuilder('

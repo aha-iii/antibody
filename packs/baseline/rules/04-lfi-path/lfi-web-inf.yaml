@@ -1,0 +1,22 @@
+id: lfi-web-inf
+name: 'LFI WEB-INF'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'web-inf/web.xml'
+    - field: uri
+      contains: 'web-inf/classes'
+    - field: query
+      contains: 'web-inf/web.xml'
+    - field: query
+      contains: 'web-inf/classes'
+    - field: body
+      contains: 'web-inf/web.xml'
+    - field: body
+      contains: 'web-inf/classes'

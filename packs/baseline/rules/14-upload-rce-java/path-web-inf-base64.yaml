@@ -1,0 +1,26 @@
+id: path-web-inf-base64
+name: 'Path traversal WEB-INF base64'
+severity: high
+tags: [lfi, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'li4vv0vclulori93zwiueg1s'
+    - field: query
+      contains: 'li4vv0vclulori93zwiueg1s'
+    - field: body
+      contains: 'li4vv0vclulori93zwiueg1s'
+    - field: uri
+      contains: '../web-inf/'
+    - field: query
+      contains: '../web-inf/'
+    - field: body
+      contains: '../web-inf/'
+    - field: uri
+      contains: '..\\web-inf\\'
+    - field: query
+      contains: 'web-inf/web.xml'

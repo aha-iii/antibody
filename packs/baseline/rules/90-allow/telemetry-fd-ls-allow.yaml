@@ -1,0 +1,21 @@
+# 放行：Microsoft/Bing 遥测 /fd/ls/*（TYPE=Event.* 参数，非 oscmd type 命令）
+id: telemetry-fd-ls-allow
+name: Allow Bing telemetry fd/ls endpoints
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, telemetry, rce]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)(?:^|/)fd/ls/(?:l|glb|glb\\.ashx|glinkpingpost\\.aspx)"
+        - field: query
+          regex: "(?i)(?:^|[&])type=event"
+    - all:
+        - field: uri
+          contains: '/fd/ls/'
+        - field: query
+          contains: 'type=event.clientinst'

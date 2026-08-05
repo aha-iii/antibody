@@ -1,0 +1,347 @@
+[bench] building dashboard...
+[bench] starting dashboard on 127.0.0.1:8799
+[2m2026-08-01T03:40:02.063213Z[0m [33m WARN[0m [2mnerve_waf_native_dashboard::bench[0m[2m:[0m bench HTTP bind failed (in-process runner仍可用) [3merror[0m[2m=[0mAddress already in use (os error 98) [3maddr[0m[2m=[0m127.0.0.1:8808
+[2m2026-08-01T03:40:02.067781Z[0m [33m WARN[0m [2mnerve_waf_auth::local[0m[2m:[0m nerve-waf-auth: NERVE_AUTH_JWT_SECRET unset — using dev-only default; set a strong secret in production
+[bench] starting blazehttp job (medium, concurrency=80)
+{"phase":"running","pack":"baseline","level":"medium","dataset":"blazehttp","concurrency":80,"timeout_ms":3000,"target":"in-process (engine.inspect)","progress_pct":0.0,"done":0,"total":33877,"message":"准备执行 33877 条用例…","started_at_ms":1785555607532,"finished_at_ms":null,"elapsed_ms":null,"metrics":null,"blazehttp_bin":"/tmp/blazehttp","ready":true,"ready_message":"blazehttp 样本就绪 · /tmp/blazehttp","fail_count":0,"pass_count":0}[bench] phase=running 0/33877 准备执行 33877 条用例…
+[bench] phase=running 125/33877 执行中 125/33877 · 通过 104 · 失败 21
+[bench] phase=running 325/33877 执行中 325/33877 · 通过 288 · 失败 37
+[bench] phase=running 475/33877 执行中 475/33877 · 通过 418 · 失败 57
+[bench] phase=running 625/33877 执行中 625/33877 · 通过 545 · 失败 80
+[bench] phase=running 800/33877 执行中 800/33877 · 通过 707 · 失败 93
+[bench] phase=running 975/33877 执行中 975/33877 · 通过 861 · 失败 114
+[bench] phase=running 1150/33877 执行中 1150/33877 · 通过 1021 · 失败 129
+[bench] phase=running 1300/33877 执行中 1300/33877 · 通过 1155 · 失败 145
+[bench] phase=running 1475/33877 执行中 1475/33877 · 通过 1303 · 失败 172
+[bench] phase=running 1625/33877 执行中 1625/33877 · 通过 1430 · 失败 195
+[bench] phase=running 1775/33877 执行中 1775/33877 · 通过 1566 · 失败 209
+[bench] phase=running 1925/33877 执行中 1925/33877 · 通过 1687 · 失败 238
+[bench] phase=running 2100/33877 执行中 2100/33877 · 通过 1848 · 失败 252
+[bench] phase=running 2250/33877 执行中 2250/33877 · 通过 1984 · 失败 266
+[bench] phase=running 2425/33877 执行中 2425/33877 · 通过 2134 · 失败 291
+[bench] phase=running 2600/33877 执行中 2600/33877 · 通过 2285 · 失败 315
+[bench] phase=running 2750/33877 执行中 2750/33877 · 通过 2416 · 失败 334
+[bench] phase=running 2925/33877 执行中 2925/33877 · 通过 2572 · 失败 353
+[bench] phase=running 3075/33877 执行中 3075/33877 · 通过 2702 · 失败 373
+[bench] phase=running 3225/33877 执行中 3225/33877 · 通过 2833 · 失败 392
+[bench] phase=running 3425/33877 执行中 3425/33877 · 通过 2998 · 失败 427
+[bench] phase=running 3600/33877 执行中 3600/33877 · 通过 3149 · 失败 451
+[bench] phase=running 3750/33877 执行中 3750/33877 · 通过 3284 · 失败 466
+[bench] phase=running 3925/33877 执行中 3925/33877 · 通过 3441 · 失败 484
+[bench] phase=running 4100/33877 执行中 4100/33877 · 通过 3592 · 失败 508
+[bench] phase=running 4275/33877 执行中 4275/33877 · 通过 3743 · 失败 532
+[bench] phase=running 4425/33877 执行中 4425/33877 · 通过 3882 · 失败 543
+[bench] phase=running 4600/33877 执行中 4600/33877 · 通过 4036 · 失败 564
+[bench] phase=running 4750/33877 执行中 4750/33877 · 通过 4177 · 失败 573
+[bench] phase=running 4925/33877 执行中 4925/33877 · 通过 4322 · 失败 603
+[bench] phase=running 5100/33877 执行中 5100/33877 · 通过 4471 · 失败 629
+[bench] phase=running 5250/33877 执行中 5250/33877 · 通过 4605 · 失败 645
+[bench] phase=running 5425/33877 执行中 5425/33877 · 通过 4767 · 失败 658
+[bench] phase=running 5600/33877 执行中 5600/33877 · 通过 4920 · 失败 680
+[bench] phase=running 5775/33877 执行中 5775/33877 · 通过 5067 · 失败 708
+[bench] phase=running 5925/33877 执行中 5925/33877 · 通过 5203 · 失败 722
+[bench] phase=running 6100/33877 执行中 6100/33877 · 通过 5363 · 失败 737
+[bench] phase=running 6250/33877 执行中 6250/33877 · 通过 5496 · 失败 754
+[bench] phase=running 6425/33877 执行中 6425/33877 · 通过 5645 · 失败 780
+[bench] phase=running 6575/33877 执行中 6575/33877 · 通过 5776 · 失败 799
+[bench] phase=running 6750/33877 执行中 6750/33877 · 通过 5930 · 失败 820
+[bench] phase=running 6925/33877 执行中 6925/33877 · 通过 6088 · 失败 837
+[bench] phase=running 7100/33877 执行中 7100/33877 · 通过 6244 · 失败 856
+[bench] phase=running 7250/33877 执行中 7250/33877 · 通过 6378 · 失败 872
+[bench] phase=running 7375/33877 执行中 7375/33877 · 通过 6492 · 失败 883
+[bench] phase=running 7550/33877 执行中 7550/33877 · 通过 6641 · 失败 909
+[bench] phase=running 7700/33877 执行中 7700/33877 · 通过 6776 · 失败 924
+[bench] phase=running 7850/33877 执行中 7850/33877 · 通过 6899 · 失败 951
+[bench] phase=running 8000/33877 执行中 8000/33877 · 通过 7030 · 失败 970
+[bench] phase=running 8175/33877 执行中 8175/33877 · 通过 7184 · 失败 991
+[bench] phase=running 8325/33877 执行中 8325/33877 · 通过 7318 · 失败 1007
+[bench] phase=running 8475/33877 执行中 8475/33877 · 通过 7446 · 失败 1029
+[bench] phase=running 8650/33877 执行中 8650/33877 · 通过 7603 · 失败 1047
+[bench] phase=running 8850/33877 执行中 8850/33877 · 通过 7782 · 失败 1068
+[bench] phase=running 9000/33877 执行中 9000/33877 · 通过 7914 · 失败 1086
+[bench] phase=running 9175/33877 执行中 9175/33877 · 通过 8067 · 失败 1108
+[bench] phase=running 9325/33877 执行中 9325/33877 · 通过 8191 · 失败 1134
+[bench] phase=running 9500/33877 执行中 9500/33877 · 通过 8340 · 失败 1160
+[bench] phase=running 9675/33877 执行中 9675/33877 · 通过 8489 · 失败 1186
+[bench] phase=running 9850/33877 执行中 9850/33877 · 通过 8625 · 失败 1225
+[bench] phase=running 10000/33877 执行中 10000/33877 · 通过 8758 · 失败 1242
+[bench] phase=running 10175/33877 执行中 10175/33877 · 通过 8908 · 失败 1267
+[bench] phase=running 10350/33877 执行中 10350/33877 · 通过 9063 · 失败 1287
+[bench] phase=running 10500/33877 执行中 10500/33877 · 通过 9193 · 失败 1307
+[bench] phase=running 10675/33877 执行中 10675/33877 · 通过 9343 · 失败 1332
+[bench] phase=running 10850/33877 执行中 10850/33877 · 通过 9489 · 失败 1361
+[bench] phase=running 11025/33877 执行中 11025/33877 · 通过 9639 · 失败 1386
+[bench] phase=running 11200/33877 执行中 11200/33877 · 通过 9789 · 失败 1411
+[bench] phase=running 11350/33877 执行中 11350/33877 · 通过 9922 · 失败 1428
+[bench] phase=running 11550/33877 执行中 11550/33877 · 通过 10093 · 失败 1457
+[bench] phase=running 11725/33877 执行中 11725/33877 · 通过 10244 · 失败 1481
+[bench] phase=running 11900/33877 执行中 11900/33877 · 通过 10395 · 失败 1505
+[bench] phase=running 12075/33877 执行中 12075/33877 · 通过 10548 · 失败 1527
+[bench] phase=running 12225/33877 执行中 12225/33877 · 通过 10686 · 失败 1539
+[bench] phase=running 12400/33877 执行中 12400/33877 · 通过 10839 · 失败 1561
+[bench] phase=running 12575/33877 执行中 12575/33877 · 通过 10990 · 失败 1585
+[bench] phase=running 12725/33877 执行中 12725/33877 · 通过 11120 · 失败 1605
+[bench] phase=running 12900/33877 执行中 12900/33877 · 通过 11271 · 失败 1629
+[bench] phase=running 13075/33877 执行中 13075/33877 · 通过 11424 · 失败 1651
+[bench] phase=running 13250/33877 执行中 13250/33877 · 通过 11578 · 失败 1672
+[bench] phase=running 13400/33877 执行中 13400/33877 · 通过 11709 · 失败 1691
+[bench] phase=running 13575/33877 执行中 13575/33877 · 通过 11866 · 失败 1709
+[bench] phase=running 13750/33877 执行中 13750/33877 · 通过 12016 · 失败 1734
+[bench] phase=running 13925/33877 执行中 13925/33877 · 通过 12166 · 失败 1759
+[bench] phase=running 14100/33877 执行中 14100/33877 · 通过 12309 · 失败 1791
+[bench] phase=running 14275/33877 执行中 14275/33877 · 通过 12462 · 失败 1813
+[bench] phase=running 14425/33877 执行中 14425/33877 · 通过 12593 · 失败 1832
+[bench] phase=running 14575/33877 执行中 14575/33877 · 通过 12726 · 失败 1849
+[bench] phase=running 14750/33877 执行中 14750/33877 · 通过 12882 · 失败 1868
+[bench] phase=running 14950/33877 执行中 14950/33877 · 通过 13050 · 失败 1900
+[bench] phase=running 15050/33877 执行中 15050/33877 · 通过 13149 · 失败 1901
+[bench] phase=running 15175/33877 执行中 15175/33877 · 通过 13273 · 失败 1902
+[bench] phase=running 15275/33877 执行中 15275/33877 · 通过 13370 · 失败 1905
+[bench] phase=running 15375/33877 执行中 15375/33877 · 通过 13468 · 失败 1907
+[bench] phase=running 15475/33877 执行中 15475/33877 · 通过 13567 · 失败 1908
+[bench] phase=running 15575/33877 执行中 15575/33877 · 通过 13662 · 失败 1913
+[bench] phase=running 15700/33877 执行中 15700/33877 · 通过 13787 · 失败 1913
+[bench] phase=running 15800/33877 执行中 15800/33877 · 通过 13885 · 失败 1915
+[bench] phase=running 15875/33877 执行中 15875/33877 · 通过 13960 · 失败 1915
+[bench] phase=running 15975/33877 执行中 15975/33877 · 通过 14059 · 失败 1916
+[bench] phase=running 16075/33877 执行中 16075/33877 · 通过 14159 · 失败 1916
+[bench] phase=running 16200/33877 执行中 16200/33877 · 通过 14283 · 失败 1917
+[bench] phase=running 16325/33877 执行中 16325/33877 · 通过 14408 · 失败 1917
+[bench] phase=running 16425/33877 执行中 16425/33877 · 通过 14503 · 失败 1922
+[bench] phase=running 16550/33877 执行中 16550/33877 · 通过 14622 · 失败 1928
+[bench] phase=running 16700/33877 执行中 16700/33877 · 通过 14771 · 失败 1929
+[bench] phase=running 16825/33877 执行中 16825/33877 · 通过 14892 · 失败 1933
+[bench] phase=running 16950/33877 执行中 16950/33877 · 通过 15015 · 失败 1935
+[bench] phase=running 17075/33877 执行中 17075/33877 · 通过 15133 · 失败 1942
+[bench] phase=running 17250/33877 执行中 17250/33877 · 通过 15278 · 失败 1972
+[bench] phase=running 17425/33877 执行中 17425/33877 · 通过 15431 · 失败 1994
+[bench] phase=running 17600/33877 执行中 17600/33877 · 通过 15579 · 失败 2021
+[bench] phase=running 17725/33877 执行中 17725/33877 · 通过 15688 · 失败 2037
+[bench] phase=running 17825/33877 执行中 17825/33877 · 通过 15787 · 失败 2038
+[bench] phase=running 17925/33877 执行中 17925/33877 · 通过 15887 · 失败 2038
+[bench] phase=running 18050/33877 执行中 18050/33877 · 通过 16012 · 失败 2038
+[bench] phase=running 18125/33877 执行中 18125/33877 · 通过 16086 · 失败 2039
+[bench] phase=running 18250/33877 执行中 18250/33877 · 通过 16209 · 失败 2041
+[bench] phase=running 18350/33877 执行中 18350/33877 · 通过 16307 · 失败 2043
+[bench] phase=running 18475/33877 执行中 18475/33877 · 通过 16430 · 失败 2045
+[bench] phase=running 18600/33877 执行中 18600/33877 · 通过 16550 · 失败 2050
+[bench] phase=running 18700/33877 执行中 18700/33877 · 通过 16645 · 失败 2055
+[bench] phase=running 18850/33877 执行中 18850/33877 · 通过 16791 · 失败 2059
+[bench] phase=running 18950/33877 执行中 18950/33877 · 通过 16888 · 失败 2062
+[bench] phase=running 19050/33877 执行中 19050/33877 · 通过 16985 · 失败 2065
+[bench] phase=running 19225/33877 执行中 19225/33877 · 通过 17155 · 失败 2070
+[bench] phase=running 19350/33877 执行中 19350/33877 · 通过 17277 · 失败 2073
+[bench] phase=running 19475/33877 执行中 19475/33877 · 通过 17399 · 失败 2076
+[bench] phase=running 19600/33877 执行中 19600/33877 · 通过 17518 · 失败 2082
+[bench] phase=running 19750/33877 执行中 19750/33877 · 通过 17664 · 失败 2086
+[bench] phase=running 19875/33877 执行中 19875/33877 · 通过 17787 · 失败 2088
+[bench] phase=running 19975/33877 执行中 19975/33877 · 通过 17881 · 失败 2094
+[bench] phase=running 20125/33877 执行中 20125/33877 · 通过 18026 · 失败 2099
+[bench] phase=running 20275/33877 执行中 20275/33877 · 通过 18171 · 失败 2104
+[bench] phase=running 20400/33877 执行中 20400/33877 · 通过 18289 · 失败 2111
+[bench] phase=running 20550/33877 执行中 20550/33877 · 通过 18434 · 失败 2116
+[bench] phase=running 20650/33877 执行中 20650/33877 · 通过 18531 · 失败 2119
+[bench] phase=running 20775/33877 执行中 20775/33877 · 通过 18649 · 失败 2126
+[bench] phase=running 20925/33877 执行中 20925/33877 · 通过 18798 · 失败 2127
+[bench] phase=running 21050/33877 执行中 21050/33877 · 通过 18919 · 失败 2131
+[bench] phase=running 21175/33877 执行中 21175/33877 · 通过 19041 · 失败 2134
+[bench] phase=running 21275/33877 执行中 21275/33877 · 通过 19136 · 失败 2139
+[bench] phase=running 21375/33877 执行中 21375/33877 · 通过 19229 · 失败 2146
+[bench] phase=running 21500/33877 执行中 21500/33877 · 通过 19349 · 失败 2151
+[bench] phase=running 21600/33877 执行中 21600/33877 · 通过 19444 · 失败 2156
+[bench] phase=running 21750/33877 执行中 21750/33877 · 通过 19586 · 失败 2164
+[bench] phase=running 21875/33877 执行中 21875/33877 · 通过 19703 · 失败 2172
+[bench] phase=running 22000/33877 执行中 22000/33877 · 通过 19822 · 失败 2178
+[bench] phase=running 22100/33877 执行中 22100/33877 · 通过 19921 · 失败 2179
+[bench] phase=running 22200/33877 执行中 22200/33877 · 通过 20018 · 失败 2182
+[bench] phase=running 22300/33877 执行中 22300/33877 · 通过 20115 · 失败 2185
+[bench] phase=running 22375/33877 执行中 22375/33877 · 通过 20184 · 失败 2191
+[bench] phase=running 22475/33877 执行中 22475/33877 · 通过 20282 · 失败 2193
+[bench] phase=running 22600/33877 执行中 22600/33877 · 通过 20402 · 失败 2198
+[bench] phase=running 22725/33877 执行中 22725/33877 · 通过 20523 · 失败 2202
+[bench] phase=running 22825/33877 执行中 22825/33877 · 通过 20619 · 失败 2206
+[bench] phase=running 22925/33877 执行中 22925/33877 · 通过 20712 · 失败 2213
+[bench] phase=running 23075/33877 执行中 23075/33877 · 通过 20854 · 失败 2221
+[bench] phase=running 23225/33877 执行中 23225/33877 · 通过 20998 · 失败 2227
+[bench] phase=running 23300/33877 执行中 23300/33877 · 通过 21073 · 失败 2227
+[bench] phase=running 23450/33877 执行中 23450/33877 · 通过 21215 · 失败 2235
+[bench] phase=running 23550/33877 执行中 23550/33877 · 通过 21310 · 失败 2240
+[bench] phase=running 23675/33877 执行中 23675/33877 · 通过 21426 · 失败 2249
+[bench] phase=running 23800/33877 执行中 23800/33877 · 通过 21547 · 失败 2253
+[bench] phase=running 23925/33877 执行中 23925/33877 · 通过 21669 · 失败 2256
+[bench] phase=running 24075/33877 执行中 24075/33877 · 通过 21812 · 失败 2263
+[bench] phase=running 24200/33877 执行中 24200/33877 · 通过 21936 · 失败 2264
+[bench] phase=running 24325/33877 执行中 24325/33877 · 通过 22059 · 失败 2266
+[bench] phase=running 24450/33877 执行中 24450/33877 · 通过 22182 · 失败 2268
+[bench] phase=running 24575/33877 执行中 24575/33877 · 通过 22301 · 失败 2274
+[bench] phase=running 24675/33877 执行中 24675/33877 · 通过 22395 · 失败 2280
+[bench] phase=running 24800/33877 执行中 24800/33877 · 通过 22516 · 失败 2284
+[bench] phase=running 24925/33877 执行中 24925/33877 · 通过 22637 · 失败 2288
+[bench] phase=running 25075/33877 执行中 25075/33877 · 通过 22783 · 失败 2292
+[bench] phase=running 25175/33877 执行中 25175/33877 · 通过 22879 · 失败 2296
+[bench] phase=running 25275/33877 执行中 25275/33877 · 通过 22973 · 失败 2302
+[bench] phase=running 25400/33877 执行中 25400/33877 · 通过 23089 · 失败 2311
+[bench] phase=running 25500/33877 执行中 25500/33877 · 通过 23181 · 失败 2319
+[bench] phase=running 25625/33877 执行中 25625/33877 · 通过 23299 · 失败 2326
+[bench] phase=running 25750/33877 执行中 25750/33877 · 通过 23419 · 失败 2331
+[bench] phase=running 25875/33877 执行中 25875/33877 · 通过 23535 · 失败 2340
+[bench] phase=running 26000/33877 执行中 26000/33877 · 通过 23656 · 失败 2344
+[bench] phase=running 26100/33877 执行中 26100/33877 · 通过 23750 · 失败 2350
+[bench] phase=running 26250/33877 执行中 26250/33877 · 通过 23894 · 失败 2356
+[bench] phase=running 26350/33877 执行中 26350/33877 · 通过 23991 · 失败 2359
+[bench] phase=running 26450/33877 执行中 26450/33877 · 通过 24087 · 失败 2363
+[bench] phase=running 26575/33877 执行中 26575/33877 · 通过 24205 · 失败 2370
+[bench] phase=running 26700/33877 执行中 26700/33877 · 通过 24328 · 失败 2372
+[bench] phase=running 26800/33877 执行中 26800/33877 · 通过 24424 · 失败 2376
+[bench] phase=running 26925/33877 执行中 26925/33877 · 通过 24546 · 失败 2379
+[bench] phase=running 27025/33877 执行中 27025/33877 · 通过 24641 · 失败 2384
+[bench] phase=running 27150/33877 执行中 27150/33877 · 通过 24760 · 失败 2390
+[bench] phase=running 27250/33877 执行中 27250/33877 · 通过 24856 · 失败 2394
+[bench] phase=running 27375/33877 执行中 27375/33877 · 通过 24977 · 失败 2398
+[bench] phase=running 27450/33877 执行中 27450/33877 · 通过 25045 · 失败 2405
+[bench] phase=running 27575/33877 执行中 27575/33877 · 通过 25167 · 失败 2408
+[bench] phase=running 27675/33877 执行中 27675/33877 · 通过 25262 · 失败 2413
+[bench] phase=running 27800/33877 执行中 27800/33877 · 通过 25383 · 失败 2417
+[bench] phase=running 27925/33877 执行中 27925/33877 · 通过 25502 · 失败 2423
+[bench] phase=running 28025/33877 执行中 28025/33877 · 通过 25596 · 失败 2429
+[bench] phase=running 28150/33877 执行中 28150/33877 · 通过 25710 · 失败 2440
+[bench] phase=running 28250/33877 执行中 28250/33877 · 通过 25805 · 失败 2445
+[bench] phase=running 28375/33877 执行中 28375/33877 · 通过 25926 · 失败 2449
+[bench] phase=running 28475/33877 执行中 28475/33877 · 通过 26024 · 失败 2451
+[bench] phase=running 28600/33877 执行中 28600/33877 · 通过 26143 · 失败 2457
+[bench] phase=running 28700/33877 执行中 28700/33877 · 通过 26236 · 失败 2464
+[bench] phase=running 28825/33877 执行中 28825/33877 · 通过 26358 · 失败 2467
+[bench] phase=running 28925/33877 执行中 28925/33877 · 通过 26455 · 失败 2470
+[bench] phase=running 29025/33877 执行中 29025/33877 · 通过 26542 · 失败 2483
+[bench] phase=running 29125/33877 执行中 29125/33877 · 通过 26638 · 失败 2487
+[bench] phase=running 29250/33877 执行中 29250/33877 · 通过 26755 · 失败 2495
+[bench] phase=running 29375/33877 执行中 29375/33877 · 通过 26876 · 失败 2499
+[bench] phase=running 29475/33877 执行中 29475/33877 · 通过 26971 · 失败 2504
+[bench] phase=running 29600/33877 执行中 29600/33877 · 通过 27088 · 失败 2512
+[bench] phase=running 29700/33877 执行中 29700/33877 · 通过 27183 · 失败 2517
+[bench] phase=running 29800/33877 执行中 29800/33877 · 通过 27277 · 失败 2523
+[bench] phase=running 29900/33877 执行中 29900/33877 · 通过 27374 · 失败 2526
+[bench] phase=running 29975/33877 执行中 29975/33877 · 通过 27446 · 失败 2529
+[bench] phase=running 30100/33877 执行中 30100/33877 · 通过 27568 · 失败 2532
+[bench] phase=running 30225/33877 执行中 30225/33877 · 通过 27688 · 失败 2537
+[bench] phase=running 30325/33877 执行中 30325/33877 · 通过 27783 · 失败 2542
+[bench] phase=running 30425/33877 执行中 30425/33877 · 通过 27875 · 失败 2550
+[bench] phase=running 30550/33877 执行中 30550/33877 · 通过 27996 · 失败 2554
+[bench] phase=running 30650/33877 执行中 30650/33877 · 通过 28086 · 失败 2564
+[bench] phase=running 30775/33877 执行中 30775/33877 · 通过 28202 · 失败 2573
+[bench] phase=running 30875/33877 执行中 30875/33877 · 通过 28299 · 失败 2576
+[bench] phase=running 30950/33877 执行中 30950/33877 · 通过 28368 · 失败 2582
+[bench] phase=running 31050/33877 执行中 31050/33877 · 通过 28467 · 失败 2583
+[bench] phase=running 31175/33877 执行中 31175/33877 · 通过 28585 · 失败 2590
+[bench] phase=running 31275/33877 执行中 31275/33877 · 通过 28680 · 失败 2595
+[bench] phase=running 31375/33877 执行中 31375/33877 · 通过 28777 · 失败 2598
+[bench] phase=running 31500/33877 执行中 31500/33877 · 通过 28894 · 失败 2606
+[bench] phase=running 31600/33877 执行中 31600/33877 · 通过 28991 · 失败 2609
+[bench] phase=running 31700/33877 执行中 31700/33877 · 通过 29089 · 失败 2611
+[bench] phase=running 31775/33877 执行中 31775/33877 · 通过 29162 · 失败 2613
+[bench] phase=running 31900/33877 执行中 31900/33877 · 通过 29284 · 失败 2616
+[bench] phase=running 31975/33877 执行中 31975/33877 · 通过 29356 · 失败 2619
+[bench] phase=running 32100/33877 执行中 32100/33877 · 通过 29478 · 失败 2622
+[bench] phase=running 32200/33877 执行中 32200/33877 · 通过 29575 · 失败 2625
+[bench] phase=running 32275/33877 执行中 32275/33877 · 通过 29648 · 失败 2627
+[bench] phase=running 32375/33877 执行中 32375/33877 · 通过 29742 · 失败 2633
+[bench] phase=running 32475/33877 执行中 32475/33877 · 通过 29837 · 失败 2638
+[bench] phase=running 32575/33877 执行中 32575/33877 · 通过 29930 · 失败 2645
+[bench] phase=running 32675/33877 执行中 32675/33877 · 通过 30026 · 失败 2649
+[bench] phase=running 32775/33877 执行中 32775/33877 · 通过 30119 · 失败 2656
+[bench] phase=running 32875/33877 执行中 32875/33877 · 通过 30213 · 失败 2662
+[bench] phase=running 32950/33877 执行中 32950/33877 · 通过 30285 · 失败 2665
+[bench] phase=running 33050/33877 执行中 33050/33877 · 通过 30381 · 失败 2669
+[bench] phase=running 33100/33877 执行中 33100/33877 · 通过 30428 · 失败 2672
+[bench] phase=running 33200/33877 执行中 33200/33877 · 通过 30525 · 失败 2675
+[bench] phase=running 33300/33877 执行中 33300/33877 · 通过 30622 · 失败 2678
+[bench] phase=running 33375/33877 执行中 33375/33877 · 通过 30691 · 失败 2684
+[bench] phase=running 33475/33877 执行中 33475/33877 · 通过 30791 · 失败 2684
+[bench] phase=running 33550/33877 执行中 33550/33877 · 通过 30864 · 失败 2686
+[bench] phase=running 33625/33877 执行中 33625/33877 · 通过 30934 · 失败 2691
+[bench] phase=running 33700/33877 执行中 33700/33877 · 通过 31006 · 失败 2694
+[bench] phase=running 33775/33877 执行中 33775/33877 · 通过 31080 · 失败 2695
+[bench] phase=running 33875/33877 执行中 33875/33877 · 通过 31176 · 失败 2699
+[bench] phase=done 33877/33877 完成 · 通过 31178 · 失败 2699 · 检出率 94.98% · 准确率 92.03%
+[bench] fetching report -> /mnt/d/workspace/waf/Nerve-waf-native/data/bench/blazehttp-report-20260801-113739.json
+[bench] summary: /mnt/d/workspace/waf/Nerve-waf-native/data/bench/blazehttp-fp-fn-20260801-113739.md
+# blazehttp FP / FN 报告
+
+- 报告: `/mnt/d/workspace/waf/Nerve-waf-native/data/bench/blazehttp-report-20260801-113739.json`
+
+## 汇总
+
+| 指标 | 值 |
+|------|-----|
+| total | 33877 |
+| detection_rate | 94.98480243161094 |
+| false_positive_rate | 8.025527559529184 |
+| accuracy | 92.03294270448977 |
+| missed | 33 |
+| false_positive | 2666 |
+| malicious_total | 658 |
+| normal_total | 33219 |
+| avg_ms | 11637.49821412758 |
+
+## FN（漏报）共 33 条
+
+恶意样本 expect=block 但未 block。
+
+### 按规则（应为空或未命中）
+
+- `(none)`: 25
+- `decode.attack_hint`: 7
+- `sqli-waitfor`: 1
+
+### 按 testcases 子目录 Top 15
+
+- `73`: 3
+- `72`: 2
+- `8e`: 2
+- `a5`: 2
+- `47`: 1
+- `4b`: 1
+- `56`: 1
+- `75`: 1
+- `7e`: 1
+- `81`: 1
+- `85`: 1
+- `88`: 1
+- `89`: 1
+- `8a`: 1
+- `90`: 1
+
+### 样例（前 30）
+
+| id | expect | actual | rule_id | detail |
+|----|--------|--------|---------|--------|
+| `testcases/47/e8/60f3f244ef8fb130a8e7fe597184.black` | block | pass |  | GET /uploadfiles/apache.php.jpeg |
+| `testcases/4b/0a/096825fe5d589a0fe75c44aca53e.black` | block | pass | decode.attack_hint | decode_attack_hint |
+| `testcases/56/94/8e1087c5bffe3a7d10ce90e9c72f.black` | block | pass |  | DELETE /capture/agnostic?arbitrary=resource |
+| `testcases/72/aa/d3e7a27c400b62bc613c0712713f.black` | block | pass |  | POST /vulnerabilities/exec/ |
+| `testcases/72/e8/a9844141172d21301725da11c5dc.black` | block | pass | decode.attack_hint | decode_attack_hint |
+| `testcases/73/2c/4a23d9387606994afb347d0791dd.black` | block | pass |  | POST /?q=node&destination=node |
+| `testcases/73/81/da87ccf03256c0a4f316afe35e04.black` | block | pass |  | GET /vulnerabilities/xss_r/?name=%3Ca+href%3D%23+download%3D%22filename.html%22% |
+| `testcases/73/f6/3446c32eb41eba6a2592fd277e50.black` | block | pass | decode.attack_hint | decode_attack_hint |
+| `testcases/75/36/e3b4bc5a5f270b73aa0ae99e1585.black` | block | pass |  | GET /error.html?templates[]=1&templateidlist=O:20:%22vB_Image_ImageMagick%22:1:{ |
+| `testcases/7e/9e/1c9218f848c24774544b11e42ca0.black` | block | pass |  | POST /on-premise/mode?marry=UENGRVQwTlVXVkJGSUdadmJ5QmJJRHdoUlU1VVNWUlpJR1Y0ZENC |
+| `testcases/81/0f/7a42faed086036e72fec24ba965e.black` | block | pass |  | DELETE /?protocol=database |
+| `testcases/85/f4/e76ed749ed2007368b7e36772410.black` | block | pass |  | POST / |
+| `testcases/88/ce/f98074efd41e87e423eadb55f9da.black` | block | pass |  | GET /vulnerabilities/xss_r/?name=self%5B%28%2B%7B%7D%2B%5B%5D%29%5B%2B%21%21%5B% |
+| `testcases/89/ec/26b7057003ad7a963dfe10ae6c5d.black` | block | pass |  | POST /uc/feedback/api/v1/pc/feedback/add |
+| `testcases/8a/84/48688a7932084254d649819d4362.black` | block | pass |  | GET /element/inherit/state?refresh=populate |
+| `testcases/8e/63/eece52f3a9783bc3c8dd5802b5cf.black` | block | pass |  | GET / |
+| `testcases/8e/6e/c039ad4b8aa58ed2ebcab0e08936.black` | block | pass |  | GET / |
+| `testcases/90/e5/70482595612794ff59a421bd0fd8.black` | block | pass |  | GET /uploadfiles/apache.php.jpeg |
+| `testcases/93/06/2d8a3f206d7c7f50c577ddd04333.black` | block | pass |  | POST /druid/indexer/v1/sampler?for=connect |
+| `testcases/9b/ea/0d232d76fa78412049c8048b6f25.black` | block | pass |  | GET / |
+| `testcases/a1/b9/5a2e589212b1c6c7bac45ca313b2.black` | block | pass | decode.attack_hint | decode_attack_hint |
+| `testcases/a5/7f/bbda3bb3a6d78649b617f43ce411.black` | block | pass |  | GET /?unix:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA |
+| `testcases/a5/87/5ec1e6eb9f49eaa63b93ca793418.black` | block | pass |  | GET /severity/underscore/provide/command/range?hypothesis=replica&environment=su |
+| `testcases/a9/f9/8d6e9fabaef238835cccbff738c6.black` | block | pass | sqli-waitfor | query#b64[1]\|contains:waitfor delay |
+| `testcases/ad/b3/55e19c6e46abf4c8f9d990d4ce9b.black` | block | pass | decode.attack_hint | decode_attack_hint |
+| `testcases/be/32/cbb9261c728de3c91a11a7bd086d.black` | block | pass |  | POST /inner/indecisive/internal/vice%20versa?resilient=capture&under%20the%20hoo |
+| `testcases/d2/86/42402ee4dcd709cf39a635c596fc.black` | block | pass | decode.attack_hint | decode_attack_hint |
+| `testcases/d8/ab/654a635915b6333180d6bbe05008.black` | block | pass | decode.attack_hint | decode_attack_hint |
+| `testcases/db/4b/a5cd9c65fb336cc13352f1d23a93.black` | block | pass |  | GET /php/connector.minimal.php?cmd=archive&name=-TvTT=id%3Eshell.php%20%23%20a.z |
+| `testcases/de/18/0c67c8f9571387268a380f06f11e.black` | block | pass |  | DELETE /dollar%20sign/mode/minus/provider?trajectory=access&streamline=access&ag |

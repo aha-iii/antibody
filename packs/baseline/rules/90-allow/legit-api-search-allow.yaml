@@ -1,0 +1,44 @@
+# 放行：合法 API 搜索白样本（POST 非 GraphQL 深度嵌套）
+
+id: legit-api-search-allow
+
+name: Allow legitimate API search samples
+
+severity: low
+
+score: 120
+
+action: allow
+
+min_level: low
+
+tags: [fp, api, search]
+
+transforms: [url_decode_uni, lowercase]
+
+when:
+
+  any:
+
+    - all:
+
+        - field: uri
+
+          regex: "(?i)^/api/search/?$"
+
+        - field: method
+
+          regex: "(?i)^post$"
+
+    - all:
+
+        - field: uri
+
+          regex: "(?i)^/api/users/search(?:/|$|\\?)"
+
+        - field: query
+
+          scope: raw
+
+          regex: "(?i)(?:^|[&])email="
+

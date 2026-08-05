@@ -1,0 +1,22 @@
+id: xss-document-write
+name: 'XSS document.write'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'document.write'
+    - field: uri
+      contains: 'document.writeln'
+    - field: query
+      contains: 'document.write'
+    - field: query
+      contains: 'document.writeln'
+    - field: body
+      contains: 'document.write'
+    - field: body
+      contains: 'document.writeln'

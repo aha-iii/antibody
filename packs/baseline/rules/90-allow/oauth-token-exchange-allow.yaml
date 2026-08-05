@@ -1,0 +1,22 @@
+id: oauth-token-exchange-allow
+name: Allow Keycloak OAuth token exchange and auth redirect_uri
+severity: low
+score: 40
+action: allow
+min_level: low
+tags: [fp, oauth, keycloak]
+transforms: []
+when:
+  any:
+    - all:
+        - feature: oauth_token_exchange
+        - fingerprint: keycloak_token_path
+    - all:
+        - feature: oauth_redirect_uri
+        - fingerprint: keycloak_token_path
+    - all:
+        - feature: oauth_redirect_uri
+        - fingerprint: oauth_auth_path
+    - all:
+        - feature: oauth_token_exchange
+        - fingerprint: auth_realm_path

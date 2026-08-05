@@ -1,0 +1,16 @@
+id: ssrf-file-url
+name: 'SSRF/RFI file URL'
+severity: high
+tags: [ssrf, rfi, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)file:(?:/{1,3}|%2f{1,3})(?:etc|proc|var|tmp|windows|c:|localhost|127\\.0\\.0\\.1)"
+    - field: query
+      regex: "(?i)file:(?:/{1,3}|%2f{1,3})(?:etc|proc|var|tmp|windows|c:|localhost|127\\.0\\.0\\.1)"
+    - field: body
+      regex: "(?i)file:(?:/{1,3}|%2f{1,3})(?:etc|proc|var|tmp|windows|c:|localhost|127\\.0\\.0\\.1)"

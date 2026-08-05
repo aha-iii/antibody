@@ -1,0 +1,112 @@
+# Baseline 语义包（L2 可热更签名；与内置 analyzers 叠加，同类取 max）。
+#
+# 字段说明：
+#   match: pattern（默认，regex）| token_seq（有序 token 子序列）
+#   veto: true → 散文/业务否决（压软分，不抹强 L1）
+#   block_eligible: false → 仅软信号，不可单独定罪（融合侧更接近 observe）
+#
+# FALSE_POSITIVES / 业务 FP（OAuth 等）——不在此层用语义匹配 token/Bearer：
+#   OAuth 令牌交换 / redirect_uri → L1 allow：rules/90-allow/oauth-token-exchange-allow.yaml
+#   代理 X-Original-URL → L1 allow：rules/90-allow/proxy-x-original-url-observe.yaml
+#   JWT 超长 → L1 length_gt：rules/09-known-bad/jwt-oversized.yaml（Authorization/Cookie/query ≥4096）
+#   详见 packs/baseline/FALSE_POSITIVES.md
+version: "1.0.0"
+
+signatures:
+  - id: sqli.union-select-seq
+    kind: sqli
+    match: token_seq
+    tokens: ["union", "select"]
+    score_delta: 12
+    confidence: 0.86
+    block_eligible: true
+    min_level: medium
+
+  - id: sqli.union-select
+    kind: sqli
+    pattern: '(?i)\bunion\b.{0,48}\bselect\b'
+    score_delta: 14
+    confidence: 0.88
+    block_eligible: true
+    min_level: medium
+    fields: [uri, query, body, extra]
+
+  - id: sqli.sleep-probe
+    kind: sqli
+    pattern: '(?i)\b(?:sleep|benchmark|waitfor\s+delay|pg_sleep)\s*\('
+    score_delta: 16
+    confidence: 0.9
+    block_eligible: true
+    min_level: low
+
+  # 经典布尔盲注；不匹配 OAuth grant_type / client_id 正文
+  - id: sqli.or-tautology
+    kind: sqli
+    pattern: '(?i)(?:''\s*(?:or|and)\s*''\d+''\s*=\s*''\d+|''\s*(?:or|and)\s*\d+\s*=\s*\d+|\b(?:or|and)\s+1\s*=\s*1\b)'
+    score_delta: 14
+    confidence: 0.9
+    block_eligible: true
+    min_level: low
+    fields: [uri, query, body, extra]
+
+  - id: sqli.information-schema-seq
+    kind: sqli
+    match: token_seq
+    tokens: ["information_schema", "tables"]
+    score_delta: 14
+    confidence: 0.9
+    block_eligible: true
+    min_level: low
+
+  - id: sqli.into-outfile-seq
+    kind: sqli
+    match: token_seq
+    tokens: ["into", "outfile"]
+    score_delta: 16
+    confidence: 0.92
+    block_eligible: true
+    min_level: low
+
+  - id: xss.script-tag
+    kind: xss
+    pattern: '(?i)(?:<script(?:\s*>|\s*/>|\s+(?:src|type|language)\s*=)|</script>)'
+    score_delta: 12
+    confidence: 0.85
+    block_eligible: true
+    min_level: low
+
+  - id: path.traversal
+    kind: path
+    pattern: '(?i)(?:\.\./|\.\.\\|%2e%2e%2f|%2e%2e/|(?:\.\./|\.\.\\|%2e%2e){1,}(?:etc[/\\]passwd|windows[/\\]win\.ini))'
+    score_delta: 14
+    confidence: 0.88
+    block_eligible: true
+    min_level: low
+
+  # 路径穿越 + 空字节截断；与正常相对路径文案区分度高
+  - id: path.null-byte-traversal
+    kind: path
+    pattern: '(?i)(?:\.\./|\.\.\\|%2e%2e(?:%2f|/)|%252e%252e).{0,48}(?:%00|\x00)'
+    score_delta: 15
+    confidence: 0.9
+    block_eligible: true
+    min_level: low
+    fields: [uri, query, body, extra]
+
+  - id: rce.shell-metachar
+    kind: rce
+    pattern: '(?i)(?:;\s*(?:/bin/sh|bash|cmd\.exe)|\|\s*(?:cat|curl|wget|powershell)|`[^`]{1,64}`|\$\([^)]{1,64}\))'
+    score_delta: 12
+    confidence: 0.82
+    block_eligible: false
+    min_level: medium
+    fields: [query, body, extra]
+
+  - id: prose.union-veto
+    kind: sqli
+    pattern: '(?i)\b(?:the|a|labor|trade|credit)\s+union\b|\bunion\s+(?:leaders?|members?|officials?|workers?|bank)\b'
+    score_delta: 0
+    confidence: 0.75
+    veto: true
+    block_eligible: false
+    min_level: low

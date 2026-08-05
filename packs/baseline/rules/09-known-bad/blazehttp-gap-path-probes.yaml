@@ -1,0 +1,24 @@
+# 已知漏洞探测：blazehttp 漏报路径（path-rce-upload-probe 为 high 档，medium 补覆盖）
+id: blazehttp-gap-path-probes
+name: Blazehttp gap sensitive path probes
+severity: high
+score: 40
+action: block
+min_level: medium
+tags: [recon, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/run(?:/|$|\\?)"
+    - field: uri
+      contains: '/inner/'
+    - field: uri
+      contains: '/example/tree'
+    - all:
+        - field: method
+          regex: "(?i)^post$"
+        - field: uri
+          regex: "(?i)^/$"
+        - field: body
+          regex: "(?i)(?:%0d%0a|\\r\\n)(?:get|post|put|delete|head)\\s+"

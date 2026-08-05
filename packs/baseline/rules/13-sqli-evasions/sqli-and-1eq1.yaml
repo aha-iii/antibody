@@ -1,0 +1,16 @@
+id: sqli-and-1eq1
+name: 'SQL AND 1=1'
+severity: high
+tags: [sqli, blazehttp_gap, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(?:['\"]|\\)|\\d)\\s*and\\s+['\"]?1['\"]?\\s*=\\s*['\"]?1\\b"
+    - field: query
+      regex: "(?i)(?:['\"]|\\)|\\d)\\s*and\\s+['\"]?1['\"]?\\s*=\\s*['\"]?1\\b"
+    - field: body
+      regex: "(?i)(?:['\"]|\\)|\\d)\\s*and\\s+['\"]?1['\"]?\\s*=\\s*['\"]?1\\b"

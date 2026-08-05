@@ -1,0 +1,46 @@
+id: ssrf-internal-ip
+name: 'SSRF RFC1918 URL'
+severity: high
+tags: [ssrf, rfi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'http://10.'
+    - field: uri
+      contains: 'http://192.168.'
+    - field: uri
+      contains: 'http://172.16.'
+    - field: uri
+      contains: 'http://172.17.'
+    - field: query
+      contains: 'http://10.'
+    - field: query
+      contains: 'http://192.168.'
+    - field: query
+      contains: 'http://172.16.'
+    - field: query
+      contains: 'http://172.17.'
+    - field: body
+      contains: 'http://10.'
+    - field: body
+      contains: 'http://192.168.'
+    - field: body
+      contains: 'http://172.16.'
+    - field: body
+      contains: 'http://172.17.'
+    - field: query
+      regex: "(?i)https?://172\\.(?:1[6-9]|2\\d|3[01])\\."
+    - field: body
+      regex: "(?i)https?://172\\.(?:1[6-9]|2\\d|3[01])\\."
+    - field: query
+      contains: 'http://127.0.1.1'
+    - field: body
+      contains: 'http://127.0.1.1'
+    - field: query
+      regex: "(?i)https?://\\[(?:::(?:0)?|fe80:|fc00:|fd00:)"
+    - field: body
+      regex: "(?i)https?://\\[(?:::(?:0)?|fe80:|fc00:|fd00:)"

@@ -1,0 +1,34 @@
+id: path-rce-upload-probe
+name: Path-based RCE, file upload, and remote agent endpoints
+severity: high
+score: 40
+action: block
+min_level: high
+tags: [rce]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'aggressive.php'
+    - field: query
+      contains: 'doas='
+    - field: uri
+      contains: 'remote_agent.php'
+    - field: query
+      contains: 'polldata='
+    - field: uri
+      contains: 'uploadfiles/apache'
+    - field: uri
+      regex: "(?i)\\.php\\.jpe?g"
+    - field: uri
+      contains: '/protocol/database'
+    - field: uri
+      contains: '/example/tree'
+    - field: uri
+      contains: '/on-premise/mode'
+    - field: query
+      contains: 'templates[]='
+    - field: uri
+      contains: 'error.html'
+    - field: query
+      regex: "(?i)templates\\[\\]="

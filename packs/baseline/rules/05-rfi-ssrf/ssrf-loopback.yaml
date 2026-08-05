@@ -1,0 +1,34 @@
+id: ssrf-loopback
+name: 'SSRF loopback URL'
+severity: high
+tags: [ssrf, rfi, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'http://127.0.0.1'
+    - field: uri
+      contains: 'https://127.0.0.1'
+    - field: uri
+      contains: 'http://localhost'
+    - field: uri
+      contains: 'https://localhost'
+    - field: query
+      contains: 'http://127.0.0.1'
+    - field: query
+      contains: 'https://127.0.0.1'
+    - field: query
+      contains: 'http://localhost'
+    - field: query
+      contains: 'https://localhost'
+    - field: body
+      contains: 'http://127.0.0.1'
+    - field: body
+      contains: 'https://127.0.0.1'
+    - field: body
+      contains: 'http://localhost'
+    - field: body
+      contains: 'https://localhost'

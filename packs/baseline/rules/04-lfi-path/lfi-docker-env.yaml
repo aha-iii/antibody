@@ -1,0 +1,22 @@
+id: lfi-docker-env
+name: 'LFI docker env'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/.dockerenv'
+    - field: uri
+      contains: 'docker-compose.yml'
+    - field: query
+      contains: '/.dockerenv'
+    - field: query
+      contains: 'docker-compose.yml'
+    - field: body
+      contains: '/.dockerenv'
+    - field: body
+      contains: 'docker-compose.yml'

@@ -1,0 +1,20 @@
+id: http-malformed-header
+name: Malformed HTTP header lines
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [protocol, fuzz, self]
+transforms: [lowercase]
+when:
+  any:
+    - field: header
+      contains: '_empty:'
+    - field: header
+      contains: '_malformed:'
+    - field: header
+      regex: "(?i)_empty\\s*:"
+    - field: header
+      regex: "(?i)[a-z0-9-]*@[a-z0-9-]*\\s*:"
+    - field: header
+      regex: "(?i)[a-z0-9-]*\\[[^\\]]*\\]\\s*:"

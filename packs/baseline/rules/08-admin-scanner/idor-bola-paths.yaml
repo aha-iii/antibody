@@ -1,0 +1,18 @@
+id: idor-bola-paths
+name: BOLA / guessable resource path probes
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [idor, recon, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?(?:documents|posts|workspaces|subscriptions|exports)/"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?(?:users|orders|accounts|customers|organizations|tenants|shops|documents|posts|workspaces|subscriptions|exports|files)/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)/(?:admin-secret|company-internal|sub_\\d+)"
+    - field: uri
+      regex: "(?i)/api/user/profile(?:[?;#]|/\\.|/\\.css|\\.json)"

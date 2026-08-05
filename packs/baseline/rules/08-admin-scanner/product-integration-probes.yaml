@@ -1,0 +1,31 @@
+# 产品探测：e2e / Authentic / Immich 高危写操作与路径穿越
+id: product-integration-probes
+name: e2e Authentic Immich integration attack probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [services, recon, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/if/flow/recovery/\\?(?:[^#]*&)?token=(?:admin|aaaa)"
+    - field: uri
+      regex: "(?i)^/api/v3/(?:core/(?:users|tokens)|stages/email/verify)/"
+    - field: uri
+      regex: "(?i)^/source/saml/[^/]+/acs/"
+    - all:
+        - field: method
+          regex: "(?i)^post$"
+        - field: uri
+          regex: "(?i)^/rest/workflows(?:/[^/]+/rue)?/?$"
+    - field: uri
+      regex: "(?i)^/api/assets/test%00"
+    - all:
+        - field: method
+          regex: "(?i)^delete$"
+        - field: uri
+          regex: "(?i)^/api/assets/?$"
+    - field: uri
+      regex: "(?i)^/api/devices/\\d+(?:/|$|\\?)"

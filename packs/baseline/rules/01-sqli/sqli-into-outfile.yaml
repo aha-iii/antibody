@@ -1,0 +1,23 @@
+id: sqli-into-outfile
+name: 'SQL INTO OUTFILE'
+severity: high
+tags: [sqli, owasp, fp_reviewed]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    # 必须像 SQL 写文件：into outfile 'path' / dumpfile "
+    - field: uri
+      regex: "(?i)into\\s+(out|dump)file\\s+['\\\"]"
+    - field: query
+      regex: "(?i)into\\s+(out|dump)file\\s+['\\\"]"
+    - field: body
+      regex: "(?i)into\\s+(out|dump)file\\s+['\\\"]"
+    - field: uri
+      regex: "(?i)(?:select|union|load_file)\\b.{0,60}into\\s+(out|dump)file\\s+['\\\"]"
+    - field: query
+      regex: "(?i)(?:select|union|load_file)\\b.{0,60}into\\s+(out|dump)file\\s+['\\\"]"
+    - field: body
+      regex: "(?i)(?:select|union|load_file)\\b.{0,60}into\\s+(out|dump)file\\s+['\\\"]"

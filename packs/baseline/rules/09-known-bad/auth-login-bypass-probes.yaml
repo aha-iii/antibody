@@ -1,0 +1,35 @@
+# 认证绕过：登录/SQLi/XPath 常见探测（WAFTester q= / gotestwaf URLPath）
+id: auth-login-bypass-probes
+name: Auth login bypass and tautology probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [auth, sqli, xpath, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      contains: 'admin%27--'
+    - field: query
+      regex: "(?i)(?:^|[&])q=admin(?:%27|')(?:--|#|%23)"
+    - field: query
+      regex: "(?i)(?:^|[&])q=admin(?:%27|')[\\s-]*(?:--|#|/\\*)"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*['\\\"]\\s*\\)\\s*or\\s*\\(['\\\"][^'\\\"]*['\\\"]\\s*=\\s*['\\\"][^'\\\"]*['\\\"]"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*['\\\"]\\s*or\\s*['\\\"][^'\\\"]*['\\\"]\\s*=\\s*['\\\"][^'\\\"]*['\\\"]"
+    - field: query
+      regex: "(?i)(?:^|[&])q=count\\s*\\(\\s*/(?:child|descendant)::"
+    - field: query
+      regex: "(?i)(?:^|[&])q=(?:%2f%2f%2a|//\\*)"
+    - field: query
+      regex: "(?i)(?:^|[&])q=password(?:\\[\\d*\\]|\\[\\])="
+    - field: query
+      regex: "(?i)(?:^|[&])q=admin(?:%00|\\\\0|%5c0)"
+    - field: uri
+      regex: "(?i)/(?:%0[dDaA]|%250[dDaA]|[\\r\\n])"
+    - field: uri
+      regex: "(?i)JG9yOi|JywgJG9y|%24or%3a|%24or%3A"
+    - field: uri
+      contains: '%27%2c%20%24or%3a'

@@ -1,0 +1,22 @@
+id: graphql-batch-flood
+name: GraphQL batch query and alias flooding
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [graphql, dos]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      contains: '[{"query":'
+    - field: body
+      regex: "(?i)\\[\\s*\\{\\s*\"query\"\\s*:.*\\{\\s*\"query\"\\s*:"
+    - field: body
+      regex: "(?i)query\\s+op\\d+\\s*\\{"
+    - field: body
+      regex: "(?i)\"query\"\\s*:\\s*\"\\s*query\\s+\\w+\\s+\\{"
+    - field: body
+      contains: '"operationname": "op2"'
+    - field: body
+      contains: 'subscription { usercreated'

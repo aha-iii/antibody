@@ -1,0 +1,44 @@
+# WebSocket / 实时通道：路径名 alone 不 block；须与升级头或走私标记组合
+# 与 websocket-handshake-invalid（非法握手）互补；不替代 http-smuggle-marker
+id: websocket-path-smuggle-combo
+name: WebSocket path with protocol-smuggle or upgrade anomalies
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [websocket, smuggle, proto]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    # 路径段 chat|socket|ws + Upgrade: websocket + TE 异常
+    - all:
+        - field: uri
+          scope: raw
+          regex: "(?i)(?:^|/)(?:chat|socket|ws)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: transfer-encoding
+          regex: "(?i)(?:xchunked|\\t|chunk\\b)"
+    # 路径段 + query 内嵌走私
+    - all:
+        - field: uri
+          scope: raw
+          regex: "(?i)(?:^|/)(?:chat|socket|ws)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)transfer-encoding\\s*:|%20chunked|%5ctchunked|xchunked"
+    # Upgrade: websocket + 走私头（路径仅辅助，可不要求 /chat）
+    - all:
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          regex: "(?i)transfer-encoding\\s+:"
+    - all:
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: transfer-encoding
+          regex: "(?i)xchunked"

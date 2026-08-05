@@ -1,0 +1,17 @@
+id: path-semicolon-traversal
+name: 'Path parameter / semicolon traversal'
+severity: high
+tags: [lfi, path, bypass]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\.\\.;|/;<|/;\\.\\.|/\\.\\./;"
+    - field: uri
+      contains: '..;/'
+    - field: uri
+      regex: "(?i)/\\.\\.;/"
+    # 不用裸 /;/ —— 正常路径极少但风险高误报

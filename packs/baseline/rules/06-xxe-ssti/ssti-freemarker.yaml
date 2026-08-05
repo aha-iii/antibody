@@ -1,0 +1,28 @@
+id: ssti-freemarker
+name: 'SSTI FreeMarker'
+severity: high
+tags: [xxe, ssti, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '<#assign'
+    - field: uri
+      contains: '${product.getClass()'
+    - field: uri
+      contains: 'freemarker.template'
+    - field: query
+      contains: '<#assign'
+    - field: query
+      contains: '${product.getClass()'
+    - field: query
+      contains: 'freemarker.template'
+    - field: body
+      contains: '<#assign'
+    - field: body
+      contains: '${product.getClass()'
+    - field: body
+      contains: 'freemarker.template'

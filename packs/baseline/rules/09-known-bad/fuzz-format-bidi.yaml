@@ -1,0 +1,22 @@
+id: fuzz-format-bidi
+name: Format-string and bidi / DOCTYPE fuzz
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [fuzz, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:%08x\\.){3,}|aaaa%08x"
+    - field: query
+      contains: '%e2%80%ae'
+    - field: query
+      contains: '%e2%80%ad'
+    - field: query
+      regex: "(?i)<!doctype\\s"
+    - field: query
+      contains: '%3c!doctype'
+    - field: header
+      regex: "(?i)^[a-z0-9_-]+ :"

@@ -1,0 +1,34 @@
+id: lfi-dotdot-enc
+name: 'LFI encoded traversal'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '..%2f'
+    - field: uri
+      contains: '%2e%2e/'
+    - field: uri
+      contains: '..%5c'
+    - field: uri
+      contains: '%2e%2e%2f'
+    - field: query
+      contains: '..%2f'
+    - field: query
+      contains: '%2e%2e/'
+    - field: query
+      contains: '..%5c'
+    - field: query
+      contains: '%2e%2e%2f'
+    - field: body
+      contains: '..%2f'
+    - field: body
+      contains: '%2e%2e/'
+    - field: body
+      contains: '..%5c'
+    - field: body
+      contains: '%2e%2e%2f'

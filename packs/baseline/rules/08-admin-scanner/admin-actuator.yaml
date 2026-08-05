@@ -1,0 +1,16 @@
+id: admin-actuator
+name: 'Admin Spring actuator'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/actuator/'
+    - field: uri
+      contains: '/actuator/env'
+    - field: uri
+      contains: '/actuator/heapdump'

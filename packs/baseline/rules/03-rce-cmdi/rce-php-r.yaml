@@ -1,0 +1,22 @@
+id: rce-php-r
+name: 'RCE php -r'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'php -r'
+    - field: uri
+      contains: 'php -rr'
+    - field: query
+      contains: 'php -r'
+    - field: query
+      contains: 'php -rr'
+    - field: body
+      contains: 'php -r'
+    - field: body
+      contains: 'php -rr'

@@ -1,0 +1,16 @@
+# API 枚举：异常分页 limit 探测
+id: api-enumeration-limit
+name: Abnormal API list limit enumeration
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [api, enumeration, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)^/rest/(?:workflows|executions)/?$"
+        - field: query
+          regex: "(?i)(?:^|[&])limit=(?:9{3,}|[1-9][0-9]{3,})"

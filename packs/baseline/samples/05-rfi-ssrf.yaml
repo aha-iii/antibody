@@ -1,0 +1,364 @@
+- id: sample-ssrf-loopback
+  rule_id: ssrf-loopback
+  name: SSRF loopback URL
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id001
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=http://127.0.0.1
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-loopback-alt
+  rule_id: ssrf-loopback
+  name: SSRF loopback URL (alt)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=http://127.0.0.1
+- id: sample-ssrf-metadata-aws
+  rule_id: ssrf-metadata-aws
+  name: SSRF cloud metadata
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id002
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=169.254.169.254
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-metadata-aws-alt
+  rule_id: ssrf-metadata-aws
+  name: SSRF cloud metadata (alt)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id002
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=169.254.169.254
+- id: sample-ssrf-file-url
+  rule_id: ssrf-file-url
+  name: SSRF/RFI file URL
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id003
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=file://
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-file-url-alt
+  rule_id: ssrf-file-url
+  name: SSRF/RFI file URL (alt)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id003
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=file://
+- id: sample-ssrf-gopher
+  rule_id: ssrf-gopher
+  name: SSRF gopher/dict
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id004
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=gopher://
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-gopher-alt
+  rule_id: ssrf-gopher
+  name: SSRF gopher/dict (alt)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id004
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=gopher://
+- id: sample-rfi-remote-http
+  rule_id: rfi-remote-http
+  name: RFI remote http include
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: includerequirepagefilepathdoctemplate=https
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-ipv6-local
+  rule_id: ssrf-ipv6-local
+  name: SSRF IPv6 localhost
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id005
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=http://[::1]
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-ipv6-local-alt
+  rule_id: ssrf-ipv6-local
+  name: SSRF IPv6 localhost (alt)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id005
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=http://[::1]
+- id: sample-ssrf-internal-ip
+  rule_id: ssrf-internal-ip
+  name: SSRF RFC1918 URL
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id006
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=http://10.
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-internal-ip-alt
+  rule_id: ssrf-internal-ip
+  name: SSRF RFC1918 URL (alt)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id006
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=http://10.
+- id: sample-ssrf-redirect-file
+  rule_id: ssrf-redirect-file
+  name: SSRF file after redirect marker
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: 'url=file:'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rfi-smb
+  rule_id: rfi-smb
+  name: RFI SMB UNC
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: 'q=file:'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-ldap
+  rule_id: ssrf-ldap
+  name: SSRF ldap URL
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id007
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=ldap://
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-ldap-alt
+  rule_id: ssrf-ldap
+  name: SSRF ldap URL (alt)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id007
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=ldap://
+- id: sample-ssrf-link-local
+  rule_id: ssrf-link-local
+  name: SSRF link-local
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id008
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=http://169.254.
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-link-local-alt
+  rule_id: ssrf-link-local
+  name: SSRF link-local (alt)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id008
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=http://169.254.

@@ -1,0 +1,18 @@
+# LLM / workflow：prompt injection 与敏感环境变量探测
+id: prompt-injection-body
+name: LLM prompt injection and env exfiltration probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [ai, prompt, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          contains: '/rest/workflows'
+        - field: body
+          regex: "(?i)(?:process\\.env|reveal all api keys|debug mode|ignore (?:previous|all) instructions|print the contents of)"
+    - field: body
+      regex: "(?i)\"role\"\\s*:\\s*\"system\".{0,120}(?:debug mode|api keys|ignore)"

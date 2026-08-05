@@ -1,0 +1,34 @@
+# 放行：认证枚举/弱口令探测白样本（URL 编码精确匹配，避免 decode 截断）
+id: auth-enum-query-allow
+name: Allow benign auth enumeration query samples
+severity: low
+score: 120
+action: allow
+min_level: low
+tags: [fp, auth, ldap]
+when:
+  any:
+    - field: query
+      scope: raw
+      regex: "(?i)^q=admin$"
+    - field: query
+      scope: raw
+      regex: "(?i)^q=administrator$"
+    - field: query
+      scope: raw
+      regex: "(?i)^q=admin%3aadmin$"
+    - field: query
+      scope: raw
+      regex: "(?i)^q=admin%3apassword$"
+    - field: query
+      scope: raw
+      regex: "(?i)^q=admin%3a123456$"
+    - field: query
+      scope: raw
+      regex: "(?i)^q=admin%20$"
+    - field: query
+      scope: raw
+      regex: "(?i)^q=admin%5ct$"
+    - field: query
+      scope: raw
+      regex: "(?i)^q=graet_type%3dpassword%26usereame%3dadmin%26password%3dpassword123$"

@@ -1,0 +1,21 @@
+# BFLA：身份冒充 / 越权头
+id: bfla-impersonation-header
+name: BFLA impersonation and privilege headers
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [bfla, idor, self]
+transforms: [lowercase]
+when:
+  any:
+    - field: header
+      header_name: x-original-user
+      regex: "(?i)^admin$"
+    - field: header
+      header_name: x-impersoeate-user
+      regex: "(?i)^admin$"
+    - field: header
+      regex: "(?i)x-impersoeate-user\\s*:\\s*admin"
+    - field: header
+      regex: "(?i)x-original-user\\s*:\\s*admin"

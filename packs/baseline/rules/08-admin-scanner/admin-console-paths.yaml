@@ -1,0 +1,16 @@
+id: admin-console-paths
+name: 'Admin common consoles'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/manager/html'
+    - field: uri
+      contains: '/jmx-console'
+    - field: uri
+      contains: '/web-console'

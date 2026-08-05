@@ -1,0 +1,16 @@
+id: xss-onload
+name: 'XSS onload handler'
+severity: high
+tags: [xss, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)onload\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|javascript:)"
+    - field: query
+      regex: "(?i)onload\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|javascript:)"
+    - field: body
+      regex: "(?i)<[^>]{0,80}onload\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|javascript:)"

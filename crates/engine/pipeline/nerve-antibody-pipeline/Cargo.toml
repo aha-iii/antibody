@@ -1,0 +1,13 @@
+[package]
+name = "nerve-antibody-pipeline"
+version.workspace = true
+edition.workspace = true
+description = "Engine-level decode / structural parse / inspect budget pipeline"
+
+[dependencies]
+nerve-antibody-dsl = { workspace = true }
+nerve-waf-canonical = { path = "../../../../../Nerve-defender/crates/engine/nerve-waf-canonical" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+base64 = "0.22"
+regex = { workspace = true }

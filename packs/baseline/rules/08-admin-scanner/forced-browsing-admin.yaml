@@ -1,0 +1,18 @@
+id: forced-browsing-admin
+name: Forced browsing of admin / internal consoles
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [recon, admin, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/(?:admin|administrator|console|manager|phpmyadmin)(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?(?:admin|internal|debug)(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/(?:backup|logs|server-status|\\.git|\\.env|wp-admin)(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/(?:dashboard|graphql)(?:/|$|\\?)"

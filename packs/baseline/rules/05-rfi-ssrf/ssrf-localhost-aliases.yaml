@@ -1,0 +1,24 @@
+id: ssrf-localhost-aliases
+name: SSRF localhost DNS aliases and shorthand
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [ssrf, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)https?://(?:[^/\\s]*\\.)?(?:localtest\\.me|localhost\\.run|myservice\\.localhost|[^/\\s]*\\.localhost)(?:[:/\\?#]|$)"
+    - field: query
+      regex: "(?i)https?://\\[?0:0:0:0:0:ffff:127\\.0\\.0\\.1\\]?"
+    - field: query
+      regex: "(?i)https?://127\\.0\\.1(?:[:/\\?#]|$)"
+    - field: query
+      contains: 'localtest.me'
+    - field: query
+      contains: 'localhost.run'
+    - field: query
+      regex: "(?i)(?:^|[=&])(?:url|path|uri|q)=(?:%6c%6f%63%61%6c%68%6f%73%74|localhost)"
+    - field: body
+      contains: 'localtest.me'

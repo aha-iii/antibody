@@ -1,0 +1,26 @@
+id: xss-globalthis-source
+name: 'XSS globalThis /RegExp.source concat'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)globalthis\\s*\\["
+    - field: query
+      regex: "(?i)globalthis\\s*\\["
+    - field: body
+      regex: "(?i)globalthis\\s*\\["
+    - field: uri
+      regex: "(?i)/al/\\.source\\s*\\+\\s*/ert/\\.source"
+    - field: query
+      regex: "(?i)/al/\\.source\\s*\\+\\s*/ert/\\.source"
+    - field: body
+      regex: "(?i)/al/\\.source\\s*\\+\\s*/ert/\\.source"
+    - field: uri
+      contains: '.source+.source'
+    - field: query
+      contains: '.source+.source'

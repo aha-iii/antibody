@@ -1,0 +1,380 @@
+- id: crs-920170
+  name: 'GET or HEAD Request with Body Content'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^(?:GET|HEAD)$"
+      - field: query
+        regex: "^(?:GET|HEAD)$"
+      - field: body
+        regex: "^(?:GET|HEAD)$"
+      - field: header
+        regex: "^(?:GET|HEAD)$"
+- id: crs-920171
+  name: 'GET or HEAD Request with Transfer-Encoding'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^(?:GET|HEAD)$"
+      - field: query
+        regex: "^(?:GET|HEAD)$"
+      - field: body
+        regex: "^(?:GET|HEAD)$"
+      - field: header
+        regex: "^(?:GET|HEAD)$"
+- id: crs-920190
+  name: 'Range: Invalid Last Byte Value'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "(\\d+)-(\\d+)"
+      - field: query
+        regex: "(\\d+)-(\\d+)"
+      - field: body
+        regex: "(\\d+)-(\\d+)"
+      - field: header
+        regex: "(\\d+)-(\\d+)"
+- id: crs-920210
+  name: 'Multiple/Conflicting Connection Header Data Found'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "\\b(?:keep-alive|close),\\s?(?:keep-alive|close)\\b"
+      - field: query
+        regex: "\\b(?:keep-alive|close),\\s?(?:keep-alive|close)\\b"
+      - field: body
+        regex: "\\b(?:keep-alive|close),\\s?(?:keep-alive|close)\\b"
+      - field: header
+        regex: "\\b(?:keep-alive|close),\\s?(?:keep-alive|close)\\b"
+- id: crs-920260
+  name: 'Unicode Full/Half Width Abuse Attack Attempt'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?i)%uff[0-9a-f]{2}"
+      - field: query
+        regex: "(?i)%uff[0-9a-f]{2}"
+- id: crs-920290
+  name: 'Empty Host Header'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^$"
+      - field: query
+        regex: "^$"
+      - field: body
+        regex: "^$"
+      - field: header
+        regex: "^$"
+- id: crs-920310
+  name: 'Request Has an Empty Accept Header'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^$"
+      - field: query
+        regex: "^$"
+      - field: body
+        regex: "^$"
+      - field: header
+        regex: "^$"
+- id: crs-920311
+  name: 'Request Has an Empty Accept Header'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^$"
+      - field: query
+        regex: "^$"
+      - field: body
+        regex: "^$"
+      - field: header
+        regex: "^$"
+- id: crs-920330
+  name: 'Empty User Agent Header'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: header
+        regex: "^$"
+- id: crs-920350
+  name: 'Host header is a numeric IP address'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "(?:^([\\d.]+|\\[[\\da-f:]+\\]|[\\da-f:]+)(:[\\d]+)?$)"
+      - field: query
+        regex: "(?:^([\\d.]+|\\[[\\da-f:]+\\]|[\\da-f:]+)(:[\\d]+)?$)"
+      - field: body
+        regex: "(?:^([\\d.]+|\\[[\\da-f:]+\\]|[\\da-f:]+)(:[\\d]+)?$)"
+      - field: header
+        regex: "(?:^([\\d.]+|\\[[\\da-f:]+\\]|[\\da-f:]+)(:[\\d]+)?$)"
+- id: crs-920420
+  name: 'Request content type is not allowed by policy'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^[^;\\s]+"
+      - field: query
+        regex: "^[^;\\s]+"
+      - field: body
+        regex: "^[^;\\s]+"
+      - field: header
+        regex: "^[^;\\s]+"
+- id: crs-920480
+  name: 'Request content type charset is not allowed by policy'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "charset\\s*=\\s*[\"']?([^;\"'\\s]+)"
+      - field: query
+        regex: "charset\\s*=\\s*[\"']?([^;\"'\\s]+)"
+      - field: body
+        regex: "charset\\s*=\\s*[\"']?([^;\"'\\s]+)"
+      - field: header
+        regex: "charset\\s*=\\s*[\"']?([^;\"'\\s]+)"
+- id: crs-920530
+  name: 'Multiple charsets detected in content type header'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "charset.*?charset"
+      - field: query
+        regex: "charset.*?charset"
+      - field: body
+        regex: "charset.*?charset"
+      - field: header
+        regex: "charset.*?charset"
+- id: crs-920440
+  name: 'URL file extension is restricted by policy'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "\\.([^.]+)$"
+- id: crs-920500
+  name: 'Attempt to access a backup or working file'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "\\.[^.~]+~(?:/.*|)$"
+- id: crs-920450
+  name: 'HTTP header is restricted by policy (%{MATCHED_VAR})'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^.*$"
+      - field: query
+        regex: "^.*$"
+      - field: body
+        regex: "^.*$"
+      - field: header
+        regex: "^.*$"
+- id: crs-920540
+  name: 'Possible Unicode character bypass detected'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?i)\\x5cu[0-9a-f]{4}"
+      - field: query
+        regex: "(?i)\\x5cu[0-9a-f]{4}"
+- id: crs-920200
+  name: 'Range: Too many fields (6 or more)'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 20
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^bytes=(?:(?:\\d+)?-(?:\\d+)?\\s*,?\\s*){6}"
+      - field: query
+        regex: "^bytes=(?:(?:\\d+)?-(?:\\d+)?\\s*,?\\s*){6}"
+      - field: body
+        regex: "^bytes=(?:(?:\\d+)?-(?:\\d+)?\\s*,?\\s*){6}"
+      - field: header
+        regex: "^bytes=(?:(?:\\d+)?-(?:\\d+)?\\s*,?\\s*){6}"
+- id: crs-920230
+  name: 'Multiple URL Encoding Detected'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 20
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "%[0-9a-fA-F]{2}"
+      - field: query
+        regex: "%[0-9a-fA-F]{2}"
+- id: crs-920121
+  name: 'Attempted multipart/form-data bypass'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 20
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "['\";=\\x5c]"
+      - field: query
+        regex: "['\";=\\x5c]"
+      - field: body
+        regex: "['\";=\\x5c]"
+      - field: header
+        regex: "['\";=\\x5c]"
+- id: crs-920451
+  name: 'HTTP header is restricted by policy (%{MATCHED_VAR})'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 20
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^.*$"
+      - field: query
+        regex: "^.*$"
+      - field: body
+        regex: "^.*$"
+      - field: header
+        regex: "^.*$"
+- id: crs-920240
+  name: 'URL Encoding Abuse Attack Attempt'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 20
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^(?i)application/x-www-form-urlencoded"
+      - field: query
+        regex: "^(?i)application/x-www-form-urlencoded"
+      - field: body
+        regex: "^(?i)application/x-www-form-urlencoded"
+      - field: header
+        regex: "^(?i)application/x-www-form-urlencoded"
+- id: crs-920460
+  name: 'Abnormal character escapes in request'
+  severity: low
+  tags: [crs, owasp_crs, community, protocol, rce]
+  score: 15
+  min_level: high
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?:^|[^\\x5c])\\x5c[cdeghijklmpqwxyz123456789]"
+      - field: query
+        regex: "(?:^|[^\\x5c])\\x5c[cdeghijklmpqwxyz123456789]"

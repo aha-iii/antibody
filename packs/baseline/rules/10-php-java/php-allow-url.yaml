@@ -1,0 +1,22 @@
+id: php-allow-url
+name: 'PHP allow_url_include'
+severity: high
+tags: [php, java, app]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'allow_url_include'
+    - field: uri
+      contains: 'allow_url_fopen'
+    - field: query
+      contains: 'allow_url_include'
+    - field: query
+      contains: 'allow_url_fopen'
+    - field: body
+      contains: 'allow_url_include'
+    - field: body
+      contains: 'allow_url_fopen'

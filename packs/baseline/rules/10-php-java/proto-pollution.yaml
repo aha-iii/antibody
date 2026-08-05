@@ -1,0 +1,20 @@
+id: proto-pollution
+name: Prototype pollution __proto__ / constructor.prototype
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [deser, prototype, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      contains: '__proto__'
+    - field: query
+      contains: '__proto__'
+    - field: body
+      contains: 'constructor.prototype'
+    - field: query
+      contains: 'constructor.prototype'
+    - field: body
+      regex: "(?i)\"constructor\"\\s*:\\s*\\{\\s*\"prototype\""

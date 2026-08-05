@@ -1,0 +1,22 @@
+id: rce-nslookup
+name: 'RCE nslookup/dig oob'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'nslookup '
+    - field: uri
+      contains: 'dig @'
+    - field: query
+      contains: 'nslookup '
+    - field: query
+      contains: 'dig @'
+    - field: body
+      contains: 'nslookup '
+    - field: body
+      contains: 'dig @'

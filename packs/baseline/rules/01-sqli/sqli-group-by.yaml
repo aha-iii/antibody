@@ -1,0 +1,16 @@
+id: sqli-group-by
+name: 'SQL GROUP BY probe'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bgroup\\s+by\\s+\\d+"
+    - field: query
+      regex: "(?i)\\bgroup\\s+by\\s+\\d+"
+    - field: body
+      regex: "(?i)\\bgroup\\s+by\\s+\\d+"

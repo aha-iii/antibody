@@ -1,0 +1,18 @@
+id: java-ofbiz-webtools
+name: 'Apache OFBiz webtools/extdirect'
+severity: high
+tags: [java, cve, blazehttp_gap]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '/webtools/control'
+    - field: uri
+      contains: '/webtools/control/'
+    - field: uri
+      contains: '/service/extdirect'
+    - field: uri
+      contains: 'programexport'

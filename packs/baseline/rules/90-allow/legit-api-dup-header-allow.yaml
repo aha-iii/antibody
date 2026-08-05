@@ -1,0 +1,30 @@
+# 放行：合法 dup-header 白样本（Content-Type/Connection 等；不含 CL/TE/Host 走私）
+id: legit-api-dup-header-allow
+name: Allow legitimate API duplicate-header regression samples
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, api, protocol]
+when:
+  any:
+    - all:
+        - field: header
+          header_name: _proto_anomaly
+          regex: "(?i)(?:^|,)dup-header(?:,|$)"
+        - field: uri
+          regex: "(?i)^/$"
+    - all:
+        - field: header
+          header_name: _proto_anomaly
+          regex: "(?i)(?:^|,)dup-header(?:,|$)"
+        - field: uri
+          regex: "(?i)^/api/search"
+    - all:
+        - field: header
+          header_name: _proto_anomaly
+          regex: "(?i)(?:^|,)dup-header(?:,|$)"
+        - field: method
+          regex: "(?i)^post$"
+        - field: uri
+          regex: "(?i)^/api/data/?$"

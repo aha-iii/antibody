@@ -1,0 +1,20 @@
+id: graphql-batch-abuse
+name: GraphQL batch / alias amplification
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [graphql, dos, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      regex: "(?i)\\[\\s*\\{\\s*\"query\""
+    - field: query
+      regex: "(?i)\\[\\s*\\{\\s*\"query\""
+    - field: body
+      regex: "(?i)(?:\\w+\\s*:\\s*user\\s*\\{[^}]{0,40}\\}){4,}"
+    - field: body
+      regex: "(?i)(?:\\w+\\s*:\\s*__schema\\s*\\{){2,}"
+    - field: body
+      regex: "(?i)mutation\\s*\\{[^}]{0,80}(?:create|delete|update)\\w*\\s*\\([^)]{0,80}\\)[^}]{0,40}\\}[^\"]{0,40}mutation"

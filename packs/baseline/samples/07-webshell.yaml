@@ -1,0 +1,371 @@
+- id: sample-webshell-php-eval
+  rule_id: webshell-php-eval
+  name: Webshell PHP eval
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=eval($_
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-php-eval-alt
+  rule_id: webshell-php-eval
+  name: Webshell PHP eval (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=eval($_
+- id: sample-webshell-assert
+  rule_id: webshell-assert
+  name: Webshell assert/create_function
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id002
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=assert($_
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-assert-alt
+  rule_id: webshell-assert
+  name: Webshell assert/create_function (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id002
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=assert($_
+- id: sample-webshell-base64-post
+  rule_id: webshell-base64-post
+  name: Webshell base64 POST
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id003
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=base64_decode($_post
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-base64-post-alt
+  rule_id: webshell-base64-post
+  name: Webshell base64 POST (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id003
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=base64_decode($_post
+- id: sample-webshell-asp
+  rule_id: webshell-asp
+  name: Webshell ASP/ASPX
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id004
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=eval(request(
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-asp-alt
+  rule_id: webshell-asp
+  name: Webshell ASP/ASPX (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id004
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=eval(request(
+- id: sample-webshell-jsp
+  rule_id: webshell-jsp
+  name: Webshell JSP runtime
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id005
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=runtime.getruntime
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-jsp-alt
+  rule_id: webshell-jsp
+  name: Webshell JSP runtime (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id005
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=runtime.getruntime
+- id: sample-webshell-c99
+  rule_id: webshell-c99
+  name: Webshell known names
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id006
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=c99shell
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-c99-alt
+  rule_id: webshell-c99
+  name: Webshell known names (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id006
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=c99shell
+- id: sample-webshell-upload-ext
+  rule_id: webshell-upload-ext
+  name: Webshell double extension
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id007
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=.php.jpg
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-upload-ext-alt
+  rule_id: webshell-upload-ext
+  name: Webshell double extension (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id007
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=.php.jpg
+- id: sample-webshell-preg-replace-e
+  rule_id: webshell-preg-replace-e
+  name: Webshell preg_replace /e
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=preg_replace
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-array-map
+  rule_id: webshell-array-map
+  name: Webshell array_map callback
+  category: 07-webshell
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id008
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=array_map($_
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-array-map-alt
+  rule_id: webshell-array-map
+  name: Webshell array_map callback (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id008
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=array_map($_
+- id: sample-webshell-chmod-777-php
+  rule_id: webshell-chmod-777-php
+  name: Webshell dropper chmod
+  category: 07-webshell
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=chmod'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-assert-get
+  rule_id: webshell-assert-get
+  name: Webshell assert GET
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id009
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=assert($_get
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-assert-get-alt
+  rule_id: webshell-assert-get
+  name: Webshell assert GET (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id009
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=assert($_get

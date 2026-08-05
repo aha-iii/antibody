@@ -1,0 +1,22 @@
+id: webshell-assert
+name: 'Webshell assert/create_function'
+severity: high
+tags: [webshell, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'assert($_'
+    - field: uri
+      contains: 'create_function('
+    - field: query
+      contains: 'assert($_'
+    - field: query
+      contains: 'create_function('
+    - field: body
+      contains: 'assert($_'
+    - field: body
+      contains: 'create_function('

@@ -1,0 +1,16 @@
+id: admin-swagger
+name: 'Admin swagger/api-docs'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/swagger-ui'
+    - field: uri
+      contains: '/v2/api-docs'
+    - field: uri
+      contains: '/api-docs'

@@ -1,0 +1,19 @@
+id: xss-header-ua-script
+name: XSS script/event sinks in UA and injectable headers
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss, header, self]
+transforms: [url_decode_uni, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: header
+      header_name: User-Agent
+      regex: "(?i)(?:<script(?:\\s|>|/)|on(?:error|load|click|focus|mouseover)\\s*=|javascript:)"
+    - field: header
+      header_name: X-Nerve-Test
+      regex: "(?i)(?:<script(?:\\s|>|/)|on(?:error|load|click|focus|mouseover)\\s*=|javascript:|<svg|iframe)"
+    - field: header
+      header_name: X-Forwarded-For
+      regex: "(?i)(?:%0d%0a|%0a).{0,16}(?:set-cookie|location)\\s*:"

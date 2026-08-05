@@ -1,0 +1,29 @@
+id: xss-utf7-script
+name: 'XSS UTF-7 encoded tags'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\+adw-(?:script|iframe|img|svg|/script)"
+    - field: query
+      regex: "(?i)\\+adw-(?:script|iframe|img|svg|/script)"
+    - field: body
+      regex: "(?i)\\+adw-(?:script|iframe|img|svg|/script)"
+    # charset=utf-7  alone 过宽；要求同字段出现 +adw-
+    - field: uri
+      regex: "(?i)charset\\s*=\\s*[\"']utf-7[\"'].{0,120}\\+adw-"
+    - field: query
+      regex: "(?i)charset\\s*=\\s*[\"']utf-7[\"'].{0,120}\\+adw-"
+    - field: body
+      regex: "(?i)charset\\s*=\\s*[\"']utf-7[\"'].{0,120}\\+adw-"
+    - field: uri
+      regex: "(?i)\\+adw-.{0,120}charset\\s*=\\s*[\"']utf-7[\"']"
+    - field: query
+      regex: "(?i)\\+adw-.{0,120}charset\\s*=\\s*[\"']utf-7[\"']"
+    - field: body
+      regex: "(?i)\\+adw-.{0,120}charset\\s*=\\s*[\"']utf-7[\"']"

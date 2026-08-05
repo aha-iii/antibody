@@ -1,0 +1,30 @@
+# 放行：标准 OAuth/OIDC authorize 与 token 端点上的 redirect_uri（非开放重定向）
+id: oauth-authorize-flow-allow
+name: Allow OAuth authorize and token endpoints with redirect_uri
+severity: low
+score: 120
+action: allow
+min_level: low
+tags: [fp, redirect, oauth]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - feature: query_has_redirect_uri
+        - field: uri
+          regex: "(?i)(?:^|/)(?:oauth2|oauth|authorize|login/oauth|o/oauth2)(?:/|$|\\?)"
+    - all:
+        - feature: query_has_redirect_uri
+        - fingerprint: oauth_auth_path
+    - all:
+        - feature: oauth_token_exchange
+        - fingerprint: keycloak_token_path
+    - all:
+        - field: query
+          regex: "(?i)(?:^|[&])client_id="
+        - field: uri
+          regex: "(?i)/oauth2/(?:v2\\.0/)?authorize"
+    - all:
+        - field: query
+          contains: 'response_type=code'
+        - feature: query_has_redirect_uri

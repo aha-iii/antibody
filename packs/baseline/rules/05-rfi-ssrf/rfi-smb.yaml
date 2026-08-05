@@ -1,0 +1,16 @@
+id: rfi-smb
+name: 'RFI SMB UNC'
+severity: high
+tags: [ssrf, rfi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)file:\\\\\\\\"
+    - field: query
+      regex: "(?i)file:\\\\\\\\"
+    - field: body
+      regex: "(?i)file:\\\\\\\\"

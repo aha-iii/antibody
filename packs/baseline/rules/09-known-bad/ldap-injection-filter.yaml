@@ -1,0 +1,28 @@
+id: ldap-injection-filter
+name: LDAP injection filter metachar
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [ldap, injection, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+# 收紧：去掉过于宽的 )( ；保留典型注入形态
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:\\(\\|(?:\\(|!)|objectclass=\\*|userpassword\\s*=\\*|uid=\\*\\)\\()"
+    - field: body
+      regex: "(?i)(?:\\(\\|(?:\\(|!)|objectclass=\\*|userpassword\\s*=\\*|uid=\\*\\)\\()"
+    - field: query
+      contains: 'uid=*)('
+    - field: body
+      contains: 'uid=*)('
+    # 登录绕过常见 *)(…*| (|(uid=*
+    - field: query
+      regex: "(?i)\\*\\)\\s*\\(\\s*(?:uid|objectclass|cn)\\s*="
+    - field: body
+      regex: "(?i)\\*\\)\\s*\\(\\s*(?:uid|objectclass|cn)\\s*="
+    - field: query
+      regex: "(?i)\\(\\|\\(\\s*(?:uid|objectclass)\\s*=\\*"
+    - field: body
+      regex: "(?i)\\(\\|\\(\\s*(?:uid|objectclass)\\s*=\\*"

@@ -1,0 +1,22 @@
+id: rce-busybox
+name: 'RCE busybox wget'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'busybox wget'
+    - field: uri
+      contains: 'busybox nc'
+    - field: query
+      contains: 'busybox wget'
+    - field: query
+      contains: 'busybox nc'
+    - field: body
+      contains: 'busybox wget'
+    - field: body
+      contains: 'busybox nc'

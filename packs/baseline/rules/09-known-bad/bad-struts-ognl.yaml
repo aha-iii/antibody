@@ -1,0 +1,34 @@
+id: bad-struts-ognl
+name: 'Struts OGNL'
+severity: high
+tags: [known_bad, cve]
+score: 50
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '%{(#_'
+    - field: uri
+      contains: '%{#_memberaccess'
+    - field: uri
+      contains: 'ognl.ognlcontext'
+    - field: query
+      contains: '%{(#_'
+    - field: query
+      contains: '%{#_memberaccess'
+    - field: query
+      contains: 'ognl.ognlcontext'
+    - field: body
+      contains: '%{(#_'
+    - field: body
+      contains: '%{#_memberaccess'
+    - field: body
+      contains: 'ognl.ognlcontext'
+    - field: header
+      contains: '%{(#_'
+    - field: header
+      contains: '%{#_memberaccess'
+    - field: header
+      contains: 'ognl.ognlcontext'

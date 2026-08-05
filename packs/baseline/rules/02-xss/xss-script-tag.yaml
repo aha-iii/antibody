@@ -1,0 +1,23 @@
+id: xss-script-tag
+name: 'XSS script tag'
+severity: high
+tags: [xss, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    # 仅完整标签或明确属性，避免 “binary<script is incorrect” / “<script ability”
+    - field: uri
+      regex: "(?i)(?:<script(?:\\s*>|\\s*/>)|</script>|<script\\s+(?:src|type|language)\\s*=)"
+    - field: query
+      regex: "(?i)(?:<script(?:\\s*>|\\s*/>)|</script>|<script\\s+(?:src|type|language)\\s*=)"
+    - field: body
+      regex: "(?i)(?:<script(?:\\s*>|\\s*/>)|</script>|<script\\s+(?:src|type|language)\\s*=)"
+    - field: header
+      header_name: Referer
+      regex: "(?i)(?:<script(?:\\s*>|\\s*/>)|</script>|<script\\s+(?:src|type|language)\\s*=)"
+    - field: header
+      header_name: Cookie
+      regex: "(?i)(?:<script(?:\\s*>|\\s*/>)|</script>|<script\\s+src\\s*=)"

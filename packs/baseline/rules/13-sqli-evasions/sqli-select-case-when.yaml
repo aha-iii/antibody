@@ -1,0 +1,22 @@
+id: sqli-select-case-when
+name: 'SQL SELECT CASE WHEN'
+severity: high
+tags: [sqli, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)select\\s+case\\s+when"
+    - field: query
+      regex: "(?i)select\\s+case\\s+when"
+    - field: body
+      regex: "(?i)select\\s+case\\s+when"
+    - field: uri
+      contains: 'dbms_pipe'
+    - field: query
+      contains: 'dbms_pipe'
+    - field: body
+      contains: 'dbms_pipe'

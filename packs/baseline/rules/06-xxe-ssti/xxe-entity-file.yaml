@@ -1,0 +1,16 @@
+id: xxe-entity-file
+name: 'XXE SYSTEM file'
+severity: high
+tags: [xxe, ssti, owasp]
+score: 50
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)<!entity[^>]+system\\s+['\\\"]file:"
+    - field: query
+      regex: "(?i)<!entity[^>]+system\\s+['\\\"]file:"
+    - field: body
+      regex: "(?i)<!entity[^>]+system\\s+['\\\"]file:"

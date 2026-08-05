@@ -1,0 +1,22 @@
+id: sqli-chaff-evasion
+name: SQLi string-chaff and comment evasion
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [sqli]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)'\\s*-\\s*'"
+    - field: query
+      regex: "(?i)'\\s*\\+\\s*''\\s*\\+\\s*'"
+    - field: query
+      regex: "(?i)sel\\s*'\\s*\\+\\s*'\\s*ect"
+    - field: query
+      regex: "(?i)\\(\\s*1\\s*\\)\\s*and\\s*\\(\\s*1\\s*\\)\\s*=\\s*\\(\\s*1\\s*\\)"
+    - field: body
+      regex: "(?i)'\\s*-\\s*'"
+    - field: body
+      regex: "(?i)sel\\s*'\\s*\\+\\s*'\\s*ect"

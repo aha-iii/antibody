@@ -1,0 +1,12 @@
+[package]
+name = "nerve-antibody-admission"
+version.workspace = true
+edition.workspace = true
+description = "Native L0 admission: CC/Rate, Bot, Geo (DDoS via separate Nerve-ddos product)"
+publish = false
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+parking_lot = { workspace = true }
+thiserror = { workspace = true }

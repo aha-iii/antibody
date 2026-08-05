@@ -1,0 +1,22 @@
+id: webshell-assert-get
+name: 'Webshell assert GET'
+severity: high
+tags: [webshell, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'assert($_get'
+    - field: uri
+      contains: 'assert($_request'
+    - field: query
+      contains: 'assert($_get'
+    - field: query
+      contains: 'assert($_request'
+    - field: body
+      contains: 'assert($_get'
+    - field: body
+      contains: 'assert($_request'

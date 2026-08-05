@@ -1,0 +1,17 @@
+id: xss-onclick
+name: 'XSS onclick handler'
+severity: high
+tags: [xss, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)onclick\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window|location|javascript:)"
+    - field: query
+      regex: "(?i)onclick\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window|location|javascript:)"
+    # body 要求落在标签上，降低在线 IDE 纯文本误伤
+    - field: body
+      regex: "(?i)<(?:a|button|div|span|img|svg|input|form|body)\\b[^>]{0,160}onclick\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window|location|javascript:)"

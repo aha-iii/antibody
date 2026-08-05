@@ -1,0 +1,14 @@
+id: ssti-tinymce-template
+name: TinyMCE / Confluence widget template traversal
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [ssti, lfi, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      regex: "(?i)_template\\s*\"?\\s*:\\s*\"?\\s*\\.\\s*/|/web\\.xml"
+    - field: uri
+      regex: "(?i)/tinymce/.*/macro/preview"

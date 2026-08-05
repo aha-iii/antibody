@@ -1,0 +1,53 @@
+id = "baseline"
+version = "1.5.43"
+name = "Nerve Native Baseline"
+min_engine = "0.1.0"
+
+[policy]
+block_threshold = 40
+observe_only = false
+
+# 三档拦截目标：low≥85 / medium≥95 / high≥99.99（单规则分多为 40）
+[policy.threshold_by_level]
+low = 40
+medium = 36
+high = 32
+
+[policy.semantic]
+enabled = true
+pack_path = "semantic/signatures.yaml"
+
+[policy.signals]
+enabled = true
+pack_path = "signals/signals.yaml"
+
+[policy.inspect]
+mode = "auto"
+fast_max_inspect_ms = 80
+
+[policy.inspect.route_gate]
+enabled = true
+deep_threshold = 0.38
+hard_decode_hint = true
+weights_path = "config/route_weights.json"
+
+[policy.fusion]
+min_independent_signals = 1
+
+[policy.adaptive]
+enabled = true
+contribute = true
+
+[policy.pipeline]
+decode_enabled = true
+base64_expand = true
+structural_enabled = true
+max_decode_blobs = 48
+max_blob_chars = 16384
+# 规则字段（uri/query/body）head-tail 截断；深路径与快路径共用
+max_field_chars = 65536
+max_params = 256
+max_decode_depth = 4
+max_inspect_ms = 1200
+max_regex_evals = 120000
+lazy_decode = true

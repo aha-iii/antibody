@@ -1,0 +1,28 @@
+id: lfi-nginx-conf
+name: 'LFI nginx/apache conf'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'nginx.conf'
+    - field: uri
+      contains: 'httpd.conf'
+    - field: uri
+      contains: 'apache2.conf'
+    - field: query
+      contains: 'nginx.conf'
+    - field: query
+      contains: 'httpd.conf'
+    - field: query
+      contains: 'apache2.conf'
+    - field: body
+      contains: 'nginx.conf'
+    - field: body
+      contains: 'httpd.conf'
+    - field: body
+      contains: 'apache2.conf'

@@ -1,0 +1,16 @@
+id: php-glob-wrapper
+name: 'PHP wrapper abuse'
+severity: high
+tags: [php, java, app]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'php://fd/'
+    - field: query
+      contains: 'php://fd/'
+    - field: body
+      contains: 'php://fd/'

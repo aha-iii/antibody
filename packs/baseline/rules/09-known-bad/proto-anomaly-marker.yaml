@@ -1,0 +1,28 @@
+id: proto-anomaly-marker
+name: Parsed HTTP protocol anomaly markers
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [protocol, smuggle, self]
+transforms: [lowercase]
+when:
+  any:
+    - field: header
+      header_name: _proto_anomaly
+      regex: "(?i)(?:http09|te-anomaly|dup-header-te|get-with-te|chunk-anomaly|malformed-line)"
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'http09'
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'get-with-te'
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'te-anomaly'
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'chunk-anomaly'
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'malformed-line'

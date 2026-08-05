@@ -1,0 +1,18 @@
+id: cache-deception-path
+name: Web cache deception via static extension paths
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [cache]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '/api/user/profile/'
+    - field: uri
+      contains: '//api/user/profile'
+    - field: uri
+      contains: '/api/user/profile%00'
+    - field: uri
+      regex: "(?i)/api/user/profile[^/]*#+\\."

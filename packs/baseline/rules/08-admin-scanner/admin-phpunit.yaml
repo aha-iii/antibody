@@ -1,0 +1,14 @@
+id: admin-phpunit
+name: 'Admin phpunit eval-stdin'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/phpunit/'
+    - field: uri
+      contains: 'eval-stdin.php'

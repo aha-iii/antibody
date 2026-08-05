@@ -1,0 +1,22 @@
+id: graphql-introspection
+name: GraphQL introspection / schema probe
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [graphql, recon, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      regex: "(?i)__schema\\b"
+    - field: query
+      regex: "(?i)__schema\\b"
+    - field: body
+      regex: "(?i)__type\\s*\\("
+    - field: query
+      regex: "(?i)__type\\s*\\("
+    - field: body
+      contains: 'introspectionquery'
+    - field: query
+      contains: 'introspectionquery'

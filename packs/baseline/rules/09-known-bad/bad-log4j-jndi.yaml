@@ -1,0 +1,42 @@
+id: bad-log4j-jndi
+name: 'Log4Shell JNDI'
+severity: high
+tags: [known_bad, cve]
+score: 50
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '${jndi:ldap'
+    - field: uri
+      contains: '${jndi:rmi'
+    - field: uri
+      contains: '${jndi:dns'
+    - field: uri
+      contains: '${jndi:ldaps'
+    - field: query
+      contains: '${jndi:ldap'
+    - field: query
+      contains: '${jndi:rmi'
+    - field: query
+      contains: '${jndi:dns'
+    - field: query
+      contains: '${jndi:ldaps'
+    - field: body
+      contains: '${jndi:ldap'
+    - field: body
+      contains: '${jndi:rmi'
+    - field: body
+      contains: '${jndi:dns'
+    - field: body
+      contains: '${jndi:ldaps'
+    - field: header
+      contains: '${jndi:ldap'
+    - field: header
+      contains: '${jndi:rmi'
+    - field: header
+      contains: '${jndi:dns'
+    - field: header
+      contains: '${jndi:ldaps'

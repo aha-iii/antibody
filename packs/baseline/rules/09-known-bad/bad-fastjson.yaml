@@ -1,0 +1,18 @@
+id: bad-fastjson
+name: 'Fastjson autoType'
+severity: high
+tags: [known_bad, cve, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: body
+      regex: "(?i)\"@type\"\\s*:\\s*\""
+    - field: query
+      regex: "(?i)\"@type\"\\s*:\\s*\""
+    - field: body
+      contains: 'autotype'
+    - field: query
+      contains: 'autotype'

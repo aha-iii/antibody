@@ -1,0 +1,16 @@
+id: admin-phpmyadmin
+name: 'Admin phpMyAdmin path'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/phpmyadmin'
+    - field: uri
+      contains: '/pma/'
+    - field: uri
+      contains: '/mysql/admin'

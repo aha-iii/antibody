@@ -1,0 +1,35 @@
+id: xss-constructor-call
+name: 'XSS constructor / __proto__ sink'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'constructor.constructor'
+    - field: query
+      contains: 'constructor.constructor'
+    - field: body
+      contains: 'constructor.constructor'
+    - field: uri
+      contains: 'constructor.getownproperty'
+    - field: query
+      contains: 'constructor.getownproperty'
+    - field: body
+      contains: 'constructor.getownproperty'
+    - field: uri
+      contains: 'constructor.prototype'
+    - field: query
+      contains: 'constructor.prototype'
+    - field: body
+      contains: 'constructor.prototype'
+    # 禁止裸 __proto__（前端源码误伤）；要求赋值或下标访问
+    - field: uri
+      regex: "(?i)(?:__proto__\\s*=|\\[\\s*[\"']__proto__[\"']\\s*\\])"
+    - field: query
+      regex: "(?i)(?:__proto__\\s*=|\\[\\s*[\"']__proto__[\"']\\s*\\])"
+    - field: body
+      regex: "(?i)(?:__proto__\\s*=|\\[\\s*[\"']__proto__[\"']\\s*\\])"

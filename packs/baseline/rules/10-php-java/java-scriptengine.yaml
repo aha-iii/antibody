@@ -1,0 +1,22 @@
+id: java-scriptengine
+name: 'Java ScriptEngine'
+severity: high
+tags: [php, java, app]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'scriptenginemanager'
+    - field: uri
+      contains: 'getenginebyname'
+    - field: query
+      contains: 'scriptenginemanager'
+    - field: query
+      contains: 'getenginebyname'
+    - field: body
+      contains: 'scriptenginemanager'
+    - field: body
+      contains: 'getenginebyname'

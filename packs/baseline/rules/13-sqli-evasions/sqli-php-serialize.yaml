@@ -1,0 +1,16 @@
+id: sqli-php-serialize
+name: 'SQLi via PHP serialize / base64 blob'
+severity: medium
+tags: [sqli, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)s:\\d+:\"[^\"]{0,80}\";s:\\d+:\""
+    - field: body
+      regex: "(?i)s:\\d+:\"[^\"]{0,80}\";s:\\d+:\""
+    - field: uri
+      regex: "(?i)s:\\d+:\"[^\"]{0,80}\";s:\\d+:\""

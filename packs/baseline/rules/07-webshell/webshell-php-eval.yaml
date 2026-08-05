@@ -1,0 +1,28 @@
+id: webshell-php-eval
+name: 'Webshell PHP eval'
+severity: high
+tags: [webshell, owasp]
+score: 50
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)<\\?php\\s*eval\\s*\\("
+    - field: uri
+      contains: 'eval($_'
+    - field: uri
+      contains: 'eval ($_'
+    - field: query
+      regex: "(?i)<\\?php\\s*eval\\s*\\("
+    - field: query
+      contains: 'eval($_'
+    - field: query
+      contains: 'eval ($_'
+    - field: body
+      regex: "(?i)<\\?php\\s*eval\\s*\\("
+    - field: body
+      contains: 'eval($_'
+    - field: body
+      contains: 'eval ($_'

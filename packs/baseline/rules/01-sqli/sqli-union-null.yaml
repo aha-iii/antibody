@@ -1,0 +1,16 @@
+id: sqli-union-null
+name: 'SQL UNION NULL pad'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)union\\s+select\\s+null"
+    - field: query
+      regex: "(?i)union\\s+select\\s+null"
+    - field: body
+      regex: "(?i)union\\s+select\\s+null"

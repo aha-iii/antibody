@@ -1,0 +1,26 @@
+id: scanner-burp
+name: 'Scanner burp markers'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'burpcollaborator'
+    - field: uri
+      contains: 'burp-suite'
+    - field: query
+      contains: 'burpcollaborator'
+    - field: query
+      contains: 'burp-suite'
+    - field: body
+      contains: 'burpcollaborator'
+    - field: body
+      contains: 'burp-suite'
+    - field: header
+      contains: 'burpcollaborator'
+    - field: header
+      contains: 'burp-suite'

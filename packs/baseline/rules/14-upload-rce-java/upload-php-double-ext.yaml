@@ -1,0 +1,18 @@
+id: upload-php-double-ext
+name: 'Upload PHP double extension'
+severity: high
+tags: [upload, webshell, blazehttp_gap]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\.php\\.(?:jpe?g|png|gif|txt|pdf)\\b"
+    - field: query
+      regex: "(?i)\\.php\\.(?:jpe?g|png|gif|txt|pdf)\\b"
+    - field: body
+      regex: "(?i)filename\\s*=\\s*[\"']?[^\"']*\\.php\\.(?:jpe?g|png|gif)"
+    - field: header
+      regex: "(?i)filename\\s*=\\s*[\"']?[^\"']*\\.php\\.(?:jpe?g|png|gif)"

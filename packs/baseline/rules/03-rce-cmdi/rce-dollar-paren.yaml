@@ -1,0 +1,16 @@
+id: rce-dollar-paren
+name: 'RCE $(...) subshell'
+severity: high
+tags: [rce, cmdi, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\$\\([^)]{0,60}(?:\\b(?:cat|id|whoami|uname|ls|wget|curl|ncat?|bash|sh|python|perl|rm|chmod|touch)\\b|/bin/|/etc/|\\$\\{ifs\\})[^)]{0,60}\\)"
+    - field: query
+      regex: "(?i)\\$\\([^)]{0,60}(?:\\b(?:cat|id|whoami|uname|ls|wget|curl|ncat?|bash|sh|python|perl|rm|chmod|touch)\\b|/bin/|/etc/|\\$\\{ifs\\})[^)]{0,60}\\)"
+    - field: body
+      regex: "(?i)\\$\\([^)]{0,60}(?:\\b(?:cat|id|whoami|uname|ls|wget|curl|ncat?|bash|sh|python|perl|rm|chmod|touch)\\b|/bin/|/etc/|\\$\\{ifs\\})[^)]{0,60}\\)"

@@ -1,0 +1,26 @@
+id: scanner-sqlmap
+name: 'Scanner sqlmap UA/payload'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'sqlmap/'
+    - field: uri
+      contains: 'sqlmap.org'
+    - field: query
+      contains: 'sqlmap/'
+    - field: query
+      contains: 'sqlmap.org'
+    - field: body
+      contains: 'sqlmap/'
+    - field: body
+      contains: 'sqlmap.org'
+    - field: header
+      contains: 'sqlmap/'
+    - field: header
+      contains: 'sqlmap.org'

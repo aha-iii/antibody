@@ -1,0 +1,28 @@
+id: rce-semicolon-id
+name: 'RCE ; id / whoami'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: ";\\s*(id|whoami|uname)\\b"
+    - field: uri
+      contains: '&& whoami'
+    - field: uri
+      contains: '&& id'
+    - field: query
+      regex: ";\\s*(id|whoami|uname)\\b"
+    - field: query
+      contains: '&& whoami'
+    - field: query
+      contains: '&& id'
+    - field: body
+      regex: ";\\s*(id|whoami|uname)\\b"
+    - field: body
+      contains: '&& whoami'
+    - field: body
+      contains: '&& id'

@@ -1,0 +1,28 @@
+id: rce-powershell
+name: 'RCE powershell'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'powershell'
+    - field: uri
+      contains: 'pwsh '
+    - field: uri
+      regex: "(?i)powershell(\\s|\\.exe).*(-enc|-e\\b|bypass)"
+    - field: query
+      contains: 'powershell'
+    - field: query
+      contains: 'pwsh '
+    - field: query
+      regex: "(?i)powershell(\\s|\\.exe).*(-enc|-e\\b|bypass)"
+    - field: body
+      contains: 'powershell'
+    - field: body
+      contains: 'pwsh '
+    - field: body
+      regex: "(?i)powershell(\\s|\\.exe).*(-enc|-e\\b|bypass)"

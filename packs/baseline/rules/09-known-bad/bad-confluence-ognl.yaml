@@ -1,0 +1,22 @@
+id: bad-confluence-ognl
+name: 'Confluence OGNL'
+severity: high
+tags: [known_bad, cve]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '${createengine'
+    - field: uri
+      contains: 'ognl@'
+    - field: query
+      contains: '${createengine'
+    - field: query
+      contains: 'ognl@'
+    - field: body
+      contains: '${createengine'
+    - field: body
+      contains: 'ognl@'

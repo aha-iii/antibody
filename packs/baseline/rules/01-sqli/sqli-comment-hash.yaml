@@ -1,0 +1,22 @@
+id: sqli-comment-hash
+name: 'SQL comment probe'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\s--\\s"
+    - field: uri
+      regex: "(?i)/\\*.*\\*/"
+    - field: query
+      regex: "(?i)\\s--\\s"
+    - field: query
+      regex: "(?i)/\\*.*\\*/"
+    - field: body
+      regex: "(?i)\\s--\\s"
+    - field: body
+      regex: "(?i)/\\*.*\\*/"

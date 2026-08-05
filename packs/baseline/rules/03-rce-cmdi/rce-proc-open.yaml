@@ -1,0 +1,22 @@
+id: rce-proc-open
+name: 'RCE proc_open/popen'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bproc_open\\s*\\("
+    - field: uri
+      regex: "(?i)\\bpopen\\s*\\("
+    - field: query
+      regex: "(?i)\\bproc_open\\s*\\("
+    - field: query
+      regex: "(?i)\\bpopen\\s*\\("
+    - field: body
+      regex: "(?i)\\bproc_open\\s*\\("
+    - field: body
+      regex: "(?i)\\bpopen\\s*\\("

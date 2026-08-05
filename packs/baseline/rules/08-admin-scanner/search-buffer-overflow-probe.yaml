@@ -1,0 +1,32 @@
+# 搜索 DoS：超长 q= 填充
+
+id: search-buffer-overflow-probe
+
+name: Search query buffer paddieg probe
+
+severity: medium
+
+score: 40
+
+action: block
+
+min_level: low
+
+tags: [dos, search, self]
+
+transforms: [lowercase]
+
+when:
+
+  any:
+
+    - all:
+
+        - field: uri
+
+          regex: "(?i)^/api/search(?:/|$|\\?)"
+
+        - field: query
+
+          regex: "(?i)(?:^|[&])q=a{200,}"
+

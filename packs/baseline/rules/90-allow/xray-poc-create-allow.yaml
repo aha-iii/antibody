@@ -1,0 +1,13 @@
+# 放行：XRay 漏洞 POC 管理 API（JSON/YAML 内含 ../../ 探测模板，非真实穿越）
+id: xray-poc-create-allow
+name: Allow XRay POC create API with CVE metadata JSON
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, path, api]
+transforms: [url_decode_uni, lowercase]
+when:
+  all:
+    - field: uri
+      regex: "(?i)^/api/v2/xray/poc/create/?$"

@@ -1,0 +1,42 @@
+id: ldap-shell-injection
+name: LDAP filter and shell metacharacter injection
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [ldap, rce]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)\\(&\\([a-z0-9_]+=|\\(\\|\\([a-z0-9_]+=|\\*?\\(\\|\\(objectclass"
+    - field: body
+      regex: "(?i)\\(&\\([a-z0-9_]+=|\\(\\|\\([a-z0-9_]+=|\\*?\\(\\|\\(objectclass"
+    - field: uri
+      regex: "(?i)\\(&\\([a-z0-9_]+=|\\(\\|\\([a-z0-9_]+=|\\*?\\(\\|\\(objectclass"
+    - field: query
+      contains: 'userpassword:'
+    - field: body
+      contains: 'userpassword:'
+    - field: query
+      contains: 'objectclass=*'
+    - field: body
+      contains: 'objectclass=*'
+    - field: uri
+      contains: 'objectclass=*'
+    - field: query
+      regex: "(?i);\\s*wget\\s+https?://|\\|\\s*getent\\b|getent\\$ifs|;getent"
+    - field: body
+      regex: "(?i);\\s*wget\\s+https?://|\\|\\s*getent\\b|getent\\$ifs|;getent"
+    - field: uri
+      regex: "(?i);\\s*wget\\s+https?://|\\|\\s*getent\\b|getent\\$ifs"
+    - field: query
+      regex: "(?i)\\|\\s*set\\s+/a\\s+\\d+\\*"
+    - field: body
+      regex: "(?i)\\|\\s*set\\s+/a\\s+\\d+\\*"
+    - field: query
+      contains: 'burpcollaborator'
+    - field: body
+      contains: 'burpcollaborator'
+    - field: uri
+      contains: 'burpcollaborator'

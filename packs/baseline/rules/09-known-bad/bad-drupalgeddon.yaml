@@ -1,0 +1,28 @@
+id: bad-drupalgeddon
+name: 'Drupalgeddon markers'
+severity: high
+tags: [known_bad, cve]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '#post_render'
+    - field: uri
+      contains: '#pre_render'
+    - field: uri
+      contains: 'ajax_form'
+    - field: query
+      contains: '#post_render'
+    - field: query
+      contains: '#pre_render'
+    - field: query
+      contains: 'ajax_form'
+    - field: body
+      contains: '#post_render'
+    - field: body
+      contains: '#pre_render'
+    - field: body
+      contains: 'ajax_form'

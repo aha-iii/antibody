@@ -1,0 +1,28 @@
+id: lfi-etc-passwd
+name: 'LFI /etc/passwd'
+severity: high
+tags: [lfi, path, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '../etc/passwd'
+    - field: uri
+      contains: '..\etc\passwd'
+    - field: uri
+      contains: '/etc/passwd'
+    - field: query
+      contains: '../etc/passwd'
+    - field: query
+      contains: '..\etc\passwd'
+    - field: query
+      contains: '/etc/passwd'
+    - field: body
+      contains: '../etc/passwd'
+    - field: body
+      contains: '..\etc\passwd'
+    - field: body
+      contains: '/etc/passwd'

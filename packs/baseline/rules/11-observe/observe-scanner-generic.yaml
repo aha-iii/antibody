@@ -1,0 +1,14 @@
+id: observe-scanner-generic
+name: 'Observe generic scanner path noise'
+severity: medium
+tags: [scanner, observe]
+score: 40
+min_level: low
+action: observe
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/cgi-bin/'
+    - field: uri
+      contains: '/msadc/'

@@ -1,0 +1,24 @@
+id: open-redirect-param
+name: Open redirect via common redirect parameters
+severity: medium
+score: 40
+action: block
+min_level: medium
+tags: [redirect, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|return|returnurl|return_url|redirect|redirect_uri|redirect_url|continue|destination|goto|redir|callback|dest|relaystate|service|target)=(?:\\s|%20|%09|%0a|%0d)*(?:https?:|//)[^&]*"
+    - field: body
+      regex: "(?i)(?:relaystate|redirect_uri|service|return_url)\\s*[:=]\\s*[\"']?https?:"
+    - field: uri
+      regex: "(?i)[?&](?:url|next|return|returnurl|redirect_uri|continue|goto|relaystate|service)=(?:\\s)*(?:https?:|//)"
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|return|redirect|redirect_uri|goto|relaystate|service)=\\\\+/"
+    - field: body
+      regex: "(?i)(?:^|[&])(?:url|next|return|redirect|redirect_uri|goto)=\\\\+/"
+    - field: query
+      regex: "(?i)(?:^|[&])url\\[\\]=https?://"
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|redirect)=[^&]*(?:〱|〵|ゝ|ー)[a-z0-9.-]+"

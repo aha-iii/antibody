@@ -1,0 +1,43 @@
+id: nosql-operator-extended
+name: NoSQL operator injection in query and JSON body
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [nosql, injection]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      contains: 'allow filtering'
+    - field: query
+      regex: "(?i)\\bkeys\\s+\\*"
+    - field: query
+      regex: "(?i)\\bconfig\\s+get\\b"
+    - field: query
+      regex: "(?i)\\bflushall\\b"
+    - field: query
+      contains: 'this.password.match'
+    - field: query
+      contains: 'return true;'
+    # 必须词边界：裸 contains '$or' 会误伤 OData `$orderby`
+    - field: query
+      regex: "(?i)\\$or\\b"
+    - field: body
+      contains: '"$or"'
+    - field: body
+      contains: '"$in"'
+    - field: body
+      contains: '"$where"'
+    - field: body
+      contains: '"$ne"'
+    - field: body
+      contains: '"$regex"'
+    - field: body
+      contains: '"$type"'
+    - field: body
+      contains: '"$mod"'
+    - field: body
+      contains: '"$all"'
+    - field: body
+      regex: "(?i)\\[\\s*\\{\\s*\\}\\s*,\\s*\\{"

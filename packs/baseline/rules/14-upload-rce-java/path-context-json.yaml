@@ -1,0 +1,16 @@
+id: path-context-json
+name: 'Spring context.json exposure'
+severity: high
+tags: [java, scanner, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '/context.json'
+    - field: uri
+      contains: 'actuator/env'
+    - field: uri
+      contains: 'jolokia'

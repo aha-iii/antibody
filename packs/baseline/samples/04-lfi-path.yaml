@@ -1,0 +1,744 @@
+- id: sample-lfi-etc-passwd
+  rule_id: lfi-etc-passwd
+  name: LFI /etc/passwd
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=../etc/passwd
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-etc-passwd-alt
+  rule_id: lfi-etc-passwd
+  name: LFI /etc/passwd (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=../etc/passwd
+- id: sample-lfi-etc-shadow
+  rule_id: lfi-etc-shadow
+  name: LFI /etc/shadow
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id002
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=/etc/shadow
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-etc-shadow-alt
+  rule_id: lfi-etc-shadow
+  name: LFI /etc/shadow (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id002
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=/etc/shadow
+- id: sample-lfi-dotdot-unix
+  rule_id: lfi-dotdot-unix
+  name: LFI ../ traversal
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=../{2
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-dotdot-enc
+  rule_id: lfi-dotdot-enc
+  name: LFI encoded traversal
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id003
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=..%2f
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-dotdot-enc-alt
+  rule_id: lfi-dotdot-enc
+  name: LFI encoded traversal (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id003
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=..%2f
+- id: sample-lfi-proc-self
+  rule_id: lfi-proc-self
+  name: LFI proc self
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id004
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=/proc/self/
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-proc-self-alt
+  rule_id: lfi-proc-self
+  name: LFI proc self (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id004
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=/proc/self/
+- id: sample-lfi-windows-ini
+  rule_id: lfi-windows-ini
+  name: LFI Windows win.ini
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id005
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=c:/windows/win.ini
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-windows-ini-alt
+  rule_id: lfi-windows-ini
+  name: LFI Windows win.ini (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id005
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=c:/windows/win.ini
+- id: sample-lfi-windows-system32
+  rule_id: lfi-windows-system32
+  name: LFI system32
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id006
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=windows/system32
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-windows-system32-alt
+  rule_id: lfi-windows-system32
+  name: LFI system32 (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id006
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=windows/system32
+- id: sample-lfi-php-filter
+  rule_id: lfi-php-filter
+  name: LFI php://filter
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id007
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=php://filter
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-php-filter-alt
+  rule_id: lfi-php-filter
+  name: LFI php://filter (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id007
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=php://filter
+- id: sample-lfi-phar
+  rule_id: lfi-phar
+  name: LFI phar://
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id008
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=phar://
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-phar-alt
+  rule_id: lfi-phar
+  name: LFI phar:// (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id008
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=phar://
+- id: sample-lfi-file-scheme
+  rule_id: lfi-file-scheme
+  name: LFI file://
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id009
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=file:///
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-file-scheme-alt
+  rule_id: lfi-file-scheme
+  name: LFI file:// (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id009
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=file:///
+- id: sample-lfi-web-inf
+  rule_id: lfi-web-inf
+  name: LFI WEB-INF
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id010
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=web-inf/web.xml
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-web-inf-alt
+  rule_id: lfi-web-inf
+  name: LFI WEB-INF (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id010
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=web-inf/web.xml
+- id: sample-lfi-git-config
+  rule_id: lfi-git-config
+  name: LFI .git/config
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id011
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=.git/config
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-git-config-alt
+  rule_id: lfi-git-config
+  name: LFI .git/config (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id011
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=.git/config
+- id: sample-lfi-svn-entries
+  rule_id: lfi-svn-entries
+  name: LFI .svn/entries
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id012
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=.svn/entries
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-svn-entries-alt
+  rule_id: lfi-svn-entries
+  name: LFI .svn/entries (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id012
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=.svn/entries
+- id: sample-lfi-env-file
+  rule_id: lfi-env-file
+  name: LFI .env secrets
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=/.env
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-ssh-id
+  rule_id: lfi-ssh-id
+  name: LFI id_rsa
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id013
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=id_rsa
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-ssh-id-alt
+  rule_id: lfi-ssh-id
+  name: LFI id_rsa (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id013
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=id_rsa
+- id: sample-lfi-docker-env
+  rule_id: lfi-docker-env
+  name: LFI docker env
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id014
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=/.dockerenv
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-docker-env-alt
+  rule_id: lfi-docker-env
+  name: LFI docker env (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id014
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=/.dockerenv
+- id: sample-lfi-nginx-conf
+  rule_id: lfi-nginx-conf
+  name: LFI nginx/apache conf
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id015
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=nginx.conf
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-nginx-conf-alt
+  rule_id: lfi-nginx-conf
+  name: LFI nginx/apache conf (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id015
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=nginx.conf
+- id: sample-lfi-var-log
+  rule_id: lfi-var-log
+  name: LFI /var/log
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id016
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=/var/log/
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-var-log-alt
+  rule_id: lfi-var-log
+  name: LFI /var/log (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id016
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=/var/log/
+- id: sample-lfi-null-byte
+  rule_id: lfi-null-byte
+  name: LFI null byte truncation
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id017
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=%00.
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-null-byte-alt
+  rule_id: lfi-null-byte
+  name: LFI null byte truncation (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id017
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=%00.
+- id: sample-lfi-unc-path
+  rule_id: lfi-unc-path
+  name: LFI UNC path
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=file:////
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-etc-hosts
+  rule_id: lfi-etc-hosts
+  name: LFI /etc/hosts
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id018
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=/etc/hosts
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-etc-hosts-alt
+  rule_id: lfi-etc-hosts
+  name: LFI /etc/hosts (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id018
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=/etc/hosts

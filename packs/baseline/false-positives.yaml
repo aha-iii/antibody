@@ -1,0 +1,1253 @@
+# blazehttp 误报标记（baseline / medium）
+# 来源: expert-bench-report · dataset=blazehttp
+# status: reviewed — 对应规则已收紧或降级；下列条目保留以便回归对照
+# count: 207
+
+version: 1
+pack: baseline
+dataset: blazehttp
+level: medium
+total: 207
+cases:
+  - id: "testcases/02/4b/7e19a3a2e319704e739778c0cac0.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v3/projects/9daf8dfdc099c207/collect?stm=1688382556451&compress=1"
+  - id: "testcases/04/2f/0b24090ec79d08db9cf194b1517d.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/04/95/cd4d3e25878a5f5cdfdc6ab608df.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /intake/v2/rum/events"
+  - id: "testcases/06/82/ff94501e02b77dba9ca9f1e9d5cd.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/0b/bf/c0613003892fe97932976f9b310b.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/0c/08/8a4826f154a0047d5436f9a447a3.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/0f/45/98e120cf6ca82b5ed96942885330.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376497673"
+  - id: "testcases/1b/e8/e33c05ee28c4ed6d1fe16b7bf24f.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376494389"
+  - id: "testcases/20/8b/1647680db8c9b61f77b9e467f155.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376486601"
+  - id: "testcases/23/22/f2d41ae6bb1ee1912b68d0f930a8.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376505141"
+  - id: "testcases/23/dc/b82fef34ec9090597e62a7c49dd9.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376484038"
+  - id: "testcases/25/04/dab59115518e41ba999032164db0.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/27/03/41b0f14f4c7d56e026ba59b53b28.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /faas/proto/json-to-proto-json-to-proto/proxy"
+  - id: "testcases/2b/bc/987165461b6b86c4b5a25c1c440f.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376482580"
+  - id: "testcases/2d/79/58ebdd6034d9f0616b4a866b1fdc.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /collector/apm"
+  - id: "testcases/2f/9e/4c0aa2dbfdd5a878b1909b265e3a.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/2b/7c/0b8c1cad343ba902d20a3bcafb38.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /restapi/soa2/20589/SaveTraceInfo?_fxpcqlniredt"
+  - id: "testcases/31/2c/2124173bc5b120b11c927c4d557d.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/32/01/11459c6a8251f2755066edcf9579.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /2"
+  - id: "testcases/31/56/74df46dba66474917bdf1181aa1b.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /restapi/soa2/16163/saveLogInfo?_fxpcqlniredt"
+  - id: "testcases/38/65/eeb8348e8ac7ac09d6cb67d006ce.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /intake/v2/rum/events"
+  - id: "testcases/3b/45/2bcb29e1f2ebd99effebd3fc052e.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/45/2e/2e5d949ecb8af7a11986fbecd168.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /intake/v2/rum/events"
+  - id: "testcases/46/64/3a01f46780c223f13e7243760db1.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/47/1b/02f48222fd512c116df48f39267c.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/47/75/c2748c1db72eb2d7ba6cd1ebaaa0.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/46/9d/205f3e3100e5726d476311d3dbc4.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /bee/collect"
+  - id: "testcases/4d/70/891617f23690bf28cf161b93a047.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/4f/31/fb77053edc051e660dae3324a984.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /restapi/soa2/20589/SaveTraceInfo?_fxpcqlniredt"
+  - id: "testcases/55/0c/e0bf55748b4fc9080a675e4381fa.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/52/42/c98f20ca2751ef800b48103ce3a2.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/common/image/"
+  - id: "testcases/58/65/810ea784ac6a4e320d38a43b1fde.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /upload?uptime=1688380037947"
+  - id: "testcases/5b/db/18205431021b747658e5c378669f.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/5d/c0/7e6f406f6fe415412c402cd47948.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376508159"
+  - id: "testcases/60/aa/144bf113b1d1d2193ca3c0f84475.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/pv?stm=1688376436420"
+  - id: "testcases/61/ad/1bd589c205281e53f1d59bbb79cf.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/61/81/472215d2fca9ef868561906345b2.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /VydY5WUZJExt/Gsh1OU/0UMTBN/SahiXmSVctbaOG/e04mRgUE/fQV0IVFQ/TkY"
+  - id: "testcases/67/dd/9969c050ba183523d12b80c3a91a.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376468290"
+  - id: "testcases/70/ae/ddb1c5bff1f3e452c79a69232201.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /2"
+  - id: "testcases/72/9b/f5b6c02120e70787c2aecaa6c69f.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/73/6a/b099353fa8e1a5f52b0583cb135e.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/77/6c/f3b2659dd0e41883f984de3e5e8a.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/76/75/56bcceefe47679ece984463be799.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /?gzip=1"
+  - id: "testcases/7a/76/9f949d3cfa100f722c81da9d791e.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v3/projects/9daf8dfdc099c207/collect?stm=1688382556459&compress=1"
+  - id: "testcases/7b/8a/3605c293b96920d4b81212647efe.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/7d/bc/740d4cb5eed6d20f66956f94c7ff.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376518969"
+  - id: "testcases/7e/d1/dd236a25ef9efe37115995a89c8b.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/pv?stm=1688376474777"
+  - id: "testcases/81/ec/93c3b506c5d20f1c659186765d58.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/7f/ae/06fbd4c2601970ac013bedb68335.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /nos/upload/pub/aes?requireHttps=false"
+  - id: "testcases/85/db/8539e36564982751826c6f983ac6.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/8a/70/f82f93ad92ec585a3ca0bb892cd0.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/8b/91/a7e8ca5f7ff1de52f0d1ee9b02a3.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/8a/70/e39a720c18fb1c6d56ee48118815.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /restapi/soa2/20589/SaveTraceInfo?_fxpcqlniredt"
+  - id: "testcases/90/71/2ae4041459c038834019bc98b4c4.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /1?continueFlag=ed33b44512f3232a855bab2a5a1e7cff"
+  - id: "testcases/91/61/5ce472a81ffa20fb253af37a6be1.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/96/a9/af43ba877cf97ef2553ee028b91d.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v3/projects/9daf8dfdc099c207/collect?stm=1688382561504&compress=1"
+  - id: "testcases/99/b7/2fa22beecb4fb911ce0abad238f6.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/819a5889dcb2672b/web/pv?stm=1688382549820"
+  - id: "testcases/9b/0b/3a4cfbb8fb71725151b5d8fc5204.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376495456"
+  - id: "testcases/9f/cc/4036a8ef57c76246c2efd88951a0.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/a1/e9/b02b72740a88426b41693ca8d8d8.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/a7/dc/06e0c22fca564d034ccffced5cd6.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376495022"
+  - id: "testcases/a7/ea/28a411afa3b0df0801b8465a570a.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /faas/proto/json-to-proto-json-to-proto/proxy"
+  - id: "testcases/a9/9b/2578d6c7360bc6d926e0e3121aae.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v3/projects/9daf8dfdc099c207/collect?stm=1688382566440&compress=1"
+  - id: "testcases/aa/be/041fbf2a22f09ad757853083049a.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /faas/proto/json-to-proto-json-to-proto/proxy"
+  - id: "testcases/b3/31/26e1022d0798d8f4f0c063072a0d.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376474765"
+  - id: "testcases/b7/ed/d729c0c00b8e1737aaacbb4edf83.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /sfp/v1/rd"
+  - id: "testcases/ba/a9/0e917cd03cc9ecef295d747c3eb3.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/bc/b3/dcc3a3536aeac759f89c0806ae9b.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v3/projects/9daf8dfdc099c207/collect?stm=1688382561223&compress=1"
+  - id: "testcases/c3/2f/8be76e60b741d323f68f19e93670.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /event?e=error-log+sdk-load+sdk-use+nav+sdk-use"
+  - id: "testcases/c6/01/353c40b3204d4e790421128c68b9.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /collector/apm"
+  - id: "testcases/c7/58/6864956e39a1ec60bc1ec231930d.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v3/projects/9daf8dfdc099c207/collect?stm=1688382601628&compress=1"
+  - id: "testcases/ce/b2/30248f1fafb45a64ef274f58a643.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/ce/ab/a01b6db54e29032f231a10674a01.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /collector/apm"
+  - id: "testcases/cf/d2/6fc140e2e7fd019ffb8d384c5838.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /h5/t"
+  - id: "testcases/d0/c5/fee5feacff7daf5b1db282320455.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/pv?stm=1688376518983"
+  - id: "testcases/d7/12/87f7c179825eadd6a396b4799ed6.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /h5/t"
+  - id: "testcases/d7/a6/28728821080ee03050b905a81f66.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/db/c2/e85ff47b72a68b33430f11409e5d.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v3/projects/9daf8dfdc099c207/collect?stm=1688382568826&compress=1"
+  - id: "testcases/dd/18/50e65d30a2aeb7cfe24175c2d742.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/e1/3e/6af5fe939aa43b7bda1b8d3190ea.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v3/projects/9daf8dfdc099c207/collect?stm=1688382601624&compress=1"
+  - id: "testcases/e0/eb/92829ce625536567fec80f184c71.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /restapi/soa2/20589/SaveTraceInfo?_fxpcqlniredt"
+  - id: "testcases/e1/29/d693a7b7496aa1f1e541a94ac47b.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "PUT /v1.0/me/drive/root:/%E3%80%90%E6%8A%80%E6%9C%AF%E6%94%AF%E6%8C%81%E5%B7%A5%E7%A8%8B%E5%B8%88_%E6%B7%B1%E5%9C%B3%E3%80%91deric%205%E5%B9%B4(1).pdf:/content?"
+  - id: "testcases/e4/84/fb50dfeeca0fc9f87398f9323391.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/e6/31/090b102faf4dee88fdb9fb206a8f.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v3/projects/9daf8dfdc099c207/collect?stm=1688382597659&compress=1"
+  - id: "testcases/e6/3f/25bef4999b93f017b8745320298d.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /collector/apm"
+  - id: "testcases/e7/69/2a2d92758a17439c38339ff0579a.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /VydY5WUZJExt/Gsh1OU/0UMTBN/SahiXmSVctbaOG/e04mRgUE/fQV0IVFQ/TkY"
+  - id: "testcases/ec/45/23380abcfa338c5ae490852d12fb.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/pv?stm=1688376435351"
+  - id: "testcases/e9/3e/59307cb357c65b2119bc3fc4230c.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/common/image/"
+  - id: "testcases/eb/c3/0dc87d6db1c36991b86d3693f646.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /restapi/soa2/16163/saveLogInfo?_fxpcqlniredt"
+  - id: "testcases/ee/4c/2ab5dcee64eb54501496c644c82c.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /2"
+  - id: "testcases/ec/6c/0db7f97290957befa802cba9423d.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /restapi/soa2/20589/SaveTraceInfo?_fxpcqlniredt"
+  - id: "testcases/f1/72/ba0ff87bb680ccf19ff5c14a9ae3.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /2"
+  - id: "testcases/f2/33/8f144fcdd411935af45e472dcd34.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /collector/apm"
+  - id: "testcases/f9/a6/56da6def3636c19ea128d0c085ea.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376502072"
+  - id: "testcases/fc/67/fec0408c63251bf9391ad1adba50.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v3inv2/za/logs/batch"
+  - id: "testcases/fc/e1/33d4510784ba141426d6afda648a.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /VydY5WUZJExt/Gsh1OU/0UMTBN/SahiXmSVctbaOG/e04mRgUE/fQV0IVFQ/TkY"
+  - id: "testcases/fe/0c/bd1d2c90d9cdfb97056d94804dfa.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /collector/apm"
+  - id: "testcases/fe/aa/4d040f4cdd808433ecd7a8e125a8.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /v2/88025341dda01c5f/web/action?stm=1688376495260"
+  - id: "testcases/ff/bf/0a45564f346451720e9027695d21.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-backtick
+    reason: "正文含 markdown/模板反引号，非 shell 子命令；规则已收紧为命令关键字反引号"
+    request_summary: "POST /api/v2/za/logs/batch"
+  - id: "testcases/17/5a/2f6749597ea969a407c0fdf6bbf9.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /spc.php?zones=1%7C2%7C3%7C5%7C6%7C7%7C9%7C10%7C11%7C12%7C13%7C14%7C15%7C16%7C17%7C24%7C2…"
+  - id: "testcases/17/f5/7b239973ff77ba2cf8eb6c937a18.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "POST /gateway/referer"
+  - id: "testcases/23/f3/604f8ab9055a963dca47925f2831.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/44/60/7c527cd3debd824d82e729230f08.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "POST /api/event"
+  - id: "testcases/45/cb/8d8e29a3135e0e8f67ea65b41359.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "POST /v1:GetHints?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
+  - id: "testcases/4f/ed/d58953b8950f3e35cdca5eef9d93.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /fd/ls/l?IG=376DC55D3E3145869C50EAA4BED9EBCC&TYPE=Event.ClientInst&DATA=%5B%7B%22T%22%3A%…"
+  - id: "testcases/56/ad/76c4fa677b3293bc566c3c466618.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "POST /rewardsapp/reportActivity?IG=376DC55D3E3145869C50EAA4BED9EBCC&IID=SERP.5054&q=site:segmentfault.com%20unio…"
+  - id: "testcases/56/b6/56385b57c7ac7e81392a69e7c4a6.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/6d/21/2cebbe83bb6e305cc10ef62d8872.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "POST /api/event"
+  - id: "testcases/74/ff/8895152c0fb514e6007a1f76da9a.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/75/44/9ec1ad42afa91242d4ca9d26502f.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/78/05/9d00c806ac9e12fcab104b87595b.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/81/ac/3939eb7cad04fec60b0085737c08.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "POST /v1:GetHints?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
+  - id: "testcases/8e/06/f00b4e439da8a5e2fa996f7c45fa.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/92/49/913922b6c313eb1bc7c594324578da3f.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /webapp/plugin/sangfor_databases/view/thread.html?p=The%20union%20select%20members%20from%20each%20department%20to%20form%20a%20co…"
+  - id: "testcases/98/b0/1c1c8e8704ad40e4ea62982aa0b4.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/99/d0/d8d54bc5831551aafb4df7c64bf0.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/9b/29/c79597f74cee2005ebc326ccae76.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/a2/e3/4ddc588a76e762d29811bff842fb.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /search?q=union+select+%E5%85%B3%E9%94%AE%E5%AD%97%E6%80%8E%E4%B9%88%E7%94%A8"
+  - id: "testcases/a4/77/b13524de7771e6fb4ad5614ee3df.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/b3/52/ad7e0ee9b0c71f2b12978686624f.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /spc.php?zones=1%7C2%7C3%7C5%7C6%7C7%7C9%7C10%7C11%7C12%7C13%7C14%7C15%7C16%7C17%7C24%7C2…"
+  - id: "testcases/bb/f6/1c25fb11988ddc678b14ccc50eb4.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /search?q=site:segmentfault.com%20union%20select%20%E5%85%B3%E9%94%AE%E5%AD%97%E6%80%8E%…"
+  - id: "testcases/eb/a9/da88d3dcc0c2673b0fe7808ea9f9.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "POST /g/collect?v=2&tid=G-MJYFRXB3ZX&gtm=45je36s0&_p=577110484&cid=1687488833.1675933087&ul=zh-c…"
+  - id: "testcases/f4/1b/1c501fc91f85206557a7baceb02f.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "POST /v1:GetHints?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
+  - id: "testcases/f6/26/8ff7806517e98266884fbb5ee6f0.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /AS/Suggestions?pt=page.serp&bq=site%3asegmentfault.com+union+select+%E5%85%B3%E9%94%AE%E5%AD%97…"
+  - id: "testcases/fc/51/e052133b1733498b7df4008f7f87.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-union-select
+    reason: "搜索查询文本含 union select 关键字（站点内检索）"
+    request_summary: "GET /search?q=site:segmentfault.com%20union%20select%20%E5%85%B3%E9%94%AE%E5%AD%97%E6%80%8E%…"
+  - id: "testcases/05/7e/a41ff006ac5ddcc1af96f398f1cd.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/20/bc/a82f25238daaf8f35d484f39f0af.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/58/d4/2d207f619ca865d719018da0c8cb.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/86/68/22c95d398c036c7d6495ab3573eb.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/87/97/20b0ba7cad1865bfec28462ddf29.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/8f/7f/33d0350fb54cc79f7f124a81ee59.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/92/90/3f8c8b6cbe8667e371a28ff35c04.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/94/fc/67a8b4b7fbe15e0f7cd89b544dbe.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/9a/50/1fabcd62cf757e623de7ada75a4a.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/9d/f1/f38080b5e6d3bba3909452644f98.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/a1/5f/e83cd44463d637b11e1aa8abbd5f.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/a1/92/58091be7cc67a3bbf7f32e6bfd3f.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/a6/51/1031dbc5219febe2e3b5ae82dd1b.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/a9/b2/a1e20b88511ea2335b2c3619306d.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/e3/53/ab2b9cc359ce9774555684667e1f.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/e5/7e/7f612f1c3af2d5577f43b0e431eb.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/e9/22/684c96edf900149eb88331a30dbb.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/fb/6e/8e797b45536a5889b928f4583c7c.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/fd/69/85aff27505a38a30aa86c14e6645.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/fe/91/30b18cfda155e777777b1052b490.white"
+    kind: white
+    mark: false_positive
+    rule_id: xxe-doctype
+    reason: "正常 HTML <!DOCTYPE html>；规则已改为要求 ENTITY/SYSTEM"
+    request_summary: "POST /rec/page"
+  - id: "testcases/00/06/005a52981dd324c40488a1a588f9.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "POST /speed?id=9GkL9SLGjnYrr8bJd6&uin=&version=1.35.26&content=For%20people%20who%20write%20…"
+  - id: "testcases/02/f4/f65d5c62a52bac13c784effa6a86.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /web/performance?param=?%7B%22projectid%22%3A%22NTM-RGGG3592-2%22%2C%22val_nm%22%3A%22performance…"
+  - id: "testcases/03/d1/4380be6630b874ecba193c4f9d19.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=1%3Cscript&oit=4&cp=8&pgcl=1&g…"
+  - id: "testcases/07/cd/61fa0932f7c58ecae04b8506c1d9.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "POST /pen/define"
+  - id: "testcases/2e/9e/6e45189445311af775b7868122a0.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /news/c?%7B%22val_nm%22%3A%22c-ntm%22%2C%22val_act%22%3A%22pageview%22%2C%22projectid%22…"
+  - id: "testcases/38/6e/b4972015fb0ba3e838b5e3753b8f.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "POST /v1:GetHints?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
+  - id: "testcases/3a/06/14c72ccb93096a235d5717fc261e.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /news/c?%7B%22val_nm%22%3A%22c-ntm%22%2C%22val_act%22%3A%22pageview%22%2C%22projectid%22…"
+  - id: "testcases/3e/61/240b3624328af005d976aa07cad9.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /web/performancev2?param=?%7B%22projectid%22%3A%22NTM-RGGG3592-2%22%2C%22val_nm%22%3A%22performance…"
+  - id: "testcases/52/5c/5a044ff90b8548e753b3ffc47ce2.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "POST /run?file=demo.tsx"
+  - id: "testcases/5d/f5/de57f73466674225e608ab911c1a.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /complete/search?client=chrome-omni&gs_ri=chrome-ext-ansg&xssi=t&q=%3Cscript&oit=4&cp=0&pgcl=1&gs…"
+  - id: "testcases/6c/91/b17738858cb2bcd824f5590735a2.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /web/performancev2?param=?%7B%22projectid%22%3A%22NTM-RGGG3592-2%22%2C%22val_nm%22%3A%22performance…"
+  - id: "testcases/71/c0/19317b981a3df90cd2aad5df6095.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /open/mob/searchv2/searchsug.do?keyword=for+power,+binary%3Cscript+is+incorrect"
+  - id: "testcases/7a/db/2a82b47b9739e0cce285f596e759.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /web/performance?param=?%7B%22projectid%22%3A%22NTM-RGGG3592-2%22%2C%22val_nm%22%3A%22performance…"
+  - id: "testcases/80/38/8c27ccc89c23fb4ea04ed7ae4be2.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "POST /cpe/boomboom/store"
+  - id: "testcases/d8/52/d24617319b215b36202d5a1ef2a9.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /newview/search/for%20power%2C%20binary%3Cscript%20is%20incorrect"
+  - id: "testcases/e2/6b/790fd7c8ba350cd22c08c4bd2488.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "POST /v1:GetHints?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
+  - id: "testcases/e6/5d/ed91bbd00a9412abff96e0a727c2.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "GET /newview/search/for%20power%2C%20%22binary%3Cscript%22%20is%20incorrect"
+  - id: "testcases/e9/75/6d588c1fcc5baa1baee6ea139e49.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-script-tag
+    reason: "搜索词/埋点 JSON 中出现字面 <script 或 %3cscript，非可执行注入点"
+    request_summary: "POST /news/g"
+  - id: "testcases/21/85/bde3866f2ae21a1ecbf14a825d23.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/2b/19/616c4c2a8288ed28d4d4566f71f8.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /fd/ls/GLinkPingPost.aspx?IG=BD260740AF264E0F93C3C3F2866590BC&ID=SERP,5036.1&url=javascript%3Avoid(0)%3B"
+  - id: "testcases/2e/89/4efc2da8718d51e9cb095c3cf8b4.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/2f/b4/749f1d364c92ab7597f61fd159df.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/38/4b/a2b3da6fb938ff80fb99fc95a180.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/39/ae/7f8cc7ad9d88048be53ee1338ca7.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/3c/95/b7096d02e38e0270a097d55317be.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/3d/49/d9da82c98651de048898ab83882e.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/48/e8/cf75b74ce3d992c442388792f73a.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/59/de/7a58867d26b8a23a5294b361384a.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/6f/ec/c418d7724eb62c8f818883de0b5e.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /api/report?cat=bingcsp"
+  - id: "testcases/9f/bb/53f0d30b2b938eddc1dcefebb124.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/a3/77/df63b60face5d8fc64cdbd295ce1.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/c4/cf/86065648080d0304a8722b3cde68.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/c6/ba/c7b622dc0a0b0661a1a500151f80.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/d6/df/26b424c6253a1490f9b987eb58fb.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/f6/c9/728454e792715f8db05d70f3f5aa.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/fe/4b/5f9b5552a7a97e251d4661c47330.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-javascript-uri
+    reason: "统计/跳转参数含 javascript: 字面量（如 void(0) 埋点）"
+    request_summary: "POST /analytics/v2_upload?appkey=0WEB0OEX9Y4SQ244"
+  - id: "testcases/10/d6/63676fd9b625f6dab3db91dcad03.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "POST /v1:GetHints?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
+  - id: "testcases/11/cd/4bb898f61ec65228cb546a4e0d59.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "POST /gateway/referer"
+  - id: "testcases/23/d3/6a4dfbc80259f562c9f4327127b9.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "POST /v1:GetHints?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
+  - id: "testcases/36/af/40876430d02d98909762194cd5d8.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "GET /search?q=site:segmentfault.com%20Best%20practices%20for%20exporting%20and%20importing%2…"
+  - id: "testcases/4d/9a/6187f7a33630c8d63e0772b8438e.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "POST /v1:GetHints?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
+  - id: "testcases/57/64/93e832fd0c4307c8ea017b487f26.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "POST /v1:GetHints?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw"
+  - id: "testcases/68/1a/cca5c5edd7644e8439275f087f41.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "GET /search?q=Best+practices+for+exporting+and+importing+data+from+Amazon+Aurora+MySQL+to+Am…"
+  - id: "testcases/80/08/57546d06dedf508b55e01e48c5a4.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "GET /search/?searchQuery=Best+practices+for+exporting+and+importing+data+from+Amazon+Aurora+M…"
+  - id: "testcases/a7/c3/2cd5118eb0504758c1f9c342167b.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "GET /search?searchText=To+export+data+from+the+Aurora+table+to+the+S3+bucket,+use+the+SELECT…"
+  - id: "testcases/bd/37/23da79d2667b0616c951e2a89654.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "POST /g/collect?v=2&tid=G-MJYFRXB3ZX&gtm=45je36s0&_p=1303343184&cid=1687488833.1675933087&ul=zh-…"
+  - id: "testcases/cb/dd/40031f8ea710e085d4d632e83007.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "POST /api/event"
+  - id: "testcases/e4/09/80ddbc08d33927d03ec88a662bd5.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "GET /spc.php?zones=1%7C2%7C3%7C5%7C6%7C7%7C9%7C10%7C11%7C12%7C13%7C14%7C15%7C16%7C17%7C24%7C2…"
+  - id: "testcases/f0/48/e9f7e97c1e885a67a354b8da3005.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-into-outfile
+    reason: "业务 JSON/日志字段偶然匹配 into outfile 片段"
+    request_summary: "POST /v3/analytics/logs"
+  - id: "testcases/0c/e0/0a4e3610e22b88e2cf93f5606ad2.white"
+    kind: white
+    mark: false_positive
+    rule_id: ssrf-loopback
+    reason: "合法回调 URL 指向 localhost 开发地址"
+    request_summary: "GET /api/income/logAccess?callback=recordNewUserJsonpCallback&accessUrl=http%3A%2F%2Flocalhost%3A8000%2F&y…"
+  - id: "testcases/59/30/ae3e988a6ed4a9ae2c571eb001ef.white"
+    kind: white
+    mark: false_positive
+    rule_id: ssrf-loopback
+    reason: "合法回调 URL 指向 localhost 开发地址"
+    request_summary: "POST /speed?id=RiaWqsnT3403yXTgVY&uin=d7c17f0000014516-d31eb79f7d5aee97-1390&version=v1.45.1…"
+  - id: "testcases/a4/15/ce94a553f132de70f988405dd932.white"
+    kind: white
+    mark: false_positive
+    rule_id: ssrf-loopback
+    reason: "合法回调 URL 指向 localhost 开发地址"
+    request_summary: "POST /speed?id=RiaWqsnT3403yXTgVY&uin=d7c17f0000014516-d31eb79f7d5aee97-1390&version=v1.45.1…"
+  - id: "testcases/bb/79/83610bba10cf1fed5c571093c838.white"
+    kind: white
+    mark: false_positive
+    rule_id: ssrf-loopback
+    reason: "合法回调 URL 指向 localhost 开发地址"
+    request_summary: "POST /speed?id=RiaWqsnT3403yXTgVY&uin=d7c17f0000014516-d31eb79f7d5aee97-1390&version=v1.45.1…"
+  - id: "testcases/c9/6d/8608f33083c639bd01c891a9481d.white"
+    kind: white
+    mark: false_positive
+    rule_id: ssrf-loopback
+    reason: "合法回调 URL 指向 localhost 开发地址"
+    request_summary: "PUT /api/Website"
+  - id: "testcases/09/4a/f77c820102ff06e2e17c22195011.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-comment-hash
+    reason: "正文含 /* */ 风格注释块（非 SQL 注释注入）"
+    request_summary: "POST /restapi/soa2/16163/saveLogInfo?_fxpcqlniredt"
+  - id: "testcases/61/9a/8d62039972153b2c33abb83dcb41.white"
+    kind: white
+    mark: false_positive
+    rule_id: sqli-comment-hash
+    reason: "正文含 /* */ 风格注释块（非 SQL 注释注入）"
+    request_summary: "POST /VydY5WUZJExt/Gsh1OU/0UMTBN/SahiXmSVctbaOG/e04mRgUE/fQV0IVFQ/TkY"
+  - id: "testcases/2a/96/54848953e986503c57cfb89bf759.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-nc-rev
+    reason: "正文/参数偶然含 ncat 字样"
+    request_summary: "PUT /sophisticated/utilization/HTML/sophisticated?metrics=policy&restore=integration"
+  - id: "testcases/73/29/62f8a14a1887f13f097d9e8ac310.white"
+    kind: white
+    mark: false_positive
+    rule_id: rce-nc-rev
+    reason: "正文/参数偶然含 ncat 字样"
+    request_summary: "POST /api/v1/group/batch_command"
+  - id: "testcases/53/8d/8aaede20848d0877bad6b4be6acc.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-svg-onload
+    reason: "文档/富文本示例含 svg onload 字面量"
+    request_summary: "POST /logstores/prod/track"
+  - id: "testcases/ca/88/3949224ca0a45fa247167a0657bb.white"
+    kind: white
+    mark: false_positive
+    rule_id: xss-svg-onload
+    reason: "文档/富文本示例含 svg onload 字面量"
+    request_summary: "POST /rec/bundle/v2?OrgId=B9193&UserId=4b2b7c84-aa5f-44aa-b927-6f55e6eb3095&SessionId=e8bba38b-760e-…"
+  - id: "testcases/1f/44/4e2109347dd55c0907a0ee4a13a4.white"
+    kind: white
+    mark: false_positive
+    rule_id: bad-fastjson
+    reason: "依赖包名路径含 @type 片段"
+    request_summary: "GET /v2021.11.09/b?p=@ant-design/colors@7.0.0,@ant-design/cssinjs@1.10.1,@ant-design/icons-svg@4.2.…"
+  - id: "testcases/51/55/88701a8ca6ea0853be34b9547030.white"
+    kind: white
+    mark: false_positive
+    rule_id: lfi-file-scheme
+    reason: "合法 file:// 资源引用"
+    request_summary: "POST /cdn-cgi/rum"

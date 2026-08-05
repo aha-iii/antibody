@@ -1,0 +1,185 @@
+# WebSocket：非法 / 不完整握手（评测 PROTO-WS-* 黑样本）
+id: websocket-handshake-invalid
+name: Invalid or incomplete WebSocket handshake
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [websocket, protocol, self]
+transforms: [lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: method
+          regex: "(?i)^post$"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: h2c
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: connection
+          contains: close
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: sec-websocket-version
+          regex: "(?i)^(?:8|99|0|[1-9]|1[0-2])$"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: sec-websocket-key
+          regex: "^$"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: method
+          regex: "(?i)^get$"
+        - field: header
+          header_name: sec-websocket-key
+          regex: ".+"
+        - field: header
+          header_name: upgrade
+          regex: "^$"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: method
+          regex: "(?i)^get$"
+        - field: header
+          header_name: sec-websocket-version
+          regex: "^$"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: sec-websocket-key
+          regex: "^$"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: connection
+          regex: "(?i)^keep-alive$"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          regex: "^$"
+        - field: header
+          header_name: sec-websocket-key
+          regex: ".+"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: sec-websocket-key
+          regex: "^[A+/=0]{16,}$"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: sec-websocket-key
+          regex: "^[a-zA-Z0-9+/=_-]{1,15}$"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: method
+          regex: "(?i)^get$"
+        - field: header
+          header_name: sec-websocket-key
+          regex: ".+"
+        - field: header
+          header_name: upgrade
+          regex: "^$"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: method
+          regex: "(?i)^get$"
+        - field: header
+          header_name: connection
+          regex: "(?i)upgrade"
+        - field: header
+          header_name: upgrade
+          regex: "^$"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: origin
+          regex: "(?i)(?:null|evil|attacker|localhost|127\\.0\\.0\\.1)"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: connection
+          regex: "^$"
+        - field: header
+          header_name: sec-websocket-key
+          regex: ".+"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: sec-websocket-version
+          regex: "^13$"
+        - field: host
+          regex: "(?i)(?:127\\.0\\.0\\.1|localhost)"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: sec-websocket-key
+          regex: "![^!]*!"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:chat|ws|socket)(?:/|$|\\?)"
+        - field: header
+          header_name: upgrade
+          contains: websocket
+        - field: header
+          header_name: sec-websocket-key
+          regex: "^[a-zA-Z0-9+/=_-]*[^a-zA-Z0-9+/=_=-][a-zA-Z0-9+/=_-]*$"

@@ -1,0 +1,39 @@
+# BOLA：按 email/phone/batch 枚举用户（需 admin/API 路径门闩）
+
+id: bola-enumeration-query
+
+name: BOLA user enumeration via email phone batch
+
+severity: medium
+
+score: 40
+
+action: block
+
+min_level: medium
+
+tags: [idor, bola, self]
+
+transforms: [url_decode_uni, lowercase]
+
+when:
+
+  any:
+
+    - all:
+        - field: uri
+          regex: "(?i)(?:^|/)(?:admin|internal|manage|console|api/v\\d+/admin)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])(?:email|phone|customer_id|owner_id)="
+
+    - field: uri
+
+      regex: "(?i)^/api/users/by-email/"
+
+    - field: uri
+
+      regex: "(?i)^/api/users/batch"
+
+    - field: query
+
+      regex: "(?i)(?:^|[&])ids=\\d+(?:,\\d+)+"

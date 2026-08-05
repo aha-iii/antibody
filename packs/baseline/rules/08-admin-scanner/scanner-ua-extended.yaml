@@ -1,0 +1,20 @@
+# 扫描器指纹：GoTestWAF / WAFTester 社区 UA 探针（OpenVAS/Nuclei/ffuf 等）
+id: scanner-ua-extended
+name: Scanner user-agent extended probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [admin, scanner, self]
+transforms: [lowercase]
+when:
+  any:
+    - field: header
+      header_name: User-Agent
+      regex: "(?i)(?:openvas-vt|nuclei\\s*[-(]|projectdiscovery|fuzz faster u fool|ffuf/|w3af\\.org|sqlmap/|zgrab/|zap\\b|wpscan|whatweb|nikto|gobuster|dirsearch|hydra/|medusa/|masscan|winrm client openvasvt|apache/)"
+    - field: header
+      header_name: User-Agent
+      contains: 'openvas-vt'
+    - field: header
+      header_name: User-Agent
+      contains: 'nuclei - open-source project'

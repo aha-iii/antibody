@@ -1,0 +1,16 @@
+id: sqli-union-distinct
+name: 'SQL UNION DISTINCT SELECT'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)union\\s+distinct\\s+select"
+    - field: query
+      regex: "(?i)union\\s+distinct\\s+select"
+    - field: body
+      regex: "(?i)union\\s+distinct\\s+select"

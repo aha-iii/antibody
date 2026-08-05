@@ -1,0 +1,28 @@
+id: webshell-asp
+name: 'Webshell ASP/ASPX'
+severity: high
+tags: [webshell, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)<%@\\s*page"
+    - field: uri
+      contains: 'eval(request('
+    - field: uri
+      contains: 'execute(request('
+    - field: query
+      regex: "(?i)<%@\\s*page"
+    - field: query
+      contains: 'eval(request('
+    - field: query
+      contains: 'execute(request('
+    - field: body
+      regex: "(?i)<%@\\s*page"
+    - field: body
+      contains: 'eval(request('
+    - field: body
+      contains: 'execute(request('

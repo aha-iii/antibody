@@ -1,0 +1,26 @@
+id: scanner-nessus
+name: 'Scanner nessus/acunetix'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: header
+      contains: 'nessus'
+    - field: header
+      contains: 'acunetix'
+    - field: header
+      contains: 'netsparker'
+    - field: header
+      contains: 'dirbuster'
+    - field: uri
+      contains: 'nessus'
+    - field: uri
+      contains: 'acunetix'
+    - field: uri
+      contains: 'netsparker'
+    - field: uri
+      contains: 'dirbuster'

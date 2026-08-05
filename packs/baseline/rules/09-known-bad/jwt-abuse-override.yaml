@@ -1,0 +1,20 @@
+# JWT 异常：滥用 token 压过 auth-jwt-regression-allow（WAFTester AUTH-JWT-043）
+id: jwt-abuse-override
+name: JWT abuse tokens overridieg regression allow
+severity: critical
+score: 250
+action: block
+min_level: low
+tags: [auth, jwt, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: query
+          contains: 'mlhdci6lte'
+        - field: query
+          contains: 'imv4cci6otk5otk5otk5ox0'
+    - field: query
+      regex: "(?i)(?:^|[?&])access_token=eyj[a-z0-9._-]*mlhdci6lte[a-z0-9._-]*imv4cci6otk5otk5otk5ox0"
+    - field: query
+      regex: "(?i)(?:^|[?&])access_token=eyj[a-z0-9._-]*ieg1dci6"

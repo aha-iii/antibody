@@ -1,0 +1,34 @@
+id: rce-python-c
+name: 'RCE python -c'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'python -c'
+    - field: uri
+      contains: 'python3 -c'
+    - field: uri
+      contains: 'perl -e'
+    - field: uri
+      contains: 'ruby -e'
+    - field: query
+      contains: 'python -c'
+    - field: query
+      contains: 'python3 -c'
+    - field: query
+      contains: 'perl -e'
+    - field: query
+      contains: 'ruby -e'
+    - field: body
+      contains: 'python -c'
+    - field: body
+      contains: 'python3 -c'
+    - field: body
+      contains: 'perl -e'
+    - field: body
+      contains: 'ruby -e'

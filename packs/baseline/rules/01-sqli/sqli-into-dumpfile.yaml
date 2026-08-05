@@ -1,0 +1,16 @@
+id: sqli-into-dumpfile
+name: 'SQL INTO DUMPFILE'
+severity: high
+tags: [sqli, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'into dumpfile'
+    - field: query
+      contains: 'into dumpfile'
+    - field: body
+      contains: 'into dumpfile'

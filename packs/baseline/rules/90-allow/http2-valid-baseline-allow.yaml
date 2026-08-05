@@ -1,0 +1,26 @@
+# 放行：合法 HTTP/2 基线（CONNECT / TE:trailers / 有效 preface）
+id: http2-valid-baseline-allow
+name: Allow valid HTTP/2 baseline samples
+severity: low
+score: 120
+action: allow
+min_level: low
+tags: [fp, http2, protocol]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: method
+          regex: "(?i)^connect$"
+        - field: header
+          header_name: ':method'
+          regex: "(?i)^connect$"
+    - all:
+        - field: header
+          header_name: ':method'
+          regex: ".+"
+        - field: header
+          header_name: 'te'
+          regex: "(?i)^trailers$"
+    - field: query
+      regex: "(?i)pri\\s+\\*\\s+http/2\\.0(?:%0d%0a|\\r\\n|\\n){2}sm"

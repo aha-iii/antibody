@@ -1,0 +1,22 @@
+id: sqli-declare-at
+name: 'SQL DECLARE @var / EXEC'
+severity: high
+tags: [sqli, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)declare\\s+@"
+    - field: query
+      regex: "(?i)declare\\s+@"
+    - field: body
+      regex: "(?i)declare\\s+@"
+    - field: uri
+      regex: "(?i)\\bexec\\s*\\(\\s*@"
+    - field: query
+      regex: "(?i)\\bexec\\s*\\(\\s*@"
+    - field: body
+      regex: "(?i)\\bexec\\s*\\(\\s*@"

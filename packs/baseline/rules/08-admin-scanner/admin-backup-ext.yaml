@@ -1,0 +1,15 @@
+id: admin-backup-ext
+name: 'Admin backup file probe'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+# 避免任意 .bak/.old 误拦；对齐备份/库文件探测
+when:
+  any:
+    - field: uri
+      regex: "(?i)(?:\\.sql(?:\\.bak|\\.old)?(?:\\?|$)|backup\\.(?:sql|zip|tar|gz)|(?:^|/)(?:dump|db|database)\\.(?:sql|bak)(?:\\?|$)|\\.bak\\.sql(?:\\?|$))"
+    - field: query
+      regex: "(?i)(?:file|path|name)=[^&]*(?:\\.sql\\.bak|backup\\.sql|dump\\.sql)"

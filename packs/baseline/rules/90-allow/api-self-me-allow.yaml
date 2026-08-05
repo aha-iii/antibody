@@ -1,0 +1,15 @@
+# 放行：当前用户 / me 类 API（非 eumeric IDOR）
+id: api-self-me-allow
+name: Allow current-user API paths (/me, ucenter/me)
+severity: low
+score: 50
+action: allow
+min_level: low
+tags: [fp, idor, api]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?(?:users/me|user/me|ucenter/me|account/me|session/me|profile/me)(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?(?:organizations|orgs)/\\d+/users(?:/|$|\\?)"

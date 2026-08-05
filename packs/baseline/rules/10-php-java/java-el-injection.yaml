@@ -1,0 +1,22 @@
+id: java-el-injection
+name: 'Java EL injection'
+severity: high
+tags: [php, java, app]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '${applicationScope'
+    - field: uri
+      contains: '#{requestScope'
+    - field: query
+      contains: '${applicationScope'
+    - field: query
+      contains: '#{requestScope'
+    - field: body
+      contains: '${applicationScope'
+    - field: body
+      contains: '#{requestScope'

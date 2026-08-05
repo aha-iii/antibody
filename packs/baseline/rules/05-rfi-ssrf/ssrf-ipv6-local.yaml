@@ -1,0 +1,22 @@
+id: ssrf-ipv6-local
+name: 'SSRF IPv6 localhost'
+severity: high
+tags: [ssrf, rfi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'http://[::1]'
+    - field: uri
+      contains: 'http://0.0.0.0'
+    - field: query
+      contains: 'http://[::1]'
+    - field: query
+      contains: 'http://0.0.0.0'
+    - field: body
+      contains: 'http://[::1]'
+    - field: body
+      contains: 'http://0.0.0.0'

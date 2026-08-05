@@ -1,0 +1,22 @@
+id: deser-yaml-jackson-gadget
+name: YAML / Jackson / Java deser gadgets
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [deser, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      regex: "(?i)!!python/(?:object|object/apply|name)"
+    - field: body
+      regex: "(?i)\"@type\"\\s*:\\s*\"[^\"]{0,100}(?:springframework|templatesimpl|jdbcrowset|objectdataprovider)"
+    - field: body
+      regex: "(?i)\"@c\"\\s*:\\s*\"[^\"]{0,80}"
+    - field: body
+      contains: 'rO0AB'
+    - field: body
+      regex: "(?i)aced0005|%ac%ed%00%05"
+    - field: query
+      contains: 'rO0AB'

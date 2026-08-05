@@ -1,0 +1,16 @@
+id: sqli-select-cast
+name: SQLi SELECT CAST / SUBSTR password
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [sqli, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)\\bselect\\b.{0,40}\\bcast\\b|\\bsubstr\\s*\\(\\s*password|\\butl_inaddr\\.|\\bcase\\s+when\\b.{0,40}\\bsubstr\\b"
+    - field: uri
+      regex: "(?i)\\bselect\\b.{0,40}\\bcast\\b|\\bsubstr\\s*\\(\\s*password|\\butl_inaddr\\.|\\bcase\\s+when\\b.{0,40}\\bsubstr\\b"
+    - field: body
+      regex: "(?i)\\bselect\\b.{0,40}\\bcast\\b|\\bsubstr\\s*\\(\\s*password|\\butl_inaddr\\.|\\bcase\\s+when\\b.{0,40}\\bsubstr\\b"

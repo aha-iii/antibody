@@ -1,0 +1,16 @@
+id: sqli-waitfor
+name: 'MSSQL WAITFOR'
+severity: high
+tags: [sqli, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'waitfor delay'
+    - field: query
+      contains: 'waitfor delay'
+    - field: body
+      contains: 'waitfor delay'

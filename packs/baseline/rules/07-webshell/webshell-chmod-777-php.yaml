@@ -1,0 +1,16 @@
+id: webshell-chmod-777-php
+name: 'Webshell dropper chmod'
+severity: high
+tags: [webshell, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)chmod\\s*\\(\\s*['\\\"][^'\\\"]+\\.php"
+    - field: query
+      regex: "(?i)chmod\\s*\\(\\s*['\\\"][^'\\\"]+\\.php"
+    - field: body
+      regex: "(?i)chmod\\s*\\(\\s*['\\\"][^'\\\"]+\\.php"

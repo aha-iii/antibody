@@ -1,0 +1,24 @@
+id: open-redirect-misc
+name: Open redirect misc unicode / q= absolute URL
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [redirect, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[=&])(?:url|q)=https?://(?:attacker|evil|example)\\."
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|redirect)=/\\\\/"
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|redirect)=/[\\t ]/"
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|redirect)=/%09/"
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|redirect)=[^&]*(?:ｰ|ー|ゝ|〱|〵)"
+    - field: header
+      regex: "(?i)host\\s*:[^\\n]*\\n[^\\n]*host\\s*:"
+    - field: header
+      regex: "(?i)x-forwarded-proto\\s*:[^\\n]*\\n[^\\n]*x-forwarded-proto\\s*:"

@@ -1,0 +1,16 @@
+id: xss-math-xlink
+name: 'XSS math/xlink'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'xlink:href'
+    - field: query
+      contains: 'xlink:href'
+    - field: body
+      contains: 'xlink:href'

@@ -1,0 +1,16 @@
+id: xss-expression-css
+name: 'XSS CSS expression()'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_entity_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)expression\\s*\\("
+    - field: query
+      regex: "(?i)expression\\s*\\("
+    - field: body
+      regex: "(?i)expression\\s*\\("

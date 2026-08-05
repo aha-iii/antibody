@@ -1,0 +1,32 @@
+# 放行：JWT 回归白样本（小负 iat / 可预测 jti / claims 内嵌 __proto__）
+id: auth-jwt-regression-allow
+name: Allow JWT regression white samples on /api
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, auth, jwt]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)^/api/?$"
+        - field: query
+          regex: "(?i)(?:^|[?&])access_token=eyj[a-z0-9_-]{8,}\\.[a-z0-9_-]{8,}\\.[a-z0-9._-]+$"
+        - field: query
+          contains: 'mlhdci6lte'
+    - all:
+        - field: uri
+          regex: "(?i)^/api/?$"
+        - field: query
+          regex: "(?i)(?:^|[?&])access_token=eyj[a-z0-9_-]{8,}\\.[a-z0-9_-]{8,}\\.[a-z0-9._-]+$"
+        - field: query
+          contains: 'aerpijoimti'
+    - all:
+        - field: uri
+          regex: "(?i)^/api/?$"
+        - field: query
+          regex: "(?i)(?:^|[?&])access_token=eyj[a-z0-9_-]{8,}\\.[a-z0-9_-]{8,}\\.[a-z0-9._-]+$"
+        - field: query
+          contains: 'x3hwcm90b19f'

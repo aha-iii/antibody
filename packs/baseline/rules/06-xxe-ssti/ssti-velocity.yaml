@@ -1,0 +1,22 @@
+id: ssti-velocity
+name: 'SSTI Velocity'
+severity: high
+tags: [xxe, ssti, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '#set('
+    - field: uri
+      contains: '#foreach('
+    - field: query
+      contains: '#set('
+    - field: query
+      contains: '#foreach('
+    - field: body
+      contains: '#set('
+    - field: body
+      contains: '#foreach('

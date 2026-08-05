@@ -1,0 +1,22 @@
+id: xss-timer-function-sink
+name: XSS setTimeout/setInterval/Function constructor sinks
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss, self]
+transforms: [url_decode_uni, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)set(?:timeout|interval)\\s*\\(\\s*['`][^'`]*ale['`+][^'`]*rt"
+    - field: body
+      regex: "(?i)set(?:timeout|interval)\\s*\\(\\s*['`][^'`]*ale['`+][^'`]*rt"
+    - field: uri
+      regex: "(?i)set(?:timeout|interval)\\s*\\(\\s*['`][^'`]*ale['`+][^'`]*rt"
+    - field: query
+      regex: "(?i)(?:new\\s+function\\s*[`(]|function\\s*`[^`]*alert)"
+    - field: body
+      regex: "(?i)(?:new\\s+function\\s*[`(]|function\\s*`[^`]*alert)"
+    - field: header
+      regex: "(?i)set(?:timeout|interval)\\s*\\(\\s*['`].*alert"

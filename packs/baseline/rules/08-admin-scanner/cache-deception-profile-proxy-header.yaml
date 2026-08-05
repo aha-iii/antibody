@@ -1,0 +1,14 @@
+# 缓存攻击：敏感 profile 路径 + X-Original-URL（须压过 proxy allow 35，阈值 36）
+id: cache-deception-profile-proxy-header
+name: Cache deception profile path with X-Original-URL
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [cache, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  all:
+    - feature: proxy_x_original_url
+    - field: uri
+      regex: "(?i)/api/user/profile"

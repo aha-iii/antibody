@@ -1,0 +1,7 @@
+[package]
+name = "nerve-antibody-metrics"
+version.workspace = true
+edition.workspace = true
+description = "Inspect latency and path counters for Native Engine observability"
+
+[dependencies]

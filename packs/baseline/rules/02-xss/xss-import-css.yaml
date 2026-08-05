@@ -1,0 +1,16 @@
+id: xss-import-css
+name: 'XSS CSS @import'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '@import'
+    - field: query
+      contains: '@import'
+    - field: body
+      contains: '@import'

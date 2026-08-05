@@ -1,0 +1,18 @@
+id: bad-jackson-polymorphic
+name: 'Jackson polymorphic type'
+severity: high
+tags: [known_bad, cve]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: body
+      contains: 'com.sun.rowset'
+    - field: body
+      contains: 'JdbcRowSetImpl'
+    - field: query
+      contains: 'com.sun.rowset'
+    - field: query
+      contains: 'JdbcRowSetImpl'

@@ -1,0 +1,14 @@
+id: rce-elfinder-archive
+name: elFinder archive command injection
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [rce, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)cmd=archive.*(?:shell\\.php|;\\s*id|%3e)"
+    - field: query
+      regex: "(?i)connector\\.minimal\\.php"

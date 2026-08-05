@@ -1,0 +1,50 @@
+# BFLA：特权 / 管理面 API 变更操作
+id: bfla-privilege-api
+name: BFLA privilege escalation and admin API mutations
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [bfla, privilege, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/api/sudo/?$"
+    - field: uri
+      regex: "(?i)^/api/system/(?:backup|restore)/?$"
+    - field: uri
+      regex: "(?i)^/api/users/me/promote/?$"
+    - field: uri
+      regex: "(?i)^/api/users/\\d+/mfa/disable/?$"
+    - field: uri
+      regex: "(?i)^/api/users/\\d+/sessions/?$"
+    - field: uri
+      regex: "(?i)^/api/api-keys/?$"
+    - field: uri
+      regex: "(?i)^/api/workflows/\\d+/(?:activate|execute)/?$"
+    - all:
+        - field: uri
+          regex: "(?i)^/api/users/me/?$"
+        - field: method
+          regex: "(?i)^put$"
+    - all:
+        - field: uri
+          regex: "(?i)^/api/settings/?$"
+        - field: method
+          regex: "(?i)^put$"
+    - all:
+        - field: uri
+          regex: "(?i)^/api/workflows/\\d+/?$"
+        - field: method
+          regex: "(?i)^(?:put|patch|delete)$"
+    - all:
+        - field: uri
+          regex: "(?i)^/api/users/\\d+/?$"
+        - field: method
+          regex: "(?i)^(?:put|patch|delete)$"
+    - all:
+        - field: uri
+          regex: "(?i)^/api/users/\\d+/?$"
+        - field: query
+          regex: "(?i)(?:^|[&])_method=delete"

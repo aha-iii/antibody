@@ -1,0 +1,18 @@
+id: auth-recovery-probe
+name: Auth recovery / email verify probe paths
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [auth, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)/if/flow/recovery/?"
+    - field: uri
+      regex: "(?i)/api/v3/stages/email/verify"
+    - field: query
+      regex: "(?i)(?:^|[&])token=(?:admin|aaaaaaaa-aaaa)"
+    - field: query
+      contains: 'token[]='

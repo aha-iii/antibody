@@ -1,0 +1,181 @@
+[tri-gate] building dashboard (min_accuracy=99.0 level=high conc=40)
+[2m2026-08-01T10:34:26.989894Z[0m [33m WARN[0m [2mnerve_waf_auth::local[0m[2m:[0m nerve-waf-auth: NERVE_AUTH_JWT_SECRET unset — using dev-only default; set a strong secret in production
+[2m2026-08-01T10:34:26.990415Z[0m [33m WARN[0m [2mnerve_waf_native_dashboard::bench[0m[2m:[0m bench HTTP bind failed (in-process runner仍可用) [3merror[0m[2m=[0mAddress already in use (os error 98) [3maddr[0m[2m=[0m127.0.0.1:8808
+[tri-gate] === gotestwaf ===
+base=http://127.0.0.1:8799 dataset=gotestwaf level=high conc=40
+start {'phase': 'running', 'pack': 'baseline', 'level': 'high', 'dataset': 'gotestwaf', 'concurrency': 40, 'timeout_ms': 3000, 'target': 'in-process (engine.inspect)', 'progress_pct': 0.0, 'done': 0, 'total': 822, 'message': '准备执行 822 条用例…', 'started_at_ms': 1785580467466, 'finished_at_ms': None, 'elapsed_ms': None, 'metrics': None, 'blazehttp_bin': '/tmp/gotestwaf', 'ready': True, 'ready_message': 'GoTestWAF 样本就绪 · /tmp/gotestwaf', 'fail_count': 0, 'pass_count': 0}
+phase=running 150/822 pass=142 fail=8 acc=94.66666666666667 det=94.52054794520548 fp=0.0 budget=35
+phase=running 425/822 pass=412 fail=13 acc=96.94117647058823 det=95.4225352112676 fp=0.0 budget=63
+phase=running 675/822 pass=641 fail=34 acc=94.96296296296296 det=93.63295880149812 fp=0.0 budget=149
+phase=running 800/822 pass=746 fail=54 acc=93.25 det=91.80576631259484 fp=0.0 budget=228
+phase=done 822/822 pass=768 fail=54 acc=93.43065693430657 det=92.07048458149781 fp=0.0 budget=240
+METRICS {
+  "total": 822,
+  "success": 822,
+  "error": 0,
+  "malicious_total": 681,
+  "blocked_ok": 627,
+  "missed": 54,
+  "normal_total": 141,
+  "passed_ok": 141,
+  "false_positive": 0,
+  "detection_rate": 92.07048458149781,
+  "false_positive_rate": 0.0,
+  "accuracy": 93.43065693430657,
+  "avg_ms": 550.603406326034,
+  "pass_count": 768,
+  "fail_count": 54,
+  "fast_path_count": 0,
+  "deep_path_count": 822,
+  "fast_path_ratio": 0.0,
+  "avg_fast_ms": 0.0,
+  "avg_deep_ms": 550.603406326034,
+  "max_ms": 14050,
+  "budget_exhausted_count": 240
+}
+cases=822 fn=54 fp=0 budget_exhausted_fn=13
+FP by rule:
+FN by prefix:
+     1  testcases/community/community-xss.yml#5
+     1  testcases/community/community-xss.yml#6
+     1  testcases/community/community-xss.yml#8
+     1  testcases/community/community-xss.yml#9
+     1  testcases/community/community-xss.yml#11
+     1  testcases/community/community-xss.yml#12
+     1  testcases/community/community-xss.yml#87
+     1  testcases/community/community-xss.yml#88
+     1  testcases/owasp/crlf.yml#3
+     1  testcases/owasp/crlf.yml#4
+     1  testcases/owasp/crlf.yml#5
+     1  testcases/owasp/crlf.yml#7
+     1  testcases/owasp/nosql-injection.yml#21
+     1  testcases/owasp/nosql-injection.yml#26
+     1  testcases/owasp/rce-urlparam.yml#1
+     1  testcases/owasp/rce-urlparam.yml#3
+     1  testcases/owasp/shell-injection.yml#25
+     1  testcases/owasp/shell-injection.yml#26
+     1  testcases/owasp/shell-injection.yml#27
+     1  testcases/owasp/shell-injection.yml#28
+     1  testcases/owasp/shell-injection.yml#29
+     1  testcases/owasp/shell-injection.yml#31
+     1  testcases/owasp/shell-injection.yml#32
+     1  testcases/owasp/xml-injection.yml#2
+     1  testcases/owasp/xss-scripting.yml#17
+FN samples:
+  testcases/community/community-xss.yml#5/URL/URLParam | GET /?q=%3CsvG%2Fx%3D%22%3E%22%2FoNloaD%3Dconfirm%28%29%2F%2F | budget=max_inspect_ms
+  testcases/community/community-xss.yml#6/URL/HTMLForm | POST / | budget=max_inspect_ms
+  testcases/community/community-xss.yml#8/URL/JSONRequest | POST /api | budget=max_inspect_ms
+  testcases/community/community-xss.yml#9/URL/URLParam | GET /?q=alert%3F.%28document%3F.cookie%29 | budget=
+  testcases/community/community-xss.yml#11/URL/HTMLMultipartForm | POST / | budget=
+  testcases/community/community-xss.yml#12/URL/JSONRequest | POST /api | budget=
+  testcases/community/community-xss.yml#87/URL/HTMLMultipartForm | POST / | budget=
+  testcases/community/community-xss.yml#88/URL/JSONRequest | POST /api | budget=
+  testcases/owasp/crlf.yml#3/Plain/URLPath | GET /%25%30%41Set-cookie:crlf=injection | budget=
+  testcases/owasp/crlf.yml#4/Plain/URLPath | GET /%25%30%41%25%30%44Set-cookie:crlf=injection | budget=
+  testcases/owasp/crlf.yml#5/Plain/URLPath | GET /%25%30%44%25%30%41Set-cookie:crlf=injection | budget=
+  testcases/owasp/crlf.yml#7/Plain/URLPath | GET /%e5%98%8dSet-cookie%3acrlf%3dinjection | budget=
+  testcases/owasp/nosql-injection.yml#21/Base64Flat/URLPath | GET /JywgJG9yOiBbIHt9LCB7ICdvcmRlcic6J29yZGVy | budget=
+  testcases/owasp/nosql-injection.yml#26/URL/URLPath | GET /%27%2C%20%24or%3A%20%5B%20%7B%7D%2C%20%7B%20%27order%27%3A%27order | budget=
+  testcases/owasp/rce-urlparam.yml#1/URL/URLParam | GET /?q=Ev%20al%20%28%22Ex%22%26%22e%22%26%22cute%28%22%22Server.ScriptTimeout%3 | budget=
+  testcases/owasp/rce-urlparam.yml#3/URL/HTMLMultipartForm | POST / | budget=
+  testcases/owasp/shell-injection.yml#25/Base64Flat/JSONRequest | POST /api | budget=
+  testcases/owasp/shell-injection.yml#26/Base64Flat/URLParam | GET /?q=fCBzZXQgL2EgMzQ4Mio3MzAx | budget=
+  testcases/owasp/shell-injection.yml#27/Base64Flat/HTMLForm | POST / | budget=
+  testcases/owasp/shell-injection.yml#28/Base64Flat/HTMLMultipartForm | POST / | budget=
+wrote /mnt/d/workspace/waf/Nerve-waf/Nerve-antibody/data/bench/tri-gate/gotestwaf-gate-20260801-183214.json
+[tri-gate] FAIL gotestwaf accuracy=93.4307% < 99.0%
+[tri-gate] === blazehttp ===
+base=http://127.0.0.1:8799 dataset=blazehttp level=high conc=40
+start {'phase': 'running', 'pack': 'baseline', 'level': 'high', 'dataset': 'blazehttp', 'concurrency': 40, 'timeout_ms': 3000, 'target': 'in-process (engine.inspect)', 'progress_pct': 0.0, 'done': 0, 'total': 33877, 'message': '准备执行 33877 条用例…', 'started_at_ms': 1785580491495, 'finished_at_ms': None, 'elapsed_ms': None, 'metrics': None, 'blazehttp_bin': '/tmp/blazehttp', 'ready': True, 'ready_message': 'blazehttp 样本就绪 · /tmp/blazehttp', 'fail_count': 0, 'pass_count': 0}
+phase=running 175/33877 pass=174 fail=1 acc=99.42857142857143 det=0.0 fp=0.0 budget=27
+phase=running 375/33877 pass=374 fail=1 acc=99.73333333333333 det=83.33333333333334 fp=0.0 budget=42
+phase=running 575/33877 pass=574 fail=1 acc=99.82608695652175 det=87.5 fp=0.0 budget=70
+phase=running 775/33877 pass=774 fail=1 acc=99.87096774193547 det=91.66666666666666 fp=0.0 budget=85
+phase=running 950/33877 pass=947 fail=3 acc=99.68421052631578 det=81.25 fp=0.0 budget=103
+phase=running 1150/33877 pass=1146 fail=4 acc=99.65217391304347 det=77.77777777777779 fp=0.0 budget=118
+phase=running 1300/33877 pass=1296 fail=4 acc=99.6923076923077 det=80.95238095238095 fp=0.0 budget=128
+phase=running 1500/33877 pass=1496 fail=4 acc=99.73333333333333 det=81.81818181818183 fp=0.0 budget=148
+phase=running 1650/33877 pass=1646 fail=4 acc=99.75757575757575 det=84.0 fp=0.0 budget=162
+phase=running 1825/33877 pass=1820 fail=5 acc=99.72602739726028 det=86.20689655172413 fp=0.05567928730512249 budget=171
+phase=running 2000/33877 pass=1994 fail=6 acc=99.7 det=83.33333333333334 fp=0.050761421319796954 budget=185
+phase=running 2175/33877 pass=2167 fail=8 acc=99.63218390804597 det=80.0 fp=0.04672897196261683 budget=206
+phase=running 2350/33877 pass=2340 fail=10 acc=99.57446808510639 det=76.31578947368422 fp=0.043252595155709346 budget=224
+phase=running 2550/33877 pass=2540 fail=10 acc=99.6078431372549 det=78.57142857142857 fp=0.03987240829346093 budget=239
+phase=running 2725/33877 pass=2714 fail=11 acc=99.59633027522936 det=77.27272727272727 fp=0.03729951510630362 budget=250
+phase=running 2900/33877 pass=2888 fail=12 acc=99.58620689655172 det=76.08695652173914 fp=0.0350385423966363 budget=268
+phase=running 3025/33877 pass=3012 fail=13 acc=99.57024793388429 det=75.51020408163265 fp=0.03360215053763441 budget=275
+phase=running 3175/33877 pass=3162 fail=13 acc=99.59055118110236 det=76.92307692307693 fp=0.032020493115593976 budget=284
+phase=running 3275/33877 pass=3261 fail=14 acc=99.57251908396947 det=76.36363636363637 fp=0.031055900621118012 budget=293
+phase=running 3475/33877 pass=3460 fail=15 acc=99.568345323741 det=75.43859649122807 fp=0.029256875365710942 budget=314
+phase=running 3675/33877 pass=3660 fail=15 acc=99.59183673469387 det=76.27118644067797 fp=0.02765486725663717 budget=336
+phase=running 3875/33877 pass=3860 fail=15 acc=99.61290322580645 det=77.04918032786885 fp=0.026219192448872573 budget=359
+phase=running 4075/33877 pass=4059 fail=16 acc=99.60736196319019 det=77.27272727272727 fp=0.02494387627837366 budget=379
+phase=running 4275/33877 pass=4259 fail=16 acc=99.62573099415205 det=77.61194029850746 fp=0.02376425855513308 budget=398
+phase=running 4425/33877 pass=4409 fail=16 acc=99.63841807909604 det=77.94117647058823 fp=0.022951572182694516 budget=407
+phase=running 4625/33877 pass=4609 fail=16 acc=99.65405405405406 det=78.26086956521739 fp=0.021949078138718173 budget=428
+phase=running 4800/33877 pass=4783 fail=17 acc=99.64583333333333 det=78.37837837837837 fp=0.021159542953872196 budget=446
+phase=running 4975/33877 pass=4957 fail=18 acc=99.63819095477386 det=77.63157894736842 fp=0.020412329046744233 budget=462
+phase=running 5175/33877 pass=5157 fail=18 acc=99.65217391304347 det=78.2051282051282 fp=0.019619383951343928 budget=475
+phase=running 5375/33877 pass=5357 fail=18 acc=99.66511627906976 det=79.01234567901234 fp=0.018889308651303362 budget=493
+phase=running 5550/33877 pass=5532 fail=18 acc=99.67567567567568 det=80.23255813953489 fp=0.018301610541727673 budget=510
+phase=running 5725/33877 pass=5707 fail=18 acc=99.68558951965065 det=80.45977011494253 fp=0.0177367860943597 budget=526
+phase=running 5925/33877 pass=5907 fail=18 acc=99.69620253164557 det=80.68181818181817 fp=0.017132088401576154 budget=550
+phase=running 6075/33877 pass=6057 fail=18 acc=99.70370370370371 det=81.31868131868131 fp=0.01671122994652406 budget=570
+phase=running 6300/33877 pass=6282 fail=18 acc=99.71428571428571 det=82.10526315789474 fp=0.016116035455278004 budget=595
+phase=running 6450/33877 pass=6430 fail=20 acc=99.68992248062015 det=80.61224489795919 fp=0.015743073047858942 budget=617
+phase=running 6625/33877 pass=6605 fail=20 acc=99.69811320754717 det=81.0 fp=0.01532567049808429 budget=638
+phase=running 6800/33877 pass=6779 fail=21 acc=99.69117647058823 det=81.65137614678899 fp=0.014945449110745777 budget=657
+phase=running 6975/33877 pass=6954 fail=21 acc=99.69892473118279 det=81.98198198198197 fp=0.014568764568764568 budget=667
+phase=running 7150/33877 pass=7128 fail=22 acc=99.6923076923077 det=81.73913043478261 fp=0.014214641080312722 budget=686
+phase=running 7325/33877 pass=7302 fail=23 acc=99.68600682593856 det=81.35593220338984 fp=0.013875398917718884 budget=701
+phase=running 7525/33877 pass=7500 fail=25 acc=99.66777408637874 det=80.64516129032258 fp=0.013511687609782462 budget=721
+phase=running 7725/33877 pass=7699 fail=26 acc=99.66343042071198 det=81.06060606060606 fp=0.013170025023047545 budget=742
+phase=running 7900/33877 pass=7872 fail=28 acc=99.64556962025316 det=79.8507462686567 fp=0.01287664177182591 budget=753
+phase=running 8100/33877 pass=8070 fail=30 acc=99.62962962962963 det=78.83211678832117 fp=0.01255808112520407 budget=765
+phase=running 8300/33877 pass=8269 fail=31 acc=99.62650602409639 det=79.3103448275862 fp=0.01226241569589209 budget=785
+phase=running 8475/33877 pass=8444 fail=31 acc=99.63421828908554 det=79.59183673469387 fp=0.012007684918347743 budget=797
+phase=running 8650/33877 pass=8619 fail=31 acc=99.64161849710983 det=80.0 fp=0.011764705882352941 budget=810
+phase=running 8850/33877 pass=8819 fail=31 acc=99.64971751412429 det=80.0 fp=0.011494252873563218 budget=823
+phase=running 9050/33877 pass=9019 fail=31 acc=99.65745856353591 det=80.0 fp=0.011235955056179775 budget=841
+phase=running 9250/33877 pass=9219 fail=31 acc=99.66486486486487 det=80.51948051948052 fp=0.010993843447669306 budget=855
+phase=running 9425/33877 pass=9392 fail=33 acc=99.64986737400531 det=79.74683544303798 fp=0.010790978741771878 budget=879
+phase=running 9625/33877 pass=9591 fail=34 acc=99.64675324675325 det=80.0 fp=0.021130480718436345 budget=898
+phase=running 9800/33877 pass=9766 fail=34 acc=99.65306122448979 det=80.48780487804879 fp=0.020755500207555 budget=921
+phase=running 9975/33877 pass=9941 fail=34 acc=99.65914786967419 det=80.72289156626506 fp=0.020389438270975634 budget=935
+phase=running 10175/33877 pass=10140 fail=35 acc=99.65601965601965 det=81.17647058823529 fp=0.02998500749625187 budget=945
+phase=running 10350/33877 pass=10313 fail=37 acc=99.64251207729468 det=80.34682080924856 fp=0.029478235236317183 budget=961
+phase=running 10550/33877 pass=10512 fail=38 acc=99.6398104265403 det=80.66298342541437 fp=0.02893239463786286 budget=982
+phase=running 10750/33877 pass=10712 fail=38 acc=99.64651162790697 det=80.87431693989072 fp=0.028390271600264975 budget=1001
+phase=running 10925/33877 pass=10887 fail=38 acc=99.65217391304347 det=81.18279569892472 fp=0.027935561970388306 budget=1018
+phase=running 11100/33877 pass=11062 fail=38 acc=99.65765765765767 det=81.57894736842105 fp=0.027497708524289642 budget=1034
+phase=running 11275/33877 pass=11237 fail=38 acc=99.66297117516629 det=81.57894736842105 fp=0.027063599458728015 budget=1055
+phase=running 11475/33877 pass=11436 fail=39 acc=99.66013071895425 det=81.34715025906736 fp=0.026591029959227085 budget=1071
+phase=running 11650/33877 pass=11610 fail=40 acc=99.65665236051503 det=81.31313131313132 fp=0.026196297589940624 budget=1092
+phase=running 11850/33877 pass=11810 fail=40 acc=99.66244725738397 det=81.5 fp=0.025751072961373394 budget=1108
+phase=running 12025/33877 pass=11981 fail=44 acc=99.63409563409563 det=80.67632850241546 fp=0.033846674564224064 budget=1125
+phase=running 12225/33877 pass=12181 fail=44 acc=99.640081799591 det=81.30841121495327 fp=0.0333028057613854 budget=1147
+phase=running 12400/33877 pass=12356 fail=44 acc=99.64516129032258 det=81.3953488372093 fp=0.03282724661469019 budget=1161
+phase=running 12600/33877 pass=12556 fail=44 acc=99.65079365079364 det=81.5668202764977 fp=0.03230234999596221 budget=1179
+phase=running 12800/33877 pass=12756 fail=44 acc=99.65625 det=81.7351598173516 fp=0.03179397504172959 budget=1194
+phase=running 12950/33877 pass=12906 fail=44 acc=99.66023166023166 det=81.98198198198197 fp=0.03142677561282212 budget=1205
+phase=running 13125/33877 pass=13078 fail=47 acc=99.64190476190477 det=81.4977973568282 fp=0.03876570010854396 budget=1217
+phase=running 13275/33877 pass=13227 fail=48 acc=99.63841807909604 det=81.22270742358079 fp=0.03832592365476008 budget=1227
+phase=running 13450/33877 pass=13401 fail=49 acc=99.635687732342 det=81.5126050420168 fp=0.037844383893430214 budget=1246
+phase=running 13650/33877 pass=13600 fail=50 acc=99.63369963369964 det=81.48148148148148 fp=0.037293950921160585 budget=1258
+phase=running 13825/33877 pass=13775 fail=50 acc=99.63833634719711 det=81.63265306122449 fp=0.036818851251840944 budget=1271
+phase=running 14025/33877 pass=13975 fail=50 acc=99.64349376114082 det=82.0 fp=0.03629764065335753 budget=1294
+phase=running 14225/33877 pass=14175 fail=50 acc=99.64850615114236 det=82.14285714285714 fp=0.03578329635726043 budget=1309
+phase=running 14425/33877 pass=14375 fail=50 acc=99.65337954939342 det=82.49027237354085 fp=0.035290796160361376 budget=1324
+phase=running 14625/33877 pass=14574 fail=51 acc=99.65128205128205 det=82.44274809160305 fp=0.034811668871405695 budget=1350
+phase=running 14825/33877 pass=14773 fail=52 acc=99.64924114671163 det=82.26415094339623 fp=0.034340659340659344 budget=1366
+phase=running 15025/33877 pass=14973 fail=52 acc=99.65391014975042 det=82.46268656716418 fp=0.03388222538456326 budget=1380
+phase=running 15200/33877 pass=15147 fail=53 acc=99.65131578947368 det=82.22222222222221 fp=0.03348961821835231 budget=1392
+phase=running 15400/33877 pass=15343 fail=57 acc=99.62987012987014 det=81.2274368231047 fp=0.03306222310388151 budget=1409
+phase=running 15575/33877 pass=15517 fail=58 acc=99.62760834670948 det=81.13879003558719 fp=0.03269255917353211 budget=1421
+phase=running 15750/33877 pass=15690 fail=60 acc=99.61904761904762 det=81.11888111888112 fp=0.0387997930677703 budget=1435
+phase=running 15925/33877 pass=15863 fail=62 acc=99.61067503924646 det=80.75601374570446 fp=0.038377894332864274 budget=1457
+phase=running 16125/33877 pass=16062 fail=63 acc=99.6093023255814 det=80.74324324324324 fp=0.037905110872449306 budget=1471
+phase=running 16325/33877 pass=16260 fail=65 acc=99.60183767228177 det=80.33333333333333 fp=0.0374414976599064 budget=1496
+phase=running 16500/33877 pass=16435 fail=65 acc=99.60606060606061 det=80.39867109634552 fp=0.037039323415025624 budget=1508
+phase=running 16675/33877 pass=16609 fail=66 acc=99.60419790104947 det=80.3921568627451 fp=0.03665465208626061 budget=1524
+phase=running 16825/33877 pass=16757 fail=68 acc=99.59583952451709 det=80.12820512820514 fp=0.03633500878096046 budget=1536

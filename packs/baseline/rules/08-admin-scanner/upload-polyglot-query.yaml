@@ -1,0 +1,15 @@
+# 上传/多态：query 内嵌 Content-Type 与魔术字节
+id: upload-polyglot-query
+name: Upload polyglot and embedded content-type probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [upload, polyglot, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[=&])q=[^&]*(?:content-type%3a[^&]*(?:%0a|%0d)|gif89a|%3c%3fphp|ffd8ffe0|%peg|%25peg)"
+    - field: query
+      regex: "(?i)(?:^|[=&])q=[^&]*filename%3d[^&]*(?:%0a|%0d).*content-type%3a"

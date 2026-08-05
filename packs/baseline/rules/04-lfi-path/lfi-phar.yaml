@@ -1,0 +1,28 @@
+id: lfi-phar
+name: 'LFI phar://'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'phar://'
+    - field: uri
+      contains: 'zip://'
+    - field: uri
+      contains: 'expect://'
+    - field: query
+      contains: 'phar://'
+    - field: query
+      contains: 'zip://'
+    - field: query
+      contains: 'expect://'
+    - field: body
+      contains: 'phar://'
+    - field: body
+      contains: 'zip://'
+    - field: body
+      contains: 'expect://'

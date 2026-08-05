@@ -1,0 +1,16 @@
+id: lfi-cscot-translation
+name: Cisco ASA CSCOT translation-table LFI
+severity: critical
+score: 50
+action: block
+min_level: low
+tags: [lfi, product, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(?:\\+cscot\\+|%2bcscot%2b).{0,80}translation-table"
+    - field: uri
+      contains: 'portal_inc.lua'
+    - field: query
+      regex: "(?i)translation-table.*(?:\\.\\./|%2e%2e)|(?:\\.\\./|%2e%2e).*textdomain"

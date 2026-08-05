@@ -1,0 +1,34 @@
+id: sqli-or-1eq1
+name: 'SQL OR 1=1 literal'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'or 1=1'
+    - field: uri
+      contains: 'or 1 = 1'
+    - field: uri
+      contains: ''' or '''
+    - field: uri
+      contains: '" or "'
+    - field: query
+      contains: 'or 1=1'
+    - field: query
+      contains: 'or 1 = 1'
+    - field: query
+      contains: ''' or '''
+    - field: query
+      contains: '" or "'
+    - field: body
+      contains: 'or 1=1'
+    - field: body
+      contains: 'or 1 = 1'
+    - field: body
+      contains: ''' or '''
+    - field: body
+      contains: '" or "'

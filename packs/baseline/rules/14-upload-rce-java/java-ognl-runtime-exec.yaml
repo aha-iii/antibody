@@ -1,0 +1,28 @@
+id: java-ognl-runtime-exec
+name: 'Java OGNL Runtime.exec'
+severity: critical
+tags: [rce, java, blazehttp_gap]
+score: 50
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'java.lang.runtime'
+    - field: query
+      contains: 'java.lang.runtime'
+    - field: body
+      contains: 'java.lang.runtime'
+    - field: uri
+      contains: '@java.lang.runtime@'
+    - field: uri
+      contains: 'getruntime().exec'
+    - field: query
+      contains: 'getruntime().exec'
+    - field: body
+      contains: 'getruntime().exec'
+    - field: uri
+      contains: 'ognl.ognlcontext'
+    - field: query
+      contains: 'ognl.ognlcontext'

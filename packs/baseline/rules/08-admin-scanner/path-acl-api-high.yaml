@@ -1,0 +1,18 @@
+id: path-acl-api-high
+name: Privileged API path and cross-tenant header access
+severity: high
+score: 40
+action: block
+min_level: high
+tags: [bypass, self, wt]
+transforms: [lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)/api/(?:v\\d+/)?(?:devices|outposts|authenticated_sessions|core/tokens)(?:/|$|\\?)"
+    - field: header
+      header_name: X-Account-Id
+      regex: "(?i)(?:other|attacker|999|admin|tenant-b|competitor)"
+    - field: header
+      header_name: X-Tenant-Id
+      regex: "(?i)(?:other|attacker|999|admin|tenant-b|competitor)"

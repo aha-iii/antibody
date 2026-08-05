@@ -1,0 +1,79 @@
+[regression] building dashboard...
+[regression] starting dashboard on 127.0.0.1:8799
+[2m2026-08-01T06:02:35.595034Z[0m [33m WARN[0m [2mnerve_waf_auth::local[0m[2m:[0m nerve-waf-auth: NERVE_AUTH_JWT_SECRET unset — using dev-only default; set a strong secret in production
+[regression] manifest 2699 cases · concurrency=40
+{"phase":"running","pack":"baseline","level":"medium","dataset":"blazehttp-regression","concurrency":40,"timeout_ms":3000,"target":"in-process (engine.inspect)","progress_pct":0.0,"done":0,"total":2699,"message":"准备执行 2699 条用例…","started_at_ms":1785564157717,"finished_at_ms":null,"elapsed_ms":null,"metrics":null,"blazehttp_bin":"/mnt/d/workspace/waf/Nerve-waf-native/crates/integration/nerve-waf-native-dashboard/../../../data/bench/blazehttp-regression-latest.json","ready":true,"ready_message":"blazehttp 回归集 · 2699 条 FP/FN · manifest=/mnt/d/workspace/waf/Nerve-waf-native/crates/integration/nerve-waf-native-dashboard/../../../data/bench/blazehttp-regression-latest.json","fail_count":0,"pass_count":0}[regression] phase=running 0/2699 fail=0 准备执行 2699 条用例…
+[regression] phase=running 75/2699 fail=43 执行中 75/2699 · 通过 32 · 失败 43
+[regression] phase=running 175/2699 fail=89 执行中 175/2699 · 通过 86 · 失败 89
+[regression] phase=running 250/2699 fail=114 执行中 250/2699 · 通过 136 · 失败 114
+[regression] phase=running 325/2699 fail=145 执行中 325/2699 · 通过 180 · 失败 145
+[regression] phase=running 425/2699 fail=191 执行中 425/2699 · 通过 234 · 失败 191
+[regression] phase=running 500/2699 fail=220 执行中 500/2699 · 通过 280 · 失败 220
+[regression] phase=running 575/2699 fail=257 执行中 575/2699 · 通过 318 · 失败 257
+[regression] phase=running 675/2699 fail=300 执行中 675/2699 · 通过 375 · 失败 300
+[regression] phase=running 750/2699 fail=323 执行中 750/2699 · 通过 427 · 失败 323
+[regression] phase=running 825/2699 fail=351 执行中 825/2699 · 通过 474 · 失败 351
+[regression] phase=running 925/2699 fail=393 执行中 925/2699 · 通过 532 · 失败 393
+[regression] phase=running 1000/2699 fail=428 执行中 1000/2699 · 通过 572 · 失败 428
+[regression] phase=running 1075/2699 fail=461 执行中 1075/2699 · 通过 614 · 失败 461
+[regression] phase=running 1175/2699 fail=510 执行中 1175/2699 · 通过 665 · 失败 510
+[regression] phase=running 1250/2699 fail=546 执行中 1250/2699 · 通过 704 · 失败 546
+[regression] phase=running 1350/2699 fail=581 执行中 1350/2699 · 通过 769 · 失败 581
+[regression] phase=running 1425/2699 fail=611 执行中 1425/2699 · 通过 814 · 失败 611
+[regression] phase=running 1500/2699 fail=641 执行中 1500/2699 · 通过 859 · 失败 641
+[regression] phase=running 1575/2699 fail=664 执行中 1575/2699 · 通过 911 · 失败 664
+[regression] phase=running 1650/2699 fail=698 执行中 1650/2699 · 通过 952 · 失败 698
+[regression] phase=running 1725/2699 fail=728 执行中 1725/2699 · 通过 997 · 失败 728
+[regression] phase=running 1800/2699 fail=758 执行中 1800/2699 · 通过 1042 · 失败 758
+[regression] phase=running 1900/2699 fail=800 执行中 1900/2699 · 通过 1100 · 失败 800
+[regression] phase=running 1975/2699 fail=832 执行中 1975/2699 · 通过 1143 · 失败 832
+[regression] phase=running 2075/2699 fail=875 执行中 2075/2699 · 通过 1200 · 失败 875
+[regression] phase=running 2175/2699 fail=922 执行中 2175/2699 · 通过 1253 · 失败 922
+[regression] phase=running 2275/2699 fail=984 执行中 2275/2699 · 通过 1291 · 失败 984
+[regression] phase=running 2350/2699 fail=1028 执行中 2350/2699 · 通过 1322 · 失败 1028
+[regression] phase=running 2450/2699 fail=1079 执行中 2450/2699 · 通过 1371 · 失败 1079
+[regression] phase=running 2525/2699 fail=1120 执行中 2525/2699 · 通过 1405 · 失败 1120
+[regression] phase=running 2600/2699 fail=1151 执行中 2600/2699 · 通过 1449 · 失败 1151
+[regression] phase=running 2675/2699 fail=1190 执行中 2675/2699 · 通过 1485 · 失败 1190
+[regression] phase=done 2699/2699 fail=1195 完成 · 通过 1504 · 失败 1195 · 检出率 60.61% · 准确率 55.72%
+[regression] summary: /mnt/d/workspace/waf/Nerve-waf-native/data/bench/blazehttp-regression-fp-fn-20260801-140221.md
+# blazehttp 回归集复测（FP/FN 问题用例）
+
+- 报告: `/mnt/d/workspace/waf/Nerve-waf-native/data/bench/blazehttp-regression-report-20260801-140221.json`
+
+## 汇总
+
+| 指标 | 值 |
+|------|-----|
+| total | 2699 |
+| detection_rate | 60.60606060606061 |
+| false_positive_rate | 44.33608402100525 |
+| accuracy | 55.72434234901815 |
+| missed | 13 |
+| false_positive | 1182 |
+| malicious_total | 33 |
+| normal_total | 2666 |
+| avg_ms | 7894.133012226751 |
+| fail_count | 1195 |
+| pass_count | 1504 |
+
+## 与上次全量基准对比（Top5 规则 FP）
+
+| rule_id | 上次 FP | 本次回归 FP | 变化 |
+|---------|---------|-------------|------|
+| `oscmd-windows-unix` | 752 | 317 | -435 |
+| `open-redirect-uri-fast` | 643 | 9 | -634 |
+| `observe-scanner-generic` | 299 | 0 | -299 |
+| `bola-resource-path` | 268 | 0 | -268 |
+| `idor-numeric-api` | 170 | 0 | -170 |
+
+## 本次仍失败 FN 13 / FP 1182
+
+### FN 样例
+
+- `testcases/47/e8/60f3f244ef8fb130a8e7fe597184.black` · GET /uploadfiles/apache.php.jpeg
+- `testcases/4b/0a/096825fe5d589a0fe75c44aca53e.black` · GET /mailsms/s?func=ADMIN:appState&dumpConfig=/
+- `testcases/56/94/8e1087c5bffe3a7d10ce90e9c72f.black` · DELETE /capture/agnostic?arbitrary=resource
+- `testcases/81/0f/7a42faed086036e72fec24ba965e.black` · DELETE /?protocol=database
+- `testcases/85/f4/e76ed749ed2007368b7e36772410.black` · POST /
+- `testcases/89/ec/26b7057003ad7a963dfe10ae6c5d.black` · POST /uc/feedback/api/v1/pc/feedback/add

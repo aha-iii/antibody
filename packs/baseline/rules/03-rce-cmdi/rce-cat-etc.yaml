@@ -1,0 +1,28 @@
+id: rce-cat-etc
+name: 'RCE cat /etc'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'cat /etc/passwd'
+    - field: uri
+      contains: 'cat /etc/shadow'
+    - field: uri
+      contains: 'type %systemroot%'
+    - field: query
+      contains: 'cat /etc/passwd'
+    - field: query
+      contains: 'cat /etc/shadow'
+    - field: query
+      contains: 'type %systemroot%'
+    - field: body
+      contains: 'cat /etc/passwd'
+    - field: body
+      contains: 'cat /etc/shadow'
+    - field: body
+      contains: 'type %systemroot%'

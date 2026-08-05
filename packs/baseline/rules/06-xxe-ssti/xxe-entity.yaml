@@ -1,0 +1,34 @@
+id: xxe-entity
+name: 'XXE ENTITY'
+severity: high
+tags: [xxe, ssti, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '<!entity'
+    - field: uri
+      contains: '<!ENTITY'
+    - field: uri
+      contains: 'SYSTEM "'
+    - field: uri
+      contains: 'system "'
+    - field: query
+      contains: '<!entity'
+    - field: query
+      contains: '<!ENTITY'
+    - field: query
+      contains: 'SYSTEM "'
+    - field: query
+      contains: 'system "'
+    - field: body
+      contains: '<!entity'
+    - field: body
+      contains: '<!ENTITY'
+    - field: body
+      contains: 'SYSTEM "'
+    - field: body
+      contains: 'system "'

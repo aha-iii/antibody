@@ -1,0 +1,16 @@
+id: rce-php-object-injection
+name: PHP object injection / ImageMagick gadget
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [rce, php, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)o:\\d+:\"|vb_image_imagemagick|__php_incomplete_class|imagefilelocation"
+    - field: body
+      regex: "(?i)o:\\d+:\"|vb_image_imagemagick|__php_incomplete_class"
+    - field: uri
+      regex: "(?i)o:\\d+:\""

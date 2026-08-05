@@ -1,0 +1,23 @@
+id: xss-svg-onload
+name: 'XSS SVG onload'
+severity: high
+tags: [xss, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    # 去掉裸 <svg，避免日志/埋点带 SVG 图标误伤；要求事件处理器
+    - field: uri
+      regex: "(?i)<svg[^>]{0,120}on(?:load|error|begin|end)\\s*="
+    - field: query
+      regex: "(?i)<svg[^>]{0,120}on(?:load|error|begin|end)\\s*="
+    - field: body
+      regex: "(?i)<svg[^>]{0,120}on(?:load|error|begin|end)\\s*="
+    - field: uri
+      regex: "(?i)<svg[^>]{0,80}onload\\s*="
+    - field: query
+      regex: "(?i)<svg[^>]{0,80}onload\\s*="
+    - field: body
+      regex: "(?i)<svg[^>]{0,80}onload\\s*="

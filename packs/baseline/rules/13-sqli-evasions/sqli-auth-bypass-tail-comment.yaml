@@ -1,0 +1,22 @@
+id: sqli-auth-bypass-tail-comment
+name: SQLi auth bypass trailing comment
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [sqli, auth, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[=&])[^=&]*['\"]\\s*(?:--|#|/\\*)"
+    - field: body
+      regex: "(?i)(?:^|[=&])[^=&]*['\"]\\s*(?:--|#|/\\*)"
+    - field: query
+      regex: "(?i)['\"]\\s*\\)\\s*or\\s*\\("
+    - field: body
+      regex: "(?i)['\"]\\s*\\)\\s*or\\s*\\("
+    - field: query
+      regex: "(?i)(?:^|[=&])(?:admin|root|user)['\"]\\s*(?:or|and)\\b"
+    - field: body
+      regex: "(?i)(?:^|[=&])(?:admin|root|user)['\"]\\s*(?:or|and)\\b"

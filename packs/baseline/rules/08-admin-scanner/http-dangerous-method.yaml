@@ -1,0 +1,30 @@
+# 协议/方法滥用：DELETE 等危险方法访问敏感资源
+id: http-dangerous-method
+name: Dangerous HTTP method on sensitive paths
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [proto, method, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '/capture/ageostic'
+    - field: uri
+      contains: '/integration/mediocre/push/skip'
+    - all:
+        - field: method
+          contains: 'delete'
+        - field: uri
+          contains: '/capture/'
+    - all:
+        - field: method
+          contains: 'delete'
+        - field: uri
+          contains: '/integration/'
+    - all:
+        - field: method
+          contains: 'delete'
+        - field: query
+          contains: 'protocol=database'

@@ -1,0 +1,21 @@
+# 放行：SSO/云厂商登录页 service=https 回跳（非开放重定向）
+id: sso-service-param-allow
+name: Allow SSO login service=https redirect target
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, redirect, sso]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)(?:^|/)(?:authui/login(?:\\.html)?|mini_login\\.htm)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])service=https"
+    - all:
+        - field: uri
+          regex: "(?i)(?:aliyun|huaweicloud|tencent)"
+        - field: query
+          regex: "(?i)(?:^|[&])service=https"

@@ -1,0 +1,62 @@
+# HTTP/2 禁止头：Connection / TE / Upgrade 等（评测 PROTO-HTTP2-*）
+id: http2-forbidden-headers
+name: HTTP/2 forbidden connection-level headers
+severity: high
+score: 40
+action: block
+min_level: medium
+tags: [protocol, http2, self]
+transforms: [lowercase]
+when:
+  any:
+    - all:
+        - field: header
+          header_name: ':method'
+          regex: ".+"
+        - field: header
+          header_name: 'connection'
+          regex: ".+"
+    - all:
+        - field: header
+          header_name: ':method'
+          regex: ".+"
+        - field: header
+          header_name: 'transfer-encoding'
+          regex: ".+"
+    - all:
+        - field: header
+          header_name: ':method'
+          regex: ".+"
+        - field: header
+          header_name: 'upgrade'
+          regex: ".+"
+    - all:
+        - field: header
+          header_name: ':method'
+          regex: ".+"
+        - field: header
+          header_name: 'keep-alive'
+          regex: ".+"
+    - all:
+        - field: header
+          header_name: ':method'
+          regex: ".+"
+        - field: header
+          header_name: 'proxy-connection'
+          regex: ".+"
+    - all:
+        - field: header
+          header_name: ':method'
+          regex: ".+"
+        - field: header
+          header_name: 'te'
+          regex: "(?i)^(?:chunked|gzip|deflate|compress|identity|trailers,)$"
+    - all:
+        - field: header
+          header_name: ':method'
+          regex: ".+"
+        - field: method
+          regex: "(?i)^get$"
+        - field: header
+          header_name: 'content-length'
+          regex: ".+"

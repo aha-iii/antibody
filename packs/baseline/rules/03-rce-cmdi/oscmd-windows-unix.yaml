@@ -1,0 +1,32 @@
+id: oscmd-windows-unix
+name: OS command injection Windows/Unix separators
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [rce, cmdi, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    # 短命令名 id/cat/type/dir 易与 query 参数同名：要求后续为空格/结尾/shell 元字符，排除 key=value
+    # （Rust regex 无 lookaround；与 `(?!=)` 消歧等价）
+    - field: query
+      regex: "(?i)(?:^|[=&])[^&]*&\\s*(?:(?:net\\s+user|net\\s+localgroup|whoami|curl|wget|reg\\s+query|printenv|find\\s+/)\\b|(?:dir|type|id|cat)(?:\\s|$|[;&|`]))"
+    - field: body
+      regex: "(?i)(?:^|[=&])[^&]*&\\s*(?:(?:net\\s+user|net\\s+localgroup|whoami|curl|wget|reg\\s+query|printenv)\\b|(?:dir|type|id|cat)(?:\\s|$|[;&|`]))"
+    - field: query
+      regex: "(?i)(?:^|[=&])[^&]*;\\s*(?:printenv|find\\s+/|id|whoami|cat\\s+/|ls\\s+-|ps\\s+aux|netstat\\s+-)\\b"
+    - field: body
+      regex: "(?i)(?:^|[=&])[^&]*;\\s*(?:printenv|find\\s+/|id|whoami|ps\\s+aux|netstat)\\b"
+    - field: query
+      regex: "(?i)(?:^|[=&])[^&]*&\\s*(?:systeminfo|bitsadmin|reg\\s+query)\\b"
+    - field: query
+      regex: "(?i)\\$\\{path:\\d+:\\d+\\}"
+    - field: query
+      regex: "(?i)/\\?\\?\\?\\?/c\\?t\\s+/\\?\\?\\?\\?/p\\?sswd|\\]\\|id\\|"
+    - field: query
+      regex: "(?i)\\$0<<<"
+    - field: query
+      regex: "(?i)>\\s*/(?:tmp|var|dev)/"
+    - field: body
+      regex: "(?i)>\\s*/(?:tmp|var|dev)/"

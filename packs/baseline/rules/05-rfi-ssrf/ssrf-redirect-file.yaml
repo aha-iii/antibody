@@ -1,0 +1,22 @@
+id: ssrf-redirect-file
+name: 'SSRF file after redirect marker'
+severity: high
+tags: [ssrf, rfi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)url=file:"
+    - field: uri
+      regex: "(?i)uri=file:"
+    - field: query
+      regex: "(?i)url=file:"
+    - field: query
+      regex: "(?i)uri=file:"
+    - field: body
+      regex: "(?i)url=file:"
+    - field: body
+      regex: "(?i)uri=file:"

@@ -1,0 +1,52 @@
+# 放行：API 存储型元数据/query 字段（评测白样本；非反射注入）
+id: api-stored-metadata-query-allow
+name: Allow API stored metadata / workflow query fields
+severity: low
+score: 300
+action: allow
+min_level: low
+tags: [fp, api, metadata]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)^/api/assets(?:/upload)?(?:/|$|\\?)"
+        - field: query
+          scope: raw
+          regex: "(?i)(?:^|[&?])(?:metadata|faces(?:=|%5b)|objects|description|ocr_text|location|exif_(?:artist|comment|make|model|camera)|filename=image\\.)"
+    - all:
+        - field: uri
+          scope: raw
+          regex: "(?i)^/api/assets(?:/upload)?\\?(?:[^&]*&)?(?:metadata|faces|exif_|filename=image\\.)"
+    - all:
+        - field: uri
+          regex: "(?i)^/api/assets/upload"
+        - field: method
+          regex: "(?i)^post$"
+    - all:
+        - field: method
+          regex: "(?i)^get$"
+        - field: uri
+          regex: "(?i)^/api/assets/[0-9a-f-]{8,}(?:/|$|\\?)"
+    - all:
+        - field: uri
+          contains: '/rest/workflows'
+        - field: query
+          regex: "(?i)(?:^|[&])(?:tags|nodes|name)="
+    - all:
+        - field: uri
+          contains: '/rest/executions'
+        - field: query
+          regex: "(?i)(?:^|[&])(?:nodes|name|tags|code|expression)="
+    - all:
+        - field: uri
+          regex: "(?i)^/api/search/smart(?:/|$|\\?)"
+        - field: query
+          scope: raw
+          regex: "(?i)(?:^|[&])q="
+    - all:
+        - field: uri
+          regex: "(?i)^/webhook/"
+        - field: query
+          contains: '__proto__'

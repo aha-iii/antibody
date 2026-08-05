@@ -1,0 +1,224 @@
+- id: crs-921110
+  name: 'HTTP Request Smuggling Attack'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?:get|p(?:(?:os|u)t|atch|rop(?:find|atch))|head|options|co(?:nnect|py)|delete|trac[ek]|m(?:kcol|ove)|(?:un)?lock)[\\s\\x0b]+[^\\s\\x0b]+[\\s\\x0b]+http/[0-9]"
+      - field: query
+        regex: "(?:get|p(?:(?:os|u)t|atch|rop(?:find|atch))|head|options|co(?:nnect|py)|delete|trac[ek]|m(?:kcol|ove)|(?:un)?lock)[\\s\\x0b]+[^\\s\\x0b]+[\\s\\x0b]+http/[0-9]"
+- id: crs-921120
+  name: 'HTTP Response Splitting Attack'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "[\\n\\r][^0-9A-Z_a-z]*?(?:content-(?:type|length)|set-cookie|location):[\\s\\x0b]*[0-9A-Z_a-z]"
+      - field: header
+        regex: "[\\n\\r][^0-9A-Z_a-z]*?(?:content-(?:type|length)|set-cookie|location):[\\s\\x0b]*[0-9A-Z_a-z]"
+      - field: query
+        regex: "[\\n\\r][^0-9A-Z_a-z]*?(?:content-(?:type|length)|set-cookie|location):[\\s\\x0b]*[0-9A-Z_a-z]"
+- id: crs-921130
+  name: 'HTTP Response Splitting Attack'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?:\\bhttp/\\d|<(?:html|meta)\\b)"
+      - field: header
+        regex: "(?:\\bhttp/\\d|<(?:html|meta)\\b)"
+      - field: query
+        regex: "(?:\\bhttp/\\d|<(?:html|meta)\\b)"
+- id: crs-921140
+  name: 'HTTP Header Injection Attack via headers'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "[\\n\\r]"
+      - field: query
+        regex: "[\\n\\r]"
+      - field: body
+        regex: "[\\n\\r]"
+      - field: header
+        regex: "[\\n\\r]"
+- id: crs-921150
+  name: 'HTTP Header Injection Attack via payload (CR/LF detected)'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "[\\n\\r]"
+      - field: query
+        regex: "[\\n\\r]"
+- id: crs-921160
+  name: 'HTTP Header Injection Attack via payload (CR/LF and header-name detected)'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "[\\n\\r]+(?:[\\s\\x0b]|location|re(?:fresh|mote-(?:ip|addr))|(?:set-)?cookie|forwarded-(?:(?:fo|serve)r|host)|host|via|originating-IP|x-(?:forwarded-(?:(?:fo|serve)r|host)|host|via|remote-(?:ip|addr)|originating-IP))[\\s\\x0b]*:"
+      - field: query
+        regex: "[\\n\\r]+(?:[\\s\\x0b]|location|re(?:fresh|mote-(?:ip|addr))|(?:set-)?cookie|forwarded-(?:(?:fo|serve)r|host)|host|via|originating-IP|x-(?:forwarded-(?:(?:fo|serve)r|host)|host|via|remote-(?:ip|addr)|originating-IP))[\\s\\x0b]*:"
+      - field: body
+        regex: "[\\n\\r]+(?:[\\s\\x0b]|location|re(?:fresh|mote-(?:ip|addr))|(?:set-)?cookie|forwarded-(?:(?:fo|serve)r|host)|host|via|originating-IP|x-(?:forwarded-(?:(?:fo|serve)r|host)|host|via|remote-(?:ip|addr)|originating-IP))[\\s\\x0b]*:"
+      - field: header
+        regex: "[\\n\\r]+(?:[\\s\\x0b]|location|re(?:fresh|mote-(?:ip|addr))|(?:set-)?cookie|forwarded-(?:(?:fo|serve)r|host)|host|via|originating-IP|x-(?:forwarded-(?:(?:fo|serve)r|host)|host|via|remote-(?:ip|addr)|originating-IP))[\\s\\x0b]*:"
+- id: crs-921190
+  name: 'HTTP Splitting (CR/LF in request filename detected)'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "[\\n\\r]"
+- id: crs-921200
+  name: 'LDAP Injection Attack'
+  severity: medium
+  tags: [crs, owasp_crs, community, misc, protocol]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "^[^!&\\(\\):<>\\|~]*\\)[\\s\\x0b]*(?:\\((?:[^!&\\(\\),<->\\|~]+[<>~]?=|[\\s\\x0b]*[!&\\|][\\s\\x0b]*[\\(\\)]?[\\s\\x0b]*)|\\)[\\s\\x0b]*\\([\\s\\x0b]*[!&\\|][\\s\\x0b]*|[!&\\|][\\s\\x0b]*\\([^!&\\(\\),<->\\|~]+[<>~]?=[^!&\\(\\):<>\\|~]*)"
+      - field: header
+        regex: "^[^!&\\(\\):<>\\|~]*\\)[\\s\\x0b]*(?:\\((?:[^!&\\(\\),<->\\|~]+[<>~]?=|[\\s\\x0b]*[!&\\|][\\s\\x0b]*[\\(\\)]?[\\s\\x0b]*)|\\)[\\s\\x0b]*\\([\\s\\x0b]*[!&\\|][\\s\\x0b]*|[!&\\|][\\s\\x0b]*\\([^!&\\(\\),<->\\|~]+[<>~]?=[^!&\\(\\):<>\\|~]*)"
+      - field: query
+        regex: "^[^!&\\(\\):<>\\|~]*\\)[\\s\\x0b]*(?:\\((?:[^!&\\(\\),<->\\|~]+[<>~]?=|[\\s\\x0b]*[!&\\|][\\s\\x0b]*[\\(\\)]?[\\s\\x0b]*)|\\)[\\s\\x0b]*\\([\\s\\x0b]*[!&\\|][\\s\\x0b]*|[!&\\|][\\s\\x0b]*\\([^!&\\(\\),<->\\|~]+[<>~]?=[^!&\\(\\):<>\\|~]*)"
+- id: crs-921421
+  name: 'Content-Type header: Dangerous content type outside the mime type declaration'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^[^\\s\\x0b,;]+[\\s\\x0b,;].*?(?:application/(?:.+\\+)?json|(?:application/(?:soap\\+)?|text/)xml)"
+      - field: query
+        regex: "^[^\\s\\x0b,;]+[\\s\\x0b,;].*?(?:application/(?:.+\\+)?json|(?:application/(?:soap\\+)?|text/)xml)"
+      - field: body
+        regex: "^[^\\s\\x0b,;]+[\\s\\x0b,;].*?(?:application/(?:.+\\+)?json|(?:application/(?:soap\\+)?|text/)xml)"
+      - field: header
+        regex: "^[^\\s\\x0b,;]+[\\s\\x0b,;].*?(?:application/(?:.+\\+)?json|(?:application/(?:soap\\+)?|text/)xml)"
+- id: crs-921240
+  name: 'mod_proxy attack attempt detected'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "unix:[^|]*\\|"
+      - field: query
+        regex: "unix:[^|]*\\|"
+      - field: body
+        regex: "unix:[^|]*\\|"
+      - field: header
+        regex: "unix:[^|]*\\|"
+- id: crs-921151
+  name: 'HTTP Header Injection Attack via payload (CR/LF detected)'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 20
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "[\\n\\r]"
+      - field: query
+        regex: "[\\n\\r]"
+      - field: body
+        regex: "[\\n\\r]"
+      - field: header
+        regex: "[\\n\\r]"
+- id: crs-921422
+  name: 'Content-Type header: Dangerous content type outside the mime type declaration'
+  severity: medium
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 20
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "^[^\\s\\x0b,;]+[\\s\\x0b,;].*?\\b(?:((?:tex|multipar)t|application)|((?:audi|vide)o|image|cs[sv]|(?:vn|relate)d|p(?:df|lain)|json|(?:soa|cs)p|x(?:ml|-www-form-urlencoded)|form-data|x-amf|(?:octe|repor)t|stream)|([\\+/]))\\b"
+      - field: query
+        regex: "^[^\\s\\x0b,;]+[\\s\\x0b,;].*?\\b(?:((?:tex|multipar)t|application)|((?:audi|vide)o|image|cs[sv]|(?:vn|relate)d|p(?:df|lain)|json|(?:soa|cs)p|x(?:ml|-www-form-urlencoded)|form-data|x-amf|(?:octe|repor)t|stream)|([\\+/]))\\b"
+      - field: body
+        regex: "^[^\\s\\x0b,;]+[\\s\\x0b,;].*?\\b(?:((?:tex|multipar)t|application)|((?:audi|vide)o|image|cs[sv]|(?:vn|relate)d|p(?:df|lain)|json|(?:soa|cs)p|x(?:ml|-www-form-urlencoded)|form-data|x-amf|(?:octe|repor)t|stream)|([\\+/]))\\b"
+      - field: header
+        regex: "^[^\\s\\x0b,;]+[\\s\\x0b,;].*?\\b(?:((?:tex|multipar)t|application)|((?:audi|vide)o|image|cs[sv]|(?:vn|relate)d|p(?:df|lain)|json|(?:soa|cs)p|x(?:ml|-www-form-urlencoded)|form-data|x-amf|(?:octe|repor)t|stream)|([\\+/]))\\b"
+- id: crs-921210
+  name: 'HTTP Parameter Pollution after detecting bogus char after parameter array'
+  severity: low
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 15
+  min_level: high
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(][^\\]]+$|][^\\]]+\\[)"
+      - field: query
+        regex: "(][^\\]]+$|][^\\]]+\\[)"
+- id: crs-921220
+  name: 'HTTP Parameter Pollution possible via array notation'
+  severity: low
+  tags: [crs, owasp_crs, community, protocol, protocol]
+  score: 15
+  min_level: high
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "\\["
+      - field: query
+        regex: "\\["

@@ -1,0 +1,16 @@
+id: resp-body-error-leak
+name: Response body error/stack leak
+severity: medium
+score: 40
+action: observe
+min_level: low
+tags: [info-leak, response]
+transforms: [lowercase]
+when:
+  any:
+    - field: response_body
+      contains: "stack trace"
+    - field: response_body
+      contains: "sqlexception"
+    - field: response_body
+      contains: "traceback (most recent call last)"

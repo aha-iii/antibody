@@ -1,0 +1,22 @@
+id: bad-spring4shell
+name: 'Spring4Shell class.module'
+severity: high
+tags: [known_bad, cve]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'class.module.classloader'
+    - field: uri
+      contains: 'class.getclassloader'
+    - field: query
+      contains: 'class.module.classloader'
+    - field: query
+      contains: 'class.getclassloader'
+    - field: body
+      contains: 'class.module.classloader'
+    - field: body
+      contains: 'class.getclassloader'

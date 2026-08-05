@@ -1,0 +1,22 @@
+id: xss-partial-tag
+name: Partial HTML/JS event XSS probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss, self]
+transforms: [url_decode_uni, lowercase, html_entity_decode]
+when:
+  any:
+    - field: query
+      regex: "(?i)<(?:img|body|svg|iframe|object|embed|video|audio|input)\\b"
+    - field: body
+      regex: "(?i)<(?:img|body|svg|iframe|object|embed|video|audio|input)\\b"
+    - field: query
+      regex: "(?i)\\bon(?:pageshow|error|load|mouseover|focus|click)\\s*="
+    - field: body
+      regex: "(?i)\\bon(?:pageshow|error|load|mouseover|focus|click)\\s*="
+    - field: query
+      contains: '${path}'
+    - field: query
+      regex: "(?i)\\$\\{[a-z_][a-z0-9_]*\\}"

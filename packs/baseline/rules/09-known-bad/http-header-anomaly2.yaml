@@ -1,0 +1,18 @@
+id: http-header-anomaly2
+name: Header format anomalies CL / space-before-colon
+severity: medium
+score: 40
+action: block
+min_level: high
+tags: [protocol, fuzz, self]
+transforms: [lowercase]
+when:
+  any:
+    - field: header
+      regex: "(?i)content-length\\s*:\\s*[^\\d\\n+-]"
+    - field: header
+      regex: "(?i)content-length\\s*:[^\\n]*\\n[^\\n]*content-length\\s*:"
+    - field: query
+      regex: "(?i)%25d(?:%25d){3,}"
+    - field: query
+      regex: "(?i)select\\s+(?:unhex|reverse)\\s*\\("

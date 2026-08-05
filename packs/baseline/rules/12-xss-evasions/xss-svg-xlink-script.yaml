@@ -1,0 +1,20 @@
+id: xss-svg-xlink-script
+name: XSS svg script xlink href
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss, evasion, blazehttp_gap]
+transforms: [url_decode, html_numeric_decode, html_entity_decode, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)<svg[\\s>][\\s\\S]{0,200}<script[^>]{0,80}xlink:href"
+    - field: uri
+      regex: "(?i)<svg[\\s>][\\s\\S]{0,200}<script[^>]{0,80}xlink:href"
+    - field: body
+      regex: "(?i)<svg[\\s>][\\s\\S]{0,200}<script[^>]{0,80}xlink:href"
+    - field: query
+      regex: "(?i)xlink:href\\s*=\\s*['\"]?(?:javascript:|data:)"
+    - field: body
+      regex: "(?i)xlink:href\\s*=\\s*['\"]?(?:javascript:|data:)"

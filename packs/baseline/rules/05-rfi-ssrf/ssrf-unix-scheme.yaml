@@ -1,0 +1,18 @@
+id: ssrf-unix-scheme
+name: "Unix domain socket / nginx unix SSRF padding"
+severity: high
+score: 40
+action: block
+min_level: high
+tags: [ssrf, proto, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[?&/=])unix:(?:/{0,2}|[a-z0-9._-]+)"
+    - field: uri
+      regex: "(?i)unix:(?:/{0,2}|[a-z0-9._-]+)"
+    - field: query
+      contains: 'unix:aaaa'
+    - field: query
+      regex: "(?i)unix:a{16,}"

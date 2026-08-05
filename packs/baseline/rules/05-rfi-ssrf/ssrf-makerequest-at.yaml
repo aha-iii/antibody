@@ -1,0 +1,14 @@
+id: ssrf-makerequest-at
+name: SSRF makeRequest URL with userinfo @
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [ssrf, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)makerequest|url=https?://[^&\\s]{0,80}@"
+    - field: uri
+      contains: '/gadgets/makeRequest'

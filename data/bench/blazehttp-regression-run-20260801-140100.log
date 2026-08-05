@@ -1,0 +1,7 @@
+[regression] building dashboard...
+[regression] starting dashboard on 127.0.0.1:8799
+failed to load pack: regex open-redirect-uri-fast: regex parse error:
+    (?i)(?:^|[&])(?:url|next|return|returnurl|redirect|goto|continue|destination)=https?://(?!localhost(?:[:/]|$))[^/&\s]+
+                                                                                           ^^^
+error: look-around, including look-ahead and look-behind, is not supported
+[regression] manifest 2699 cases · concurrency=40

@@ -1,0 +1,31 @@
+[package]
+name = "nerve-antibody-dashboard"
+version.workspace = true
+edition.workspace = true
+description = "Arc-Cortex Console — standalone HTTP dashboard for local demo"
+publish = false
+
+[[bin]]
+name = "nerve-antibody-dashboard"
+path = "src/main.rs"
+
+[dependencies]
+nerve-antibody-engine = { workspace = true }
+nerve-antibody-runtime = { workspace = true }
+nerve-antibody-metrics = { workspace = true }
+nerve-antibody-pack = { workspace = true }
+nerve-antibody-admission = { workspace = true }
+nerve-antibody-dsl = { workspace = true }
+nerve-waf-auth = { path = "../../../../Nerve-defender/crates/controlplane/nerve-waf-auth" }
+axum = { version = "0.8", features = ["json"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "signal", "process", "io-util", "time"] }
+http-body-util = "0.1"
+bytes = "1"
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+tower-http = { version = "0.6", features = ["cors", "fs"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+base64 = "0.22"
+urlencoding = "2"

@@ -1,0 +1,34 @@
+id: jwt-oversized
+name: Oversized JWT payload
+severity: medium
+score: 35
+action: block
+min_level: low
+tags: [auth, jwt, self]
+transforms: []
+when:
+  any:
+    - all:
+        - field: header
+          header_name: Authorization
+          regex: "(?i)Bearer\\s+eyJ[A-Za-z0-9_-]{20,}\\."
+        - field: header
+          header_name: Authorization
+          length_gt: 4096
+    - all:
+        - field: header
+          header_name: Cookie
+          regex: "eyJ[A-Za-z0-9_-]{20,}\\."
+        - field: header
+          header_name: Cookie
+          length_gt: 4096
+    - all:
+        - field: query
+          regex: "(?i)(?:^|[&?])access_token=eyJ[A-Za-z0-9_-]{20,}\\."
+        - field: query
+          length_gt: 4096
+    - all:
+        - field: query
+          regex: "(?i)(?:^|[&?])token=eyJ[A-Za-z0-9_-]{20,}\\."
+        - field: query
+          length_gt: 4096

@@ -1,0 +1,14 @@
+id: scanner-zgrab
+name: 'Scanner zgrab/masscan'
+severity: high
+tags: [admin, scanner]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: header
+      contains: 'zgrab'
+    - field: header
+      contains: 'masscan'

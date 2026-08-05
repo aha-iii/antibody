@@ -1,0 +1,20 @@
+id: open-redirect-b64-host
+name: Open redirect via base64 URL or Host/X-Original-URL
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [redirect, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|return|redirect|redirect_uri|goto)=(?:aHR0cHM6Ly|aHR0cDovL)[a-z0-9+/=]+"
+    - field: body
+      regex: "(?i)(?:url|redirect)=(?:aHR0cHM6Ly|aHR0cDovL)"
+    - field: header
+      regex: "(?i)x-original-url\\s*:\\s*/?(?:https?:|//)"
+    - field: header
+      regex: "(?i)x-rewrite-url\\s*:\\s*/?(?:https?:|//)"
+    - field: header
+      regex: "(?i)^host\\s*:\\s*(?:evil\\.|attacker\\.|localhost\\.evil)"

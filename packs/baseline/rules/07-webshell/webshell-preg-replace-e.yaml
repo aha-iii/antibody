@@ -1,0 +1,16 @@
+id: webshell-preg-replace-e
+name: 'Webshell preg_replace /e'
+severity: high
+tags: [webshell, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)preg_replace\\s*\\([^)]*/e"
+    - field: query
+      regex: "(?i)preg_replace\\s*\\([^)]*/e"
+    - field: body
+      regex: "(?i)preg_replace\\s*\\([^)]*/e"

@@ -1,0 +1,21 @@
+# XSS 绕过：Unicode / 十六进制 / UTF-7 charset 变体
+id: xss-charset-evasion-query
+name: XSS charset and unicode escape evasion in query
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss, evasion, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*%u003cscript"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*\\\\x3cscript"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*\\+adw-script\\+ad4-"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*%ef%bc%9cscript"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*<script>alert"

@@ -1,0 +1,16 @@
+id: java-jenkins-checkscript
+name: Jenkins script security checkScript
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [rce, java, jenkins, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'scriptsecurity'
+    - field: uri
+      contains: 'checkscript'
+    - field: uri
+      contains: 'securegroovyscript'

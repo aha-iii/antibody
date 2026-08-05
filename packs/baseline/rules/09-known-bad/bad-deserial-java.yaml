@@ -1,0 +1,23 @@
+id: bad-deserial-java
+name: 'Java deserialization markers'
+severity: high
+tags: [known_bad, cve]
+score: 40
+min_level: low
+action: block
+# 不可 lowercase：rO0AB 大小写敏感；另保留 URL 编码形态
+transforms: [url_decode, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "rO0AB"
+    - field: uri
+      regex: "(?i)aced\\x00\\x05|aced0005|%ac%ed%00%05"
+    - field: query
+      regex: "rO0AB"
+    - field: query
+      regex: "(?i)aced\\x00\\x05|aced0005|%ac%ed%00%05"
+    - field: body
+      regex: "rO0AB"
+    - field: body
+      regex: "(?i)aced\\x00\\x05|aced0005|%ac%ed%00%05"

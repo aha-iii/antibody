@@ -1,0 +1,28 @@
+id: bad-ysoserial
+name: 'ysoserial gadget markers'
+severity: high
+tags: [known_bad, cve]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'commonscollections'
+    - field: uri
+      contains: 'InvokerTransformer'
+    - field: uri
+      contains: 'PriorityQueue'
+    - field: query
+      contains: 'commonscollections'
+    - field: query
+      contains: 'InvokerTransformer'
+    - field: query
+      contains: 'PriorityQueue'
+    - field: body
+      contains: 'commonscollections'
+    - field: body
+      contains: 'InvokerTransformer'
+    - field: body
+      contains: 'PriorityQueue'

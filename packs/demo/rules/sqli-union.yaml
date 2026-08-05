@@ -1,0 +1,13 @@
+id: sqli-union
+name: SQL UNION probe
+severity: high
+tags: [sqli]
+score: 35
+min_level: medium
+action: block
+when:
+  any:
+    - field: uri
+      regex: "(?i)union\\s+select"
+    - field: body
+      regex: "(?i)union\\s+select"

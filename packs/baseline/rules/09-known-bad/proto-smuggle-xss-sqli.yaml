@@ -1,0 +1,134 @@
+id: proto-smuggle-xss-sqli
+name: Protocol smuggling with XSS, SQLi, and SSRF markers
+severity: high
+score: 40
+action: block
+min_level: low
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: header
+      contains: '<script'
+    - field: header
+      contains: 'javascript:'
+    - field: header
+      contains: 'onerror='
+    - field: header
+      regex: "(?i)^[a-z0-9_-]+ :"
+    - field: header
+      regex: "(?i)transfer-encoding\\s*:\\s*(?:xchunked|chunk\\b)"
+    - field: query
+      contains: 'transfer-encoding:'
+    - field: query
+      contains: 'transfer-encoding :'
+    - field: query
+      contains: '%20chunked'
+    - field: query
+      contains: '%5ctchunked'
+    - field: query
+      contains: 'application/json%5cx00'
+    - field: query
+      contains: "boundary=----;"
+    - field: query
+      regex: "(?i)'\\+'\\+'|'-'|sel'\\+'ect|sel\\|\\|ect"
+    - field: query
+      contains: '(1)and(1)=(1)'
+    - field: query
+      regex: "(?i)1'\\s*\\|\\|\\s*1--|limit\\s+\\d+\\s+offset"
+    # 禁止裸 `--`：Authorization JWT/base64url 常见 `ab--cd`，经侧信道会误伤
+    - field: query
+      regex: "(?i)'\\s*div\\s+0|'\\s*mod\\s+0|(?:['\"]|\\d)\\s*--"
+    - field: query
+      contains: 'convert(int,'
+    - field: query
+      contains: 'and{x 1}=1'
+    - field: query
+      contains: '%25a0or%25a0'
+    - field: query
+      contains: "'-(1)='0"
+    - field: query
+      contains: 'filename*=utf-8'
+    - field: query
+      contains: '%2573%2568%2565%256c%256c'
+    - field: query
+      contains: 'j&tab;a&tab;v'
+    - field: query
+      contains: '${${env:'
+    - field: query
+      contains: 'settimeout'
+    - field: query
+      contains: 'setinterval'
+    - field: query
+      contains: "ale'+'rt"
+    - field: query
+      regex: "(?i)(?:^|[^a-z])open\\s*\\(\\s*['\"]?(?:https?:|//|javascript:)"
+    - field: query
+      contains: "java'+'script"
+    - field: query
+      contains: '%e2%93%9b'
+    - field: query
+      contains: '%e2%91%a0'
+    - field: query
+      contains: '127%e3%80%82'
+    - field: query
+      contains: '%e3%80%82'
+    - field: query
+      contains: 'ftp://'
+    - field: query
+      contains: 'global.process.mainmodule'
+    - field: query
+      contains: ".execute().text"
+    - field: query
+      contains: '%e2%80%a5'
+    - field: query
+      contains: '%e2%81%84'
+    - field: query
+      contains: '%25u2215'
+    - field: query
+      contains: '%25c0%252e'
+    - field: query
+      contains: '::$data'
+    - field: uri
+      contains: '$recycle.bin'
+    - field: uri
+      contains: '/tmp/sess_'
+    - field: uri
+      contains: '/home/www-data/.bashrc'
+    - field: uri
+      contains: 'system32/config/sam'
+    - field: uri
+      contains: 'serviceaccount/token'
+    - field: query
+      contains: '";return(true)'
+    - field: query
+      contains: '0;return true'
+    - field: query
+      contains: '@legitimate.com'
+    - field: query
+      contains: '%2540attacker'
+    - field: query
+      contains: 'legitimate.com.attacker'
+    - field: query
+      contains: '@(1+1)'
+    - field: query
+      contains: '<form id=x>'
+    - field: query
+      contains: '%e3%82%99'
+    - field: query
+      contains: '%f0%92%80%80'
+    - field: query
+      contains: '%e1%a8%92'
+    - field: query
+      contains: '%c0%ae%c0%ae%c0%af'
+    - field: query
+      contains: '%25c0%25ae%25c0%25ae%25c0%25af'
+    - field: uri
+      contains: '%25c0%25ae'
+    - field: body
+      contains: '%c0%ae%c0%ae%c0%af'
+    - field: query
+      contains: 'file:///etc'
+    - field: body
+      contains: 'file:///etc'
+    - field: uri
+      contains: 'file:///etc'

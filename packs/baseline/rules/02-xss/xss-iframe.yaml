@@ -1,0 +1,22 @@
+id: xss-iframe
+name: 'XSS iframe tag'
+severity: high
+tags: [xss, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)<iframe\\b[^>]{0,180}(?:src|srcdoc|data)\\s*="
+    - field: query
+      regex: "(?i)<iframe\\b[^>]{0,180}(?:src|srcdoc|data)\\s*="
+    - field: body
+      regex: "(?i)<iframe\\b[^>]{0,180}(?:src|srcdoc|data)\\s*="
+    - field: uri
+      regex: "(?i)<iframe\\b[^>]{0,180}on(?:load|error|mouseover|focus|click)\\s*="
+    - field: query
+      regex: "(?i)<iframe\\b[^>]{0,180}on(?:load|error|mouseover|focus|click)\\s*="
+    - field: body
+      regex: "(?i)<iframe\\b[^>]{0,180}on(?:load|error|mouseover|focus|click)\\s*="

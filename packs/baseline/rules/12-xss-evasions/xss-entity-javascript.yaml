@@ -1,0 +1,20 @@
+id: xss-entity-javascript
+name: 'XSS entity-obfuscated javascript URI'
+severity: high
+tags: [xss, evasion, blazehttp_gap, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(?:javascript|vbscript)\\s*:\\s*(?:alert|eval|prompt|confirm|document|window|location)\\b"
+    - field: query
+      regex: "(?i)(?:javascript|vbscript)\\s*:\\s*(?:alert|eval|prompt|confirm|document|window|location)\\b"
+    - field: body
+      regex: "(?i)(?:javascript|vbscript)\\s*:\\s*(?:alert|eval|prompt|confirm|document|window|location)\\b"
+    - field: uri
+      regex: "(?i)j\\s*a\\s*v\\s*a\\s*s\\s*c\\s*r\\s*i\\s*p\\s*t\\s*:\\s*(?:alert|eval|prompt|confirm|document)\\b"
+    - field: query
+      regex: "(?i)j\\s*a\\s*v\\s*a\\s*s\\s*c\\s*r\\s*i\\s*p\\s*t\\s*:\\s*(?:alert|eval|prompt|confirm|document)\\b"

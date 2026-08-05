@@ -1,0 +1,16 @@
+id: sqli-having
+name: 'SQL HAVING 1=1'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bhaving\\s+\\d+\\s*=\\s*\\d+"
+    - field: query
+      regex: "(?i)\\bhaving\\s+\\d+\\s*=\\s*\\d+"
+    - field: body
+      regex: "(?i)\\bhaving\\s+\\d+\\s*=\\s*\\d+"

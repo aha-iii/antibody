@@ -1,0 +1,16 @@
+id: sqli-stacked-insert
+name: 'SQL stacked INSERT'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i);\\s*insert\\s+into"
+    - field: query
+      regex: "(?i);\\s*insert\\s+into"
+    - field: body
+      regex: "(?i);\\s*insert\\s+into"

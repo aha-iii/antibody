@@ -1,0 +1,17 @@
+id: sqli-case-when
+name: 'SQL CASE WHEN injection (context)'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+# 无 lookaround（regex crate 不支持）；要求 THEN 后出现 SQL 结构
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bcase\\s+when\\b.{0,100}\\bthen\\b.{0,60}(?:\\belse\\b|\\bend\\b|\\bselect\\b|\\bsleep\\b|\\bbenchmark\\b|=\\s*\\d)"
+    - field: query
+      regex: "(?i)\\bcase\\s+when\\b.{0,100}\\bthen\\b.{0,60}(?:\\belse\\b|\\bend\\b|\\bselect\\b|\\bsleep\\b|\\bbenchmark\\b|=\\s*\\d)"
+    - field: body
+      regex: "(?i)\\bcase\\s+when\\b.{0,100}\\bthen\\b.{0,60}(?:\\belse\\b|\\bend\\b|\\bselect\\b|\\bsleep\\b|\\bbenchmark\\b|=\\s*\\d)"

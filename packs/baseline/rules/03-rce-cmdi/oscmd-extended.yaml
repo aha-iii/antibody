@@ -1,0 +1,22 @@
+id: oscmd-extended
+name: Extended OS command and LOLBAS probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [rce, cmdi, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i);\\s*(?:env\\s*\\||find\\s+/|ps\\s+aux|netstat|printenv|echo\\s+\\$path)"
+    - field: query
+      regex: "(?i)\\bruby\\s+-rsocket\\b|\\bbitsadmin\\s+/transfer\\b"
+    - field: query
+      regex: "(?i)c\\^m\\^d\\b|/\\?\\?\\?\\?/[cp]\\?[st]"
+    - field: query
+      regex: "(?i)1;\\s*(?:truncate|drop|delete|insert)\\s+"
+    - field: query
+      regex: "(?i)'\\|\\|'1|select\\s+(?:unhex|reverse)\\s*\\("
+    - field: body
+      regex: "(?i)\\bruby\\s+-rsocket\\b|\\bbitsadmin\\s+/transfer\\b"

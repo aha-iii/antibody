@@ -1,0 +1,28 @@
+id: rce-cmd-exe
+name: 'RCE cmd.exe'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'cmd.exe'
+    - field: uri
+      contains: 'cmd /c'
+    - field: uri
+      contains: 'cmd.exe /c'
+    - field: query
+      contains: 'cmd.exe'
+    - field: query
+      contains: 'cmd /c'
+    - field: query
+      contains: 'cmd.exe /c'
+    - field: body
+      contains: 'cmd.exe'
+    - field: body
+      contains: 'cmd /c'
+    - field: body
+      contains: 'cmd.exe /c'

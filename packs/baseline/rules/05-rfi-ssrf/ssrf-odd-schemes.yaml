@@ -1,0 +1,20 @@
+id: ssrf-odd-schemes
+name: SSRF odd schemes and parser confusion
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [ssrf, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:sftp|tftp|dict|ldap|gopher|file)://"
+    - field: body
+      regex: "(?i)(?:sftp|tftp|dict|ldap|gopher)://"
+    - field: query
+      regex: "(?i)0://|https?://[^/\\s]*\\?\\?\\?"
+    - field: query
+      regex: "(?i)https?://[^/\\s]+\\s*[&@#]"
+    - field: query
+      contains: '%253a%252f%252f'

@@ -1,0 +1,16 @@
+id: xss-body-background
+name: 'XSS body/table background URL'
+severity: medium
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_entity_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)<(?:body|table|td)\\b[^>]{0,100}background\\s*="
+    - field: query
+      regex: "(?i)<(?:body|table|td)\\b[^>]{0,100}background\\s*="
+    - field: body
+      regex: "(?i)<(?:body|table|td)\\b[^>]{0,100}background\\s*="

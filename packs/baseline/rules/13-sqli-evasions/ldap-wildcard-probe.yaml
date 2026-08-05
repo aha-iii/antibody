@@ -1,0 +1,18 @@
+id: ldap-wildcard-probe
+name: LDAP wildcard and DN CRLF probes
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [ldap, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[=&])(?:dn|user|username|filter)=[^&]*(?:%0d%0a|[\\r\\n])"
+    - field: query
+      regex: "(?i)(?:^|[=&])q=(?:\\*|admin\\*|\\\\*admin\\\\*|\\*%29|\\\\2a)"
+    - field: query
+      regex: "(?i)\\*%29%29|\\\\00|\\*%28%29%7c"
+    - field: body
+      regex: "(?i)\\*%29%29|objectclass=\\*"

@@ -1,0 +1,28 @@
+id: sqli-substring-user
+name: 'SQL user()/version() probe'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\buser\\s*\\(\\s*\\)"
+    - field: uri
+      regex: "(?i)\\bversion\\s*\\(\\s*\\)"
+    - field: uri
+      regex: "(?i)\\bdatabase\\s*\\(\\s*\\)"
+    - field: query
+      regex: "(?i)\\buser\\s*\\(\\s*\\)"
+    - field: query
+      regex: "(?i)\\bversion\\s*\\(\\s*\\)"
+    - field: query
+      regex: "(?i)\\bdatabase\\s*\\(\\s*\\)"
+    - field: body
+      regex: "(?i)\\buser\\s*\\(\\s*\\)"
+    - field: body
+      regex: "(?i)\\bversion\\s*\\(\\s*\\)"
+    - field: body
+      regex: "(?i)\\bdatabase\\s*\\(\\s*\\)"

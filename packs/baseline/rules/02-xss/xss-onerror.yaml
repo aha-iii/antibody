@@ -1,0 +1,22 @@
+id: xss-onerror
+name: 'XSS onerror handler'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'onerror='
+    - field: uri
+      contains: 'onerror ='
+    - field: query
+      contains: 'onerror='
+    - field: query
+      contains: 'onerror ='
+    - field: body
+      contains: 'onerror='
+    - field: body
+      contains: 'onerror ='

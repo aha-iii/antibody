@@ -1,0 +1,35 @@
+# GraphQL：别名批量化 / 多实例查询滥用
+id: graphql-batching-abuse
+name: GraphQL alias batchieg abuse
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [graphql, dos, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      regex: "(?i)(?:\\w+\\s*:\\s*user\\s*\\{[^}]{0,24}\\}){4,}"
+    - field: body
+      regex: "(?i)(?:user\\d+\\s*:\\s*user\\s*\\(\\s*id\\s*:\\s*\\d+\\s*\\)\\s*\\{[^}]{0,20}\\}){3,}"
+    - field: body
+      regex: "(?i)(?:query|mutation)\\s*\\{[^}]{0,200}(?:user\\d+|alias\\d+)\\s*:"
+    - field: body
+      regex: "(?i)\"query\"\\s*:\\s*\"[^\"]*(?:user\\d+\\s*:\\s*user|alias\\d+\\s*:)"
+    - field: body
+      regex: "(?i)(?:\\w+\\s*:\\s*create\\w+\\([^)]{0,80}\\)[^}]{0,40}){3,}"
+    - field: body
+      contains: 'user1: user(id:'
+    - field: body
+      contains: 'createpost(title:'
+    - field: body
+      contains: 'query op1 {'
+    - field: body
+      contains: 'a: user { id } b: user {'
+    - field: body
+      regex: "(?i)query\\s+\\w+\\s*\\{[^}]{0,80}\\}\\s*query\\s+\\w+\\s*\\{"
+    - field: body
+      regex: "(?i)\"query\"\\s*:\\s*\"[^\"]*query\\s+\\w+\\s*\\{[^\"]*query\\s+\\w+\\s*\\{"
+    - field: body
+      regex: "(?i)__schema|__type\\s*\\("

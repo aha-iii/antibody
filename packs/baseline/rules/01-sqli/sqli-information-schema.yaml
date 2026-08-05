@@ -1,0 +1,16 @@
+id: sqli-information-schema
+name: 'SQL information_schema'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'information_schema'
+    - field: query
+      contains: 'information_schema'
+    - field: body
+      contains: 'information_schema'

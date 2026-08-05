@@ -1,0 +1,22 @@
+id: rce-base64-pipe
+name: 'RCE base64 decode pipe'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)base64\\s+(-d|--decode).*\\|"
+    - field: uri
+      regex: "(?i)\\|\\s*base64\\s+(-d|--decode)"
+    - field: query
+      regex: "(?i)base64\\s+(-d|--decode).*\\|"
+    - field: query
+      regex: "(?i)\\|\\s*base64\\s+(-d|--decode)"
+    - field: body
+      regex: "(?i)base64\\s+(-d|--decode).*\\|"
+    - field: body
+      regex: "(?i)\\|\\s*base64\\s+(-d|--decode)"

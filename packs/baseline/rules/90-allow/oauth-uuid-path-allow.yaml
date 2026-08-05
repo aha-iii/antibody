@@ -1,0 +1,19 @@
+id: oauth-uuid-path-allow
+name: Allow high-entropy OAuth query on OIDC paths (not IDOR)
+severity: low
+score: 35
+action: allow
+min_level: low
+tags: [fp, oauth, idor]
+transforms: []
+when:
+  any:
+    - all:
+        - fingerprint: keycloak_token_path
+        - feature: high_entropy_query
+    - all:
+        - fingerprint: oauth_auth_path
+        - feature: high_entropy_query
+    - all:
+        - fingerprint: auth_realm_path
+        - feature: query_has_redirect_uri

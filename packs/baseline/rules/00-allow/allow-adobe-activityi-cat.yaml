@@ -1,0 +1,14 @@
+id: allow-adobe-activityi-cat
+name: 'Allow Adobe Analytics ;cat= param'
+severity: low
+tags: [allow, fp_reviewed]
+score: 40
+min_level: low
+action: allow
+transforms: [url_decode, lowercase]
+when:
+  all:
+    - field: uri
+      regex: "(?i)/activityi;"
+    - field: uri
+      contains: ';cat='

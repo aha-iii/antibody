@@ -1,0 +1,16 @@
+id: java-jndi-lookup
+name: 'Java InitialContext lookup'
+severity: high
+tags: [php, java, app]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'initialcontext'
+    - field: query
+      contains: 'initialcontext'
+    - field: body
+      contains: 'initialcontext'

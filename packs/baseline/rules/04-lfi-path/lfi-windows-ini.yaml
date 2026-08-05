@@ -1,0 +1,28 @@
+id: lfi-windows-ini
+name: 'LFI Windows win.ini'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'c:/windows/win.ini'
+    - field: uri
+      contains: 'c:\windows\win.ini'
+    - field: uri
+      contains: '/windows/win.ini'
+    - field: query
+      contains: 'c:/windows/win.ini'
+    - field: query
+      contains: 'c:\windows\win.ini'
+    - field: query
+      contains: '/windows/win.ini'
+    - field: body
+      contains: 'c:/windows/win.ini'
+    - field: body
+      contains: 'c:\windows\win.ini'
+    - field: body
+      contains: '/windows/win.ini'

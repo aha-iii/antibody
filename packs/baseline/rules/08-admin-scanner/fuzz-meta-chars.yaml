@@ -1,0 +1,18 @@
+id: fuzz-meta-chars
+name: Bare metachar / format-string probes
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [fuzz, self]
+transforms: []
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[=&])q=(?:%26|%26%26|%3b|%60|%24%7b|--|%25s%25s|%25x%25x)(?:&|$)"
+    - field: query
+      regex: "(?i)(?:^|[=&])q=(?:&|&&|;|`|\\$\\{)(?:&|$)"
+    - field: query
+      regex: "(?i)(?:^|[=&])q=--(?:&|$)"
+    - field: query
+      regex: "(?i)%25(?:s|x|n|p)(?:%25(?:s|x|n|p)){3,}"

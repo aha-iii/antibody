@@ -1,0 +1,22 @@
+id: open-redirect-path
+name: Open redirect via path / backslash host
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [redirect, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[=&])q=\\\\\\\\[a-z0-9.-]+"
+    - field: query
+      regex: "(?i)(?:^|[=&])q=/\\\\\\\\?[a-z0-9.-]+"
+    - field: uri
+      regex: "(?i)^/%09/[a-z0-9.-]+"
+    - field: uri
+      regex: "(?i)^/%5c[a-z0-9.-]+"
+    - field: query
+      contains: '%e3%80%82'
+    - field: query
+      contains: 'attacker%25e3%2580%2582'

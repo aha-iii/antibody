@@ -1,0 +1,91 @@
+id: attack-signature-cluster
+name: High-confidence clustered attack signatures
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [gap]
+transforms: [lowercase]
+when:
+  any:
+    # format-string double-encoded / raw
+    - field: query
+      contains: '%2508x'
+    - field: query
+      contains: '%08x.%08x'
+    # bidi overrides (encoded; decode would consume %)
+    - field: query
+      contains: '%e2%80%ae'
+    - field: query
+      contains: '%e2%80%ad'
+    # double-encoded :// and IIS %u traversal
+    - field: query
+      contains: '%253a%252f%252f'
+    - field: query
+      contains: '%25u2216'
+    - field: query
+      contains: '%25uff3c'
+    - field: query
+      contains: '%2525%255c'
+    - field: query
+      contains: '%255c'
+    - field: query
+      contains: '%ef%b8%92'
+    - field: query
+      contains: '%ef%bc%8e'
+    - field: query
+      contains: '%ef%bc%8f'
+    # SQLi 关键字拆分（须至少 1 个拆分符；{0,2} 会误伤 OData `$select=`）
+    - field: query
+      regex: "(?i)sel['+]{1,2}'?ect|SEL'\\+'ECT"
+    - field: query
+      contains: '%ef%bc%87'
+    - field: query
+      contains: 'select%a0'
+    - field: query
+      contains: 'select%25a0'
+    - field: query
+      regex: "(?i)select\\([a-z_]+\\)from\\("
+    - field: query
+      contains: '%c0%bc'
+    - field: query
+      contains: '%25c0%25bc'
+    # XSS concat / sinks
+    - field: query
+      regex: "(?i)set(?:timeout|interval)\\(['\"]ale['\"]\\+['\"]rt"
+    - field: query
+      contains: '.findindex(alert)'
+    - field: query
+      contains: 'tostring(30)'
+    - field: query
+      contains: 'ng-csp'
+    - field: query
+      contains: 'rel=preload'
+    # open-redirect path forms (keep encoded)
+    - field: uri
+      contains: '/%09/'
+    - field: uri
+      regex: "(?i)^/%5c[a-z0-9.-]+"
+    - field: query
+      contains: 'attacker%25e3%2580%2582'
+    - field: query
+      regex: "(?i)//[a-z0-9.-]+%40[a-z0-9.-]+"
+    # idor / bola leftovers
+    - field: query
+      regex: "(?i)(?:customer_id|owner_id)="
+    - field: uri
+      regex: "(?i)/api/(?:beta/users|public-links|orders|events)/?"
+    # jwt oversized / malformed structure
+    - field: query
+      regex: "(?i)access_token=eyj[a-z0-9_-]{20,}\\.[a-z0-9+/=_-]{800,}"
+    - field: query
+      contains: '"b64":false'
+    - field: query
+      contains: 'imb2nci6zmfs'
+    # space-before-colon / CRLF smuggle in query
+    - field: query
+      contains: '%5cr%5cn'
+    - field: query
+      contains: 's]e[l]e[c]t'
+    - field: header
+      regex: "(?i)^[a-z0-9_-]+ :"

@@ -1,0 +1,26 @@
+id: oauth-redirect-bypass
+name: OAuth and open redirect URI manipulation
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [redirect, oauth]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)redirect_uri[^&]*(?:%0d%0a|%250d%250a)"
+    - field: query
+      regex: "(?i)redirect_uri[^&]*%23%40"
+    - field: query
+      regex: "(?i)(?:^|[?&])url=https://[^&]*%2f%2f"
+    - field: uri
+      regex: "(?i)/redirect\\?url="
+    - field: query
+      regex: "(?i)(?:^|[?&])url=[^&]*%00"
+    - field: query
+      regex: "(?i)(?:^|[?&])url=[^&]*%2500"
+    - field: query
+      contains: 'legitimate.com%2f%2f'
+    - field: query
+      contains: 'legitimate.com@attacker'

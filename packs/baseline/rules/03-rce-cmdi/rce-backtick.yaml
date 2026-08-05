@@ -1,0 +1,22 @@
+id: rce-backtick
+name: 'RCE backtick subshell'
+severity: high
+tags: [rce, cmdi, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "`(?:/bin/)?(?:id|whoami|uname|wget|curl|ncat?|bash|sh|python|perl|rm|echo|chmod|cat|ls)(?:\\s|`|$|/)"
+    - field: query
+      regex: "`(?:/bin/)?(?:id|whoami|uname|wget|curl|ncat?|bash|sh|python|perl|rm|echo|chmod|cat|ls)(?:\\s|`|$|/)"
+    - field: body
+      regex: "`(?:/bin/)?(?:id|whoami|uname|wget|curl|ncat?|bash|sh|python|perl|rm|echo|chmod|cat|ls)(?:\\s|`|$|/)"
+    - field: uri
+      regex: "`[^`]{0,40}(?:cat\\s+/etc|ls\\s+/|/bin/(?:ba)?sh)"
+    - field: query
+      regex: "`[^`]{0,40}(?:cat\\s+/etc|ls\\s+/|/bin/(?:ba)?sh)"
+    - field: body
+      regex: "`[^`]{0,40}(?:cat\\s+/etc|ls\\s+/|/bin/(?:ba)?sh)"

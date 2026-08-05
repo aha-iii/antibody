@@ -1,0 +1,20 @@
+id: xss-filter-evasion
+name: XSS filter evasion fragments
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss]
+transforms: [url_decode_uni, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)settimeout\\s*\\(\\s*['\"]\\s*al\\s*['\"]\\s*\\+\\s*['\"]\\s*e?r?t"
+    - field: query
+      regex: "(?i)j&(?:tab|#9);a&(?:tab|#9);v"
+    - field: body
+      regex: "(?i)settimeout\\s*\\(\\s*['\"]\\s*al\\s*['\"]\\s*\\+\\s*['\"]\\s*e?r?t"
+    - field: query
+      contains: 'onerror='
+    - field: query
+      contains: '<svg/onload'

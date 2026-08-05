@@ -1,0 +1,16 @@
+# 放行：遥测/RUM 上报路径上仅 chunk-anomaly 协议标记（非 TE/CL 走私）
+id: telemetry-chunk-anomaly-allow
+name: Allow benign telemetry chunk-anomaly markers
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, protocol, telemetry]
+when:
+  any:
+    - all:
+        - field: header
+          header_name: _proto_anomaly
+          contains: 'chunk-anomaly'
+        - field: uri
+          regex: "(?i)(?:^|/)(?:v1:endpoints|intake/v2/rum/events|collector/apm|api/v2/za/logs/batch)(?:/|$|\\?)"

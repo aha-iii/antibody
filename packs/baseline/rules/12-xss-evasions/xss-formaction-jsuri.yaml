@@ -1,0 +1,22 @@
+id: xss-formaction-jsuri
+name: 'XSS formaction javascript URI'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)formaction\\s*=\\s*[\"']?(?:javascript|vbscript|:javascript)"
+    - field: query
+      regex: "(?i)formaction\\s*=\\s*[\"']?(?:javascript|vbscript|j\\s*a\\s*v)"
+    - field: body
+      regex: "(?i)formaction\\s*=\\s*[\"']?(?:javascript|vbscript|j&#)"
+    - field: uri
+      regex: "(?i)formaction\\s*=.{0,40}alert\\s*\\("
+    - field: query
+      regex: "(?i)formaction\\s*=.{0,40}alert\\s*\\("
+    - field: body
+      regex: "(?i)formaction\\s*=.{0,40}alert\\s*\\("

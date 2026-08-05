@@ -1,0 +1,24 @@
+id: php-dede-runphp
+name: 'DedeCMS runphp injection'
+severity: critical
+tags: [rce, php, blazehttp_gap]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: "runphp='yes'"
+    - field: query
+      contains: "runphp='yes'"
+    - field: body
+      contains: "runphp='yes'"
+    - field: uri
+      contains: 'runphp="yes"'
+    - field: query
+      contains: 'runphp="yes"'
+    - field: uri
+      contains: '{dede:field'
+    - field: query
+      contains: '{dede:field'

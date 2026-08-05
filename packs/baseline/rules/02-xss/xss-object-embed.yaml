@@ -1,0 +1,28 @@
+id: xss-object-embed
+name: 'XSS object/embed'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '<object'
+    - field: uri
+      contains: '<embed'
+    - field: uri
+      contains: '<applet'
+    - field: query
+      contains: '<object'
+    - field: query
+      contains: '<embed'
+    - field: query
+      contains: '<applet'
+    - field: body
+      contains: '<object'
+    - field: body
+      contains: '<embed'
+    - field: body
+      contains: '<applet'

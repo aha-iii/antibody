@@ -1,0 +1,26 @@
+id: redis-cmd-injection
+name: Redis command injection probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [nosql, redis, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[=&])(?:q=)?(?:lpush|rpush|zadd|flushall|flushdb|debug\\s+segfault|slaveof|scan|dump|restore|client\\s+setname)\\b"
+    - field: body
+      regex: "(?i)\\b(?:lpush|rpush|flushall|flushdb|debug\\s+segfault|scan\\s+\\d+|dump\\s+|restore\\s+)\\b"
+    - field: query
+      regex: "(?i)slaveof\\b"
+    - field: query
+      regex: "(?i)(?:^|[=&])(?:q=)?set\\s+__session"
+    - field: query
+      regex: "(?i)db\\.(?:admincommand|createuser|getcollectionnames|runcommand)\\s*\\("
+    - field: body
+      regex: "(?i)db\\.(?:admincommand|createuser|getcollectionnames|runcommand)\\s*\\("
+    - field: query
+      regex: "(?i)[\"']?\\$(?:set|unset|push|pull)\\b"
+    - field: body
+      regex: "(?i)[\"']?\\$(?:set|unset|push|pull)\\b"

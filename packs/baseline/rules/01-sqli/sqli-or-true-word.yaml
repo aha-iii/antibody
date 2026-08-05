@@ -1,0 +1,22 @@
+id: sqli-or-true-word
+name: 'SQL OR TRUE'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bor\\s+true\\b"
+    - field: uri
+      regex: "(?i)\\bor\\s+'[^']*'\\s*=\\s*'"
+    - field: query
+      regex: "(?i)\\bor\\s+true\\b"
+    - field: query
+      regex: "(?i)\\bor\\s+'[^']*'\\s*=\\s*'"
+    - field: body
+      regex: "(?i)\\bor\\s+true\\b"
+    - field: body
+      regex: "(?i)\\bor\\s+'[^']*'\\s*=\\s*'"

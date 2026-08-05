@@ -1,0 +1,16 @@
+id: sqli-boolean-null
+name: 'SQL OR IS NULL'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bor\\s+[\\w.]+\\s+is\\s+null"
+    - field: query
+      regex: "(?i)\\bor\\s+[\\w.]+\\s+is\\s+null"
+    - field: body
+      regex: "(?i)\\bor\\s+[\\w.]+\\s+is\\s+null"

@@ -1,0 +1,16 @@
+id: xss-meta-refresh
+name: 'XSS meta refresh'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)<meta[^>]+http-equiv\\s*=\\s*['\\\"]?refresh"
+    - field: query
+      regex: "(?i)<meta[^>]+http-equiv\\s*=\\s*['\\\"]?refresh"
+    - field: body
+      regex: "(?i)<meta[^>]+http-equiv\\s*=\\s*['\\\"]?refresh"

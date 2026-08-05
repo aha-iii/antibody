@@ -1,0 +1,22 @@
+id: php-unserialize
+name: 'PHP unserialize'
+severity: high
+tags: [php, java, app]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'unserialize('
+    - field: uri
+      contains: 'O:8:"'
+    - field: query
+      contains: 'unserialize('
+    - field: query
+      contains: 'O:8:"'
+    - field: body
+      contains: 'unserialize('
+    - field: body
+      contains: 'O:8:"'

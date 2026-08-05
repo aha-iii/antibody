@@ -1,0 +1,19 @@
+id: xss-referer-onerror
+name: XSS event sink in Referer
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss, referer, blazehttp_gap]
+transforms: [url_decode_uni, html_entity_decode, html_numeric_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: header
+      header_name: Referer
+      regex: "(?i)\\bon(?:error|load|click|focus|mouseover)\\s*="
+    - field: header
+      header_name: Referer
+      contains: 'javascript:'
+    - field: header
+      header_name: Referer
+      contains: 'data:text/javascript'

@@ -1,0 +1,22 @@
+id: lfi-svn-entries
+name: 'LFI .svn/entries'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '.svn/entries'
+    - field: uri
+      contains: '/.svn/'
+    - field: query
+      contains: '.svn/entries'
+    - field: query
+      contains: '/.svn/'
+    - field: body
+      contains: '.svn/entries'
+    - field: body
+      contains: '/.svn/'

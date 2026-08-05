@@ -1,0 +1,8 @@
+id = "demo"
+version = "0.2.0"
+name = "Nerve Native Demo Pack"
+mie_engine = "0.1.0"
+
+[policy]
+block_threshold = 40
+observe_only = false

@@ -1,0 +1,18 @@
+[build-dependencies]
+pkg-config = "0.3"
+
+[package]
+name = "nerve-antibody-accel"
+version.workspace = true
+edition.workspace = true
+description = "In-process multi-pattern accel (aho-corasick; optional Hyperscan-style)"
+
+[features]
+default = ["aho"]
+aho = ["dep:aho-corasick"]
+accel-hyperscan = ["dep:regex"]
+accel-hyperscan-ffi = ["accel-hyperscan"]
+
+[dependencies]
+aho-corasick = { workspace = true, optional = true }
+regex = { workspace = true, optional = true }

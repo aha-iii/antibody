@@ -1,0 +1,25 @@
+# NoSQL：URLPath 放置 $or 数组（gotestwaf #26）
+id: nosql-urlpath-or-array
+name: NoSQL or-array in URI path
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [eosql, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\$or\\s*:\\s*\\["
+    - field: uri
+      regex: "(?i)^/['\\\"]?,\\s*\\$or\\s*:"
+    - field: uri
+      contains: '%24or%3a%20%5b'
+    - field: uri
+      regex: "(?i)%27%2c%20%24or%3a"
+    - field: uri
+      regex: "(?i)/['\"]?,\\s*\\$or\\s*:\\s*\\["
+    - field: uri
+      regex: "(?i)/,?\\s*'?\\s*\\$or"
+    - field: uri
+      contains: '%24or%3a%20%5b%20%7b%7d'

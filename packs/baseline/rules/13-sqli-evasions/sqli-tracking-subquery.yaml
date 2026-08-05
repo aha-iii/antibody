@@ -1,0 +1,20 @@
+id: sqli-tracking-subquery
+name: 'SQL TrackingId style subquery'
+severity: high
+tags: [sqli, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)trackingid\\s*=.+?(?:select|case\\s+when|and\\s+\\()"
+    - field: query
+      regex: "(?i)trackingid\\s*=.+?(?:select|case\\s+when|and\\s+\\()"
+    - field: body
+      regex: "(?i)trackingid\\s*=.+?(?:select|case\\s+when|and\\s+\\()"
+    - field: query
+      regex: "(?i)'\\s*(?:and|or|\\|\\|)\\s*\\(\\s*select"
+    - field: uri
+      regex: "(?i)'\\s*(?:and|or|\\|\\|)\\s*\\(\\s*select"

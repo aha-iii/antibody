@@ -1,0 +1,28 @@
+id: xss-entity-break-js
+name: 'XSS broken entity javascript URI'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)j(?:&#(?:x?[0-9a-f]+);?)+avascript\\s*:\\s*(?:alert|eval|prompt|confirm|document|window|location)"
+    - field: query
+      regex: "(?i)j(?:&#(?:x?[0-9a-f]+);?)+avascript\\s*:\\s*(?:alert|eval|prompt|confirm|document|window|location)"
+    - field: body
+      regex: "(?i)j(?:&#(?:x?[0-9a-f]+);?)+avascript\\s*:\\s*(?:alert|eval|prompt|confirm|document|window|location)"
+    - field: uri
+      regex: "(?i)j(?:%26#(?:x?[0-9a-f]+);?)+avascript"
+    - field: query
+      regex: "(?i)j(?:%26#(?:x?[0-9a-f]+);?)+avascript"
+    - field: body
+      regex: "(?i)j(?:%26#(?:x?[0-9a-f]+);?)+avascript"
+    - field: uri
+      contains: '&#x61vascript:'
+    - field: query
+      contains: '&#x61vascript:'
+    - field: body
+      contains: '&#x61vascript:'

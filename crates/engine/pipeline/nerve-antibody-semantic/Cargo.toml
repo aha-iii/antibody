@@ -1,0 +1,12 @@
+[package]
+name = "nerve-antibody-semantic"
+version.workspace = true
+edition.workspace = true
+description = "Lightweight semantic analyzers (SQL / JS-HTML / Path) for expert engine"
+
+[dependencies]
+nerve-antibody-dsl = { workspace = true }
+serde = { workspace = true }
+serde_yaml = { workspace = true }
+regex = { workspace = true }
+base64 = "0.22"

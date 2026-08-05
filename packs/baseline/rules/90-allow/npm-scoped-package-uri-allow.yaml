@@ -1,0 +1,17 @@
+# 放行：npm / registry scoped 包路径（@scope/pkg@version，非走私 @host）
+id: npm-scoped-package-uri-allow
+name: Allow npm scoped package paths in URI
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, npm, uri]
+transforms: [lowercase]
+when:
+  any:
+    - field: uri
+      scope: raw
+      regex: "(?i)(?:^|/)(?:npm|node_modules)/@[\\w.-]+/[\\w.-]+@[\\d.]+"
+    - field: uri
+      scope: raw
+      regex: "(?i)/@[\\w.-]+/[\\w.-]+@[\\d.]+\\.(?:js|json|css|map|ts|tsx|mjs)(?:/|$|\\?)"

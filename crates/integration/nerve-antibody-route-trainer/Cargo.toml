@@ -1,0 +1,14 @@
+[package]
+name = "nerve-antibody-route-trainer"
+version.workspace = true
+edition.workspace = true
+description = "Offline trainer for route_gate linear weights from bench JSON"
+
+[[bin]]
+name = "train-route-gate"
+path = "src/main.rs"
+
+[dependencies]
+nerve-antibody-runtime = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

@@ -1,0 +1,20 @@
+id: lfi-overlong-dotdot
+name: LFI overlong UTF-8 / unicode slash traversal
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [lfi, path, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(?:\\.{2,}(?:/|\\\\|%2f|%5c|%c0%af|%c1%9c|%c1%1c|%ef%bc%8f|%u2216)){2,}"
+    - field: query
+      regex: "(?i)(?:\\.{2,}(?:/|\\\\|%2f|%5c|%c0%af|%c1%9c|%c1%1c|%ef%bc%8f|%u2216)){2,}"
+    - field: body
+      regex: "(?i)(?:\\.{2,}(?:/|\\\\|%2f|%5c|%c0%af|%c1%9c|%c1%1c|%ef%bc%8f|%u2216)){2,}"
+    - field: uri
+      regex: "(?i)(?:etc[%/\\\\]+passwd|windows[%/\\\\]+win\\.ini|boot\\.ini|web\\.config)"
+    - field: query
+      regex: "(?i)(?:/etc/(?:passwd|shadow)|/var/lib/php/sessions|/root/\\.bash|web\\.config)"

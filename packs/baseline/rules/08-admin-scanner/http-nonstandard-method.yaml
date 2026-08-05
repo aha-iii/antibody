@@ -1,0 +1,20 @@
+# 协议异常：非标准 / 危险 HTTP 方法（WAFTester fuzz、TRACE 探测）
+id: http-nonstandard-method
+name: Non-standard and dangerous HTTP methods
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [proto, method, fuzz, self]
+when:
+  any:
+    - field: method
+      regex: "(?i)^(?:trace|track|debug|connect|invalid|gpost|getpostputdelete)$"
+    - field: method
+      regex: "^(?:get|post|put|delete|head|options|patch)$"
+    - field: method
+      regex: "^(?:Get|Post|Put|Delete|Head|Options|Patch)$"
+    - field: method
+      contains: ' '
+    - field: method
+      regex: "^[A-Za-z]$"

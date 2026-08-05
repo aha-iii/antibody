@@ -1,0 +1,24 @@
+# Fuzz：query 格式串 / 非 UTF-8 / DOCTYPE 探测
+id: query-format-fuzz-probe
+name: Format string and fuzz probes in query
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [fuzz, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*(?:%e|%p|%s%s%s|%x%x|%d%d)"
+    - field: query
+      contains: '%ff'
+    - field: query
+      regex: "(?i)(?:^|[&])q=(?:%0a|%0d|%0d%0a|%ff)(?:&|$)"
+    - field: query
+      scope: raw
+      regex: "(?i)(?:^|[&])q=%0[aAdD](?:&|$)"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*(?:<!doctype|<!entity)"
+    - field: query
+      regex: "(?i)(?:^|[&])q=content-length\\s*%3a\\s*\\d+"

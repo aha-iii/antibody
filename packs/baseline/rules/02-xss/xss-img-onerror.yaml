@@ -1,0 +1,16 @@
+id: xss-img-onerror
+name: 'XSS img onerror'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)<img[^>]+onerror\\s*="
+    - field: query
+      regex: "(?i)<img[^>]+onerror\\s*="
+    - field: body
+      regex: "(?i)<img[^>]+onerror\\s*="

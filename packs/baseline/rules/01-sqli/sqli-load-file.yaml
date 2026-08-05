@@ -1,0 +1,16 @@
+id: sqli-load-file
+name: 'SQL LOAD_FILE'
+severity: high
+tags: [sqli, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bload_file\\s*\\("
+    - field: query
+      regex: "(?i)\\bload_file\\s*\\("
+    - field: body
+      regex: "(?i)\\bload_file\\s*\\("

@@ -1,0 +1,18 @@
+id: xss-unicode-escape
+name: 'XSS unicode / hex escape eval'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:\\\\x65\\\\x76\\\\x61\\\\x6c|\\\\u0065\\\\u0076\\\\u0061\\\\u006c|\\\\u\\{0065\\}\\\\u\\{0076\\}\\\\u\\{0061\\}\\\\u\\{006c\\})"
+    - field: query
+      regex: "(?i)frames\\s*\\[\\s*['\"][^'\"]*(?:eval|alert)"
+    - field: query
+      regex: "(?i)\\\\u0{0,3}6[1-9a-f].*\\\\u0{0,3}6[1-9a-f].*alert|\\\\x6[1-9a-f].*\\\\x6[1-9a-f].*(?:alert|eval)"
+    - field: body
+      regex: "(?i)(?:\\\\x65\\\\x76\\\\x61\\\\x6c|\\\\u0065\\\\u0076\\\\u0061\\\\u006c)"

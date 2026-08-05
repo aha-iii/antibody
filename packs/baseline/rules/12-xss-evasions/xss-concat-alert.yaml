@@ -1,0 +1,23 @@
+id: xss-concat-alert
+name: 'XSS string-concat alert/document'
+severity: high
+tags: [xss, evasion, blazehttp_gap, fp_reviewed]
+score: 40
+min_level: medium
+action: block
+transforms: [url_decode, html_entity_decode, lowercase]
+when:
+  any:
+    # 要求拼接出现在 window/top/self[...] 或 ['ale'+'rt'] 这类 XSS 语境，避免 CSP 报告 JSON 误伤
+    - field: uri
+      regex: "(?i)(?:window|top|parent|self|frames)\\s*\\[\\s*['\\\"]?(?:ale['\\\"+]{1,4}rt|doc['\\\"+]{1,4}ument)"
+    - field: query
+      regex: "(?i)(?:window|top|parent|self|frames)\\s*\\[\\s*['\\\"]?(?:ale['\\\"+]{1,4}rt|doc['\\\"+]{1,4}ument)"
+    - field: body
+      regex: "(?i)(?:window|top|parent|self|frames)\\s*\\[\\s*['\\\"]?(?:ale['\\\"+]{1,4}rt|doc['\\\"+]{1,4}ument)"
+    - field: uri
+      regex: "(?i)\\[['\\\"]ale['\\\"+]{1,4}rt['\\\"]\\]"
+    - field: query
+      regex: "(?i)\\[['\\\"]ale['\\\"+]{1,4}rt['\\\"]\\]"
+    - field: body
+      regex: "(?i)\\[['\\\"]ale['\\\"+]{1,4}rt['\\\"]\\]"

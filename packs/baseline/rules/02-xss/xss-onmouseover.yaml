@@ -1,0 +1,16 @@
+id: xss-onmouseover
+name: 'XSS onmouseover/onfocus'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)on(?:mouseover|focus|focusin)\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window|location)"
+    - field: query
+      regex: "(?i)on(?:mouseover|focus|focusin)\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window|location)"
+    - field: body
+      regex: "(?i)on(?:mouseover|focus|focusin)\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window|location)"

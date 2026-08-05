@@ -1,0 +1,29 @@
+id: sqli-union-select
+name: 'SQL UNION SELECT'
+severity: high
+tags: [sqli, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    # 去掉裸空格前缀，避免搜索词 "union select 关键字" 误伤；要求引号或 SQL 后续
+    - field: uri
+      regex: "(?i)(?:'|\\\"|%27|%22)\\s*union\\s+(all\\s+)?select"
+    - field: query
+      regex: "(?i)(?:'|\\\"|%27|%22)\\s*union\\s+(all\\s+)?select"
+    - field: body
+      regex: "(?i)(?:'|\\\"|%27|%22)\\s*union\\s+(all\\s+)?select"
+    - field: uri
+      regex: "(?i)union\\s+(all\\s+)?select\\s+(?:null|[\\d*]|concat\\s*\\(|char\\s*\\(|0x|from\\b)"
+    - field: query
+      regex: "(?i)union\\s+(all\\s+)?select\\s+(?:null|[\\d*]|concat\\s*\\(|char\\s*\\(|0x|from\\b)"
+    - field: body
+      regex: "(?i)union\\s+(all\\s+)?select\\s+(?:null|[\\d*]|concat\\s*\\(|char\\s*\\(|0x|from\\b)"
+    - field: uri
+      regex: "(?i)union\\s+(all\\s+)?select.{0,40}(?:--|#|/\\*)"
+    - field: query
+      regex: "(?i)union\\s+(all\\s+)?select.{0,40}(?:--|#|/\\*)"
+    - field: body
+      regex: "(?i)union\\s+(all\\s+)?select.{0,40}(?:--|#|/\\*)"

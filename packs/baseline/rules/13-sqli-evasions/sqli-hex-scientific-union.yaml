@@ -1,0 +1,19 @@
+# SQLi 绕过：十六进制 / 科学计数法 union 变体
+id: sqli-hex-scientific-union
+name: SQLi hex and scientific-notation union evasion
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [sqli, evasion, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*0xunion[^&]*select"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*\\d+e0union\\d+e0select"
+    - field: query
+      contains: '0xunion0x0xselect'
+    - field: query
+      contains: '1e0union1e0select'

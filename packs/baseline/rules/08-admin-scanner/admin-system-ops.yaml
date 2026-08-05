@@ -1,0 +1,20 @@
+id: admin-system-ops
+name: Admin system backup/restore/API-key probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [admin, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/api/(?:system/(?:backup|restore)|api-keys)/?"
+    - field: uri
+      regex: "(?i)^/api/(?:exports|subscriptions)/"
+    - field: header
+      regex: "(?i)x-user-id\\s*:"
+    - field: header
+      regex: "(?i)x-forwarded-host\\s*:\\s*(?:evil\\.|attacker\\.|localhost)"
+    - field: header
+      regex: "(?i)^host\\s*:\\s*[^\\n]*(?:evil\\.|attacker\\.)"

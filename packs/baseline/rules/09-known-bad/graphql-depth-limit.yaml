@@ -1,0 +1,27 @@
+# GraphQL：深度嵌套 / fragment spread 放大探测
+id: graphql-depth-limit
+name: GraphQL deep nesting / fragment spread amplification
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [graphql, dos, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      regex: "(?i)\"query\"\\s*:\\s*\"[^\"]*(?:\\{){5,}"
+    - field: body
+      regex: "(?i)(?:user|posts|comments|author|friends|members|teams|org|followers|following)\\s*\\{[^\"]*(?:\\{[^\"]*){4,}"
+    - field: body
+      regex: "(?i)(?:\\w+\\s*\\{[^}]{0,120}\\}){5,}"
+    - field: body
+      regex: "(?i)(?:friends|followers|nodes|edges|items)\\s*\\{[^}]{0,40}(?:friends|followers|nodes|edges|items)\\s*\\{[^}]{0,40}(?:friends|followers|nodes|edges|items)\\s*\\{"
+    - field: body
+      regex: "(?i)friends\\s*\\{\\s*friends\\s*\\{\\s*friends\\s*\\{\\s*friends"
+    - field: body
+      contains: 'friends { friends { friends { friends'
+    - field: body
+      contains: '__schema { types'
+    - field: query
+      regex: "(?i)(?:\\w+\\s*\\{[^}]{0,120}\\}){6,}"

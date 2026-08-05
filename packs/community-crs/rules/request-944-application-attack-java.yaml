@@ -1,0 +1,210 @@
+- id: crs-944100
+  name: 'Remote Command Execution: Suspicious Java class detected'
+  severity: critical
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 45
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "java\\.lang\\.(?:runtime|processbuilder)"
+      - field: header
+        regex: "java\\.lang\\.(?:runtime|processbuilder)"
+      - field: query
+        regex: "java\\.lang\\.(?:runtime|processbuilder)"
+- id: crs-944110
+  name: 'Remote Command Execution: Java process spawn (CVE-2017-9805)'
+  severity: critical
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 45
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?:runtime|processbuilder)"
+      - field: header
+        regex: "(?:runtime|processbuilder)"
+      - field: query
+        regex: "(?:runtime|processbuilder)"
+- id: crs-944120
+  name: 'Remote Command Execution: Java serialization (CVE-2015-4852)'
+  severity: critical
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 45
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?:clonetransform|xmldecod)er|f(?:orclosure|ilewriter)|in(?:stantiate(?:factory|transformer)|vokertransformer)|(?:prototype(?:clone|serialization)factor|getpropert)y|whileclosure"
+      - field: header
+        regex: "(?:clonetransform|xmldecod)er|f(?:orclosure|ilewriter)|in(?:stantiate(?:factory|transformer)|vokertransformer)|(?:prototype(?:clone|serialization)factor|getpropert)y|whileclosure"
+      - field: query
+        regex: "(?:clonetransform|xmldecod)er|f(?:orclosure|ilewriter)|in(?:stantiate(?:factory|transformer)|vokertransformer)|(?:prototype(?:clone|serialization)factor|getpropert)y|whileclosure"
+- id: crs-944140
+  name: 'Java Injection Attack: Java Script File Upload Found'
+  severity: medium
+  tags: [crs, owasp_crs, community, misc, java]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: ".*\\.(?:jsp|jspx)\\.*$"
+      - field: query
+        regex: ".*\\.(?:jsp|jspx)\\.*$"
+      - field: body
+        regex: ".*\\.(?:jsp|jspx)\\.*$"
+      - field: header
+        regex: ".*\\.(?:jsp|jspx)\\.*$"
+- id: crs-944150
+  name: 'Potential Remote Command Execution: Log4j / Log4shell'
+  severity: critical
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 45
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?i)(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)(?:[^\\}]{0,15}(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)|jndi|ctx)"
+      - field: header
+        regex: "(?i)(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)(?:[^\\}]{0,15}(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)|jndi|ctx)"
+      - field: query
+        regex: "(?i)(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)(?:[^\\}]{0,15}(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)|jndi|ctx)"
+- id: crs-944151
+  name: 'Potential Remote Command Execution: Log4j / Log4shell'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 30
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?i)(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)(?:[^\\}]*(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)|jndi|ctx)"
+      - field: header
+        regex: "(?i)(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)(?:[^\\}]*(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)|jndi|ctx)"
+      - field: query
+        regex: "(?i)(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)(?:[^\\}]*(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)|jndi|ctx)"
+- id: crs-944200
+  name: 'Magic bytes Detected, probable java serialization in use'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 30
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "\\xac\\xed\\x00\\x05"
+      - field: header
+        regex: "\\xac\\xed\\x00\\x05"
+      - field: query
+        regex: "\\xac\\xed\\x00\\x05"
+- id: crs-944210
+  name: 'Magic bytes Detected Base64 Encoded, probable java serialization in use'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 30
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?:rO0ABQ|KztAAU|Cs7QAF)"
+      - field: header
+        regex: "(?:rO0ABQ|KztAAU|Cs7QAF)"
+      - field: query
+        regex: "(?:rO0ABQ|KztAAU|Cs7QAF)"
+- id: crs-944240
+  name: 'Remote Command Execution: Java serialization (CVE-2015-4852)'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 30
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?:clonetransform|xmldecod)er|f(?:orclosure|ilewriter)|in(?:stantiate(?:factory|transformer)|vokertransformer)|(?:prototype(?:clone|serialization)factor|getpropert)y|whileclosure"
+      - field: header
+        regex: "(?:clonetransform|xmldecod)er|f(?:orclosure|ilewriter)|in(?:stantiate(?:factory|transformer)|vokertransformer)|(?:prototype(?:clone|serialization)factor|getpropert)y|whileclosure"
+      - field: query
+        regex: "(?:clonetransform|xmldecod)er|f(?:orclosure|ilewriter)|in(?:stantiate(?:factory|transformer)|vokertransformer)|(?:prototype(?:clone|serialization)factor|getpropert)y|whileclosure"
+- id: crs-944250
+  name: 'Remote Command Execution: Suspicious Java method detected'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 30
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "java\\b.+(?:runtime|processbuilder)"
+      - field: header
+        regex: "java\\b.+(?:runtime|processbuilder)"
+      - field: query
+        regex: "java\\b.+(?:runtime|processbuilder)"
+- id: crs-944260
+  name: 'Remote Command Execution: Malicious class-loading payload'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 30
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "class\\.module\\.classLoader\\.resources\\.context\\.parent\\.pipeline|springframework\\.context\\.support\\.FileSystemXmlApplicationContext"
+      - field: header
+        regex: "class\\.module\\.classLoader\\.resources\\.context\\.parent\\.pipeline|springframework\\.context\\.support\\.FileSystemXmlApplicationContext"
+      - field: query
+        regex: "class\\.module\\.classLoader\\.resources\\.context\\.parent\\.pipeline|springframework\\.context\\.support\\.FileSystemXmlApplicationContext"
+- id: crs-944300
+  name: 'Base64 encoded string matched suspicious keyword'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 25
+  min_level: high
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "c(?:nVudGltZQ|HJv(?:Y2Vzc2J1aWxkZXI|dG90eXBl(?:Y2xvbmVmYWN0b3J5|c2VyaWFsaXphdGlvbmZhY3Rvcnk)))|H(?:J1bnRpbWU|Byb(?:2Nlc3NidWlsZGVy|3RvdHlwZ(?:WNsb25lZmFjdG9yeQ|XNlcmlhbGl6YXRpb25mYWN0b3J5))|doaWxlY2xvc3VyZQ)|B(?:(?:ydW50aW1|mb3JjbG9zdXJ)l|wcm9(?:jZXNzYnVpbGRlcg|0b3R5cGV(?:jbG9uZWZhY3Rvcnk|zZXJpYWxpemF0aW9uZmFjdG9yeQ))|jbG9uZXRyYW5zZm9ybWVy|pbn(?:N0YW50aWF0Z(?:WZhY3Rvcnk|XRyYW5zZm9ybWVy)|Zva2VydHJhbnNmb3JtZXI)|3aGlsZWNsb3N1cmU)|Y2xvbmV0cmFuc2Zvcm1lcg|G(?:Nsb25ldHJhbnNmb3JtZXI|ZvcmNsb3N1cmU|lu(?:c3RhbnRpYXRl(?:ZmFjdG9yeQ|dHJhbnNmb3JtZXI)|dm9rZXJ0cmFuc2Zvcm1lcg))|Zm9yY2xvc3VyZQ|aW5(?:zdGFudGlhdGV(?:mYWN0b3J5|0cmFuc2Zvcm1lcg)|2b2tlcnRyYW5zZm9ybWVy)|d2hpbGVjbG9zdXJl"
+      - field: header
+        regex: "c(?:nVudGltZQ|HJv(?:Y2Vzc2J1aWxkZXI|dG90eXBl(?:Y2xvbmVmYWN0b3J5|c2VyaWFsaXphdGlvbmZhY3Rvcnk)))|H(?:J1bnRpbWU|Byb(?:2Nlc3NidWlsZGVy|3RvdHlwZ(?:WNsb25lZmFjdG9yeQ|XNlcmlhbGl6YXRpb25mYWN0b3J5))|doaWxlY2xvc3VyZQ)|B(?:(?:ydW50aW1|mb3JjbG9zdXJ)l|wcm9(?:jZXNzYnVpbGRlcg|0b3R5cGV(?:jbG9uZWZhY3Rvcnk|zZXJpYWxpemF0aW9uZmFjdG9yeQ))|jbG9uZXRyYW5zZm9ybWVy|pbn(?:N0YW50aWF0Z(?:WZhY3Rvcnk|XRyYW5zZm9ybWVy)|Zva2VydHJhbnNmb3JtZXI)|3aGlsZWNsb3N1cmU)|Y2xvbmV0cmFuc2Zvcm1lcg|G(?:Nsb25ldHJhbnNmb3JtZXI|ZvcmNsb3N1cmU|lu(?:c3RhbnRpYXRl(?:ZmFjdG9yeQ|dHJhbnNmb3JtZXI)|dm9rZXJ0cmFuc2Zvcm1lcg))|Zm9yY2xvc3VyZQ|aW5(?:zdGFudGlhdGV(?:mYWN0b3J5|0cmFuc2Zvcm1lcg)|2b2tlcnRyYW5zZm9ybWVy)|d2hpbGVjbG9zdXJl"
+      - field: query
+        regex: "c(?:nVudGltZQ|HJv(?:Y2Vzc2J1aWxkZXI|dG90eXBl(?:Y2xvbmVmYWN0b3J5|c2VyaWFsaXphdGlvbmZhY3Rvcnk)))|H(?:J1bnRpbWU|Byb(?:2Nlc3NidWlsZGVy|3RvdHlwZ(?:WNsb25lZmFjdG9yeQ|XNlcmlhbGl6YXRpb25mYWN0b3J5))|doaWxlY2xvc3VyZQ)|B(?:(?:ydW50aW1|mb3JjbG9zdXJ)l|wcm9(?:jZXNzYnVpbGRlcg|0b3R5cGV(?:jbG9uZWZhY3Rvcnk|zZXJpYWxpemF0aW9uZmFjdG9yeQ))|jbG9uZXRyYW5zZm9ybWVy|pbn(?:N0YW50aWF0Z(?:WZhY3Rvcnk|XRyYW5zZm9ybWVy)|Zva2VydHJhbnNmb3JtZXI)|3aGlsZWNsb3N1cmU)|Y2xvbmV0cmFuc2Zvcm1lcg|G(?:Nsb25ldHJhbnNmb3JtZXI|ZvcmNsb3N1cmU|lu(?:c3RhbnRpYXRl(?:ZmFjdG9yeQ|dHJhbnNmb3JtZXI)|dm9rZXJ0cmFuc2Zvcm1lcg))|Zm9yY2xvc3VyZQ|aW5(?:zdGFudGlhdGV(?:mYWN0b3J5|0cmFuc2Zvcm1lcg)|2b2tlcnRyYW5zZm9ybWVy)|d2hpbGVjbG9zdXJl"
+- id: crs-944152
+  name: 'Potential Remote Command Execution: Log4j / Log4shell'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, java]
+  score: 25
+  min_level: high
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?i)(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)"
+      - field: header
+        regex: "(?i)(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)"
+      - field: query
+        regex: "(?i)(?:\\$|&dollar;?)(?:\\{|&l(?:brace|cub);?)"

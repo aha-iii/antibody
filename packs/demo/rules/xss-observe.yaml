@@ -1,0 +1,12 @@
+id: xss-observe
+name: XSS keyword observe
+severity: low
+tags: [xss]
+score: 15
+min_level: low
+action: observe
+when:
+  all:
+    - field: uri
+      transforms: [lowercase]
+      contains: "oeerror="

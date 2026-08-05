@@ -1,0 +1,36 @@
+- id: crs-922120
+  name: 'Content-Transfer-Encoding was deprecated by rfc7578 in 2015 and should not be used'
+  severity: medium
+  tags: [crs, owasp_crs, community, misc, multipart]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "content-transfer-encoding:(.*)"
+      - field: query
+        regex: "content-transfer-encoding:(.*)"
+      - field: body
+        regex: "content-transfer-encoding:(.*)"
+      - field: header
+        regex: "content-transfer-encoding:(.*)"
+- id: crs-922130
+  name: 'Multipart header contains characters outside of valid range'
+  severity: medium
+  tags: [crs, owasp_crs, community, misc, multipart]
+  score: 25
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: uri
+        regex: "[^\\x21-\\x7E][\\x21-\\x39\\x3B-\\x7E]*:"
+      - field: query
+        regex: "[^\\x21-\\x7E][\\x21-\\x39\\x3B-\\x7E]*:"
+      - field: body
+        regex: "[^\\x21-\\x7E][\\x21-\\x39\\x3B-\\x7E]*:"
+      - field: header
+        regex: "[^\\x21-\\x7E][\\x21-\\x39\\x3B-\\x7E]*:"

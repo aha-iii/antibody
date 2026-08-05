@@ -1,0 +1,22 @@
+id: lfi-windows-system32
+name: 'LFI system32'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'windows/system32'
+    - field: uri
+      contains: 'boot.ini'
+    - field: query
+      contains: 'windows/system32'
+    - field: query
+      contains: 'boot.ini'
+    - field: body
+      contains: 'windows/system32'
+    - field: body
+      contains: 'boot.ini'

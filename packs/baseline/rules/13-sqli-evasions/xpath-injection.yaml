@@ -1,0 +1,22 @@
+id: xpath-injection
+name: XPath injection probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xpath, injection, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)//password\\b|//user\\b"
+    - field: body
+      regex: "(?i)//password\\b|//user\\b"
+    - field: query
+      regex: "(?i)(?:string-length|count|substring)\\s*\\(\\s*//"
+    - field: body
+      regex: "(?i)(?:string-length|count|substring)\\s*\\(\\s*//"
+    - field: query
+      regex: "(?i)\\'\\]\\s*\\|\\s*//"
+    - field: body
+      regex: "(?i)\\'\\]\\s*\\|\\s*//"

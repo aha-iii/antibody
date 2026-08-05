@@ -1,0 +1,16 @@
+id: sqli-mysql-comment
+name: 'MySQL versioned comment'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)/\\*!\\d{5}"
+    - field: query
+      regex: "(?i)/\\*!\\d{5}"
+    - field: body
+      regex: "(?i)/\\*!\\d{5}"

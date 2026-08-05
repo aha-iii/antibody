@@ -1,0 +1,22 @@
+id: sqli-union-comment-break
+name: SQLi UNION broken by comment/newline
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [sqli, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)\\bunion(?:\\s*(?:--|\\#)|/\\*).{0,32}\\bselect\\b"
+    - field: body
+      regex: "(?i)\\bunion(?:\\s*(?:--|\\#)|/\\*).{0,32}\\bselect\\b"
+    - field: query
+      regex: "(?i)\\bunion\\b.{0,12}(?:%0a|%0d|\\n).{0,24}\\bselect\\b"
+    - field: body
+      regex: "(?i)\\bunion\\b.{0,12}(?:%0a|%0d|\\n).{0,24}\\bselect\\b"
+    - field: query
+      regex: "(?i)(?:utl_http\\.request|utl_inaddr|procedure\\s+analyse\\s*\\()"
+    - field: body
+      regex: "(?i)(?:utl_http\\.request|procedure\\s+analyse\\s*\\()"

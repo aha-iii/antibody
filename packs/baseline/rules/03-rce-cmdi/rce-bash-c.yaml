@@ -1,0 +1,22 @@
+id: rce-bash-c
+name: 'RCE bash -c'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(/bin/)?bash\\s+-c"
+    - field: uri
+      regex: "(?i)/bin/sh\\s+-c"
+    - field: query
+      regex: "(?i)(/bin/)?bash\\s+-c"
+    - field: query
+      regex: "(?i)/bin/sh\\s+-c"
+    - field: body
+      regex: "(?i)(/bin/)?bash\\s+-c"
+    - field: body
+      regex: "(?i)/bin/sh\\s+-c"

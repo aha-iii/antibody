@@ -1,0 +1,47 @@
+id: cache-poison-header-smuggle
+name: Cache poisoning headers and path smuggling fragments
+severity: high
+score: 40
+action: block
+min_level: medium
+transforms: [lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i);\\.?css|;\\.js"
+    - field: uri
+      regex: "(?i)\\?;\\.|profile\\?;"
+    - field: header
+      regex: "(?i)x-forwarded-path\\s*:"
+    - field: header
+      regex: "(?i)x-custom-ip-authorization\\s*:"
+    - field: header
+      regex: "(?i)x-original-url\\s*:"
+    - field: header
+      regex: "(?i)x-rewrite-url\\s*:"
+    - field: body
+      regex: "(?i)\"type\"\\s*:\\s*\"function\"|polluted|\"code\"\\s*:"
+    - field: body
+      regex: "(?i)__pro__proto__|constconstructor|protoprototype"
+    - field: body
+      regex: "(?i)(\\{\\s*\"[a-z]\"\\s*:){10,}"
+    - field: query
+      regex: "(?i)/\\?{3,}/"
+    - field: uri
+      regex: "(?i)/\\?{3,}/"
+    - field: query
+      regex: "(?i);/\\?{3,}/"
+    - field: query
+      regex: "(?i)//[a-z0-9.-]+@[a-z0-9.-]+"
+    - field: uri
+      regex: "(?i)//[a-z0-9.-]+@[a-z0-9.-]+"
+    - field: query
+      contains: '/???/'
+    - field: uri
+      contains: '/???/'
+    - field: query
+      contains: '/????/'
+    - field: body
+      contains: '__pro__proto__'
+    - field: body
+      contains: 'constconstructor'

@@ -1,0 +1,64 @@
+id: mongo-shell-injection
+name: MongoDB shell and operator injection
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [nosql]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)\\bdb\\.[a-z0-9_]+\\.(?:insert|find|update|remove|drop|aggregate)\\s*\\("
+    - field: uri
+      regex: "(?i)\\bdb\\.[a-z0-9_]+\\.(?:insert|find|update|remove|drop|aggregate)\\s*\\("
+    - field: body
+      regex: "(?i)\\bdb\\.[a-z0-9_]+\\.(?:insert|find|update|remove|drop|aggregate)\\s*\\("
+    - field: query
+      regex: "(?i)\\$where\\s*:|true,\\s*\\$where"
+    - field: uri
+      regex: "(?i)\\$where\\s*:|true,\\s*\\$where"
+    - field: body
+      regex: "(?i)\\$where\\s*:|true,\\s*\\$where"
+    - field: query
+      regex: "(?i)\\$or\\s*:\\s*\\["
+    - field: body
+      regex: "(?i)\\$or\\s*:\\s*\\["
+    - field: uri
+      regex: "(?i)\\$or\\s*:\\s*\\["
+    - field: query
+      regex: "(?i)do\\s*\\{\\s*curdate\\s*="
+    - field: body
+      regex: "(?i)do\\s*\\{\\s*curdate\\s*="
+    - field: uri
+      regex: "(?i)do\\s*\\{\\s*curdate\\s*="
+    - field: query
+      contains: 'var date = new date()'
+    - field: body
+      contains: 'var date = new date()'
+    - field: uri
+      contains: 'var date = new date()'
+    - field: query
+      contains: 'db.injection'
+    - field: body
+      contains: 'db.injection'
+    - field: uri
+      contains: 'db.injection'
+    - field: query
+      contains: '$or:'
+    - field: body
+      contains: '$or:'
+    - field: uri
+      contains: '$or:'
+    - field: query
+      contains: 'do{curdate'
+    - field: body
+      contains: 'do{curdate'
+    - field: uri
+      contains: 'do{curdate'
+    - field: query
+      contains: 'while(curdate-date'
+    - field: body
+      contains: 'while(curdate-date'
+    - field: uri
+      contains: 'while(curdate-date'

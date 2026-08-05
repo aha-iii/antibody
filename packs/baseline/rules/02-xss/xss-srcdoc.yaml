@@ -1,0 +1,16 @@
+id: xss-srcdoc
+name: 'XSS iframe srcdoc'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'srcdoc='
+    - field: query
+      contains: 'srcdoc='
+    - field: body
+      contains: 'srcdoc='

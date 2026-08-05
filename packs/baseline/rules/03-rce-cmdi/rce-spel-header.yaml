@@ -1,0 +1,20 @@
+id: rce-spel-header
+name: 'SpEL / Spring function routing header'
+severity: high
+tags: [rce, spel, spring]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_entity_decode]
+when:
+  any:
+    - field: header
+      regex: "(?i)T\\(java\\.lang\\.Runtime\\)"
+    - field: header
+      regex: "(?i)getRuntime\\(\\)\\s*\\.\\s*exec\\s*\\("
+    - field: header
+      contains: 'spring.cloud.function.routing-expression'
+    - field: query
+      regex: "(?i)T\\(java\\.lang\\.Runtime\\)"
+    - field: body
+      regex: "(?i)T\\(java\\.lang\\.Runtime\\)"

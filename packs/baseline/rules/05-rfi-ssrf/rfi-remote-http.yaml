@@ -1,0 +1,17 @@
+id: rfi-remote-http
+name: 'RFI remote http include'
+severity: high
+tags: [ssrf, rfi, owasp]
+score: 40
+min_level: low
+# 宽远程 URL：默认观察，避免正常外链误拦；语义/其它规则可再抬分
+action: observe
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(include|require|page|file|path|doc|template)=https?://(?:(?:\\d{1,3}\\.){3}\\d{1,3}|localhost|127\\.|0x[0-9a-f]+|file:)"
+    - field: query
+      regex: "(?i)(include|require|page|file|path|doc|template)=https?://(?:(?:\\d{1,3}\\.){3}\\d{1,3}|localhost|127\\.|0x[0-9a-f]+|file:)"
+    - field: body
+      regex: "(?i)(include|require|page|file|path|doc|template)=https?://(?:(?:\\d{1,3}\\.){3}\\d{1,3}|localhost|127\\.|0x[0-9a-f]+|file:)"

@@ -1,0 +1,21 @@
+# 开放重定向：OAuth redirect_uri 指向 evil.com（短路径优先，避免 budget 耗尽）
+id: oauth-evil-redirect-fast
+name: Fast block OAuth redirect_uri to evil.com
+severity: critical
+score: 200
+action: block
+min_level: low
+tags: [redirect, oauth, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)redirect_uri=https?://[^&]*evil\\.com"
+    - field: query
+      regex: "(?i)redirect_uri=https?://[^&]*@evil\\.com"
+    - field: query
+      regex: "(?i)redirect_uri=https?://legitimate\\.com@evil"
+    - field: query
+      regex: "(?i)relaystate=https?://[^&]*evil\\.com"
+    - field: query
+      regex: "(?i)(?:^|[&])service=https?://[^&]*evil\\.com"

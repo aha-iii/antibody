@@ -1,0 +1,62 @@
+id: ssrf-metadata-aws
+name: 'SSRF cloud metadata'
+severity: high
+tags: [ssrf, rfi, owasp]
+score: 50
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '169.254.169.254'
+    - field: uri
+      contains: 'metadata.google.internal'
+    - field: uri
+      regex: "(?i)metadata\\.azure"
+    - field: uri
+      contains: '100.100.100.200'
+    - field: uri
+      contains: 'computemetadata'
+    - field: uri
+      contains: 'instance-data'
+    - field: uri
+      contains: 'fd00:ec2::254'
+    - field: uri
+      contains: 'latest/meta-data'
+    - field: uri
+      regex: "(?i)https?://(?:2852039166|0xA9FEA9FE)\\b"
+    - field: query
+      contains: '169.254.169.254'
+    - field: query
+      contains: 'metadata.google.internal'
+    - field: query
+      regex: "(?i)metadata\\.azure"
+    - field: query
+      contains: '100.100.100.200'
+    - field: query
+      contains: 'computemetadata'
+    - field: query
+      contains: 'instance-data'
+    - field: query
+      contains: 'fd00:ec2::254'
+    - field: query
+      contains: 'latest/meta-data'
+    - field: query
+      regex: "(?i)https?://(?:2852039166|0xA9FEA9FE)\\b"
+    - field: body
+      contains: '169.254.169.254'
+    - field: body
+      contains: 'metadata.google.internal'
+    - field: body
+      regex: "(?i)metadata\\.azure"
+    - field: body
+      contains: '100.100.100.200'
+    - field: body
+      contains: 'computemetadata'
+    - field: body
+      contains: 'instance-data'
+    - field: body
+      contains: 'fd00:ec2::254'
+    - field: body
+      contains: 'latest/meta-data'

@@ -1,0 +1,18 @@
+id: null-byte-control
+name: Null byte and bare CRLF control probes
+severity: medium
+score: 35
+action: block
+min_level: high
+tags: [fuzz, protocol, self]
+transforms: []
+when:
+  any:
+    - field: query
+      regex: "(?i)%25(?:00|7f|ff)|%00|%7f"
+    - field: uri
+      regex: "(?i)%00|%2500"
+    - field: query
+      regex: "(?i)(?:^|[=&])q=(?:%5C0|%2500|%250a|%250d)"
+    - field: header
+      regex: "(?i)[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]"

@@ -1,0 +1,68 @@
+id: transfer-encoding-smuggle
+name: Transfer-Encoding request smuggling
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [protocol, smuggle]
+transforms: [lowercase]
+when:
+  any:
+    - field: header
+      regex: "(?i)transfer-encoding\\s*:[^\\n]*\\n[^\\n]*transfer-encoding\\s*:"
+    - field: header
+      regex: "(?i)transfer-encoding\\s*:\\s*(?:cow|chunk\\b|identity,\\s*chunked|chunked,\\s*identity|[a-z])\\s*$"
+    - field: header
+      regex: "(?i)^[ \\t]+transfer-encoding\\s*:"
+    - field: header
+      regex: "(?i)transfer-encoding\\s*:\\s*[^\\n]*chunk"
+    - field: header
+      contains: 'transfer-encoding: cow'
+    - field: header
+      regex: "(?i)content-length\\s*:[^\\n]*\\n[^\\n]*transfer-encoding\\s*:"
+    - field: header
+      regex: "(?i)transfer-encoding\\s*:[^\\n]*\\n[^\\n]*content-length\\s*:"
+    - field: header
+      regex: "(?i)host\\s*:[^\\n]*\\n[^\\n]*host\\s*:"
+    - field: body
+      regex: "(?i)^-[0-9a-f]+"
+    - field: body
+      regex: "(?i)^[0-9a-f]+ "
+    - field: query
+      contains: '%20chunked'
+    - field: query
+      contains: '%5cx00'
+    - field: query
+      contains: "'+''+'"
+    - field: query
+      contains: '%27%2b%27%27%2b%27'
+    - field: query
+      contains: '/????/c?t'
+    - field: query
+      contains: '/????/[c]at'
+    - field: query
+      contains: '%2f%3f%3f%3f%3f%2fc%3ft'
+    - field: query
+      contains: 'valid_session%5cx00'
+    - field: query
+      contains: 'valid_session\x00'
+    - field: uri
+      contains: '?;.css'
+    - field: uri
+      contains: '%3finjected='
+    - field: query
+      contains: '%3finjected='
+    - field: header
+      contains: 'javascript:'
+    - field: header
+      contains: 'x-original-url'
+    - field: header
+      contains: 'x-rewrite-url'
+    - field: body
+      contains: 'aced0005'
+    - field: body
+      regex: "(?i)\\\\xac\\\\xed\\\\x00\\\\x05|ac\\s*ed\\s*00\\s*05"
+    - field: uri
+      contains: 'ref=doc-2024'
+    - field: query
+      contains: 'ref=doc-2024'

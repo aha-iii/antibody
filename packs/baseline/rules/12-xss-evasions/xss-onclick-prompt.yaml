@@ -1,0 +1,14 @@
+id: xss-onclick-prompt
+name: XSS OnClick / prompt URI
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss, blazehttp_gap]
+transforms: [url_decode_uni, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)onclick\\s*=|prompt\\s*[`(]|alert\\s*\\."
+    - field: query
+      regex: "(?i)onclick\\s*=|prompt\\s*[`(]|alert\\s*\\."

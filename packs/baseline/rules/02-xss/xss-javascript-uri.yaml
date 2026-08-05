@@ -1,0 +1,28 @@
+id: xss-javascript-uri
+name: 'XSS javascript: URI'
+severity: high
+tags: [xss, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)javascript\\s*:\\s*(?:alert|eval|prompt|confirm|document|window|location)\\b"
+    - field: query
+      regex: "(?i)javascript\\s*:\\s*(?:alert|eval|prompt|confirm|document|window|location)\\b"
+    - field: body
+      regex: "(?i)javascript\\s*:\\s*(?:alert|eval|prompt|confirm|document|window|location)\\b"
+    - field: uri
+      regex: "(?i)javascript\\s*:\\s*(?:\\(\\s*function|\\[\\s*[\"']|eval\\s*\\(|settimeout\\s*\\(|atob\\s*\\()"
+    - field: query
+      regex: "(?i)javascript\\s*:\\s*(?:\\(\\s*function|\\[\\s*[\"']|eval\\s*\\(|settimeout\\s*\\(|atob\\s*\\()"
+    - field: body
+      regex: "(?i)javascript\\s*:\\s*(?:\\(\\s*function|\\[\\s*[\"']|eval\\s*\\(|settimeout\\s*\\(|atob\\s*\\()"
+    - field: uri
+      regex: "(?i)javascript&colon;\\s*(?:alert|eval|prompt|confirm|document|window|location)\\b"
+    - field: query
+      regex: "(?i)javascript&colon;\\s*(?:alert|eval|prompt|confirm|document|window|location)\\b"
+    - field: body
+      regex: "(?i)javascript&colon;\\s*(?:alert|eval|prompt|confirm|document|window|location)\\b"

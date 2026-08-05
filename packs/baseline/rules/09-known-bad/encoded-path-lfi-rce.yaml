@@ -1,0 +1,44 @@
+id: encoded-path-lfi-rce
+name: Double-encoded path traversal and RCE path probes
+severity: high
+score: 40
+action: block
+min_level: low
+transforms: [lowercase]
+when:
+  any:
+    # 使用 regex 保证进入候选集（纯 contains 依赖 Aho，个别 % 针可能漏入候选）
+    - field: query
+      regex: "(?i)%25c0%25ae"
+    - field: uri
+      regex: "(?i)%25c0%25ae"
+    - field: body
+      regex: "(?i)%25c0%25ae"
+    - field: query
+      regex: "(?i)%c0%ae%c0%ae%c0%af"
+    - field: uri
+      regex: "(?i)%c0%ae%c0%ae%c0%af"
+    - field: body
+      regex: "(?i)%c0%ae%c0%ae%c0%af"
+    - field: query
+      regex: "(?i)%3b%24%28printf"
+    - field: uri
+      regex: "(?i)%3b%24%28printf"
+    - field: body
+      regex: "(?i)%3b%24%28printf"
+    - field: query
+      regex: "(?i)%7crev%29"
+    - field: uri
+      regex: "(?i)%7crev%29"
+    - field: body
+      regex: "(?i)%7crev%29"
+    - field: query
+      regex: "(?i)hsab%2fnib"
+    - field: uri
+      regex: "(?i)hsab%2fnib"
+    - field: body
+      regex: "(?i)hsab%2fnib"
+    - field: body
+      regex: "(?i)xsi:schemalocation|xs:include"
+    - field: body
+      contains: 'schemalocation'

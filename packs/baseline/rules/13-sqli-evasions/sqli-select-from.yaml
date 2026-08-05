@@ -1,0 +1,23 @@
+id: sqli-select-from
+name: 'SQL SELECT FROM probe'
+severity: high
+tags: [sqli, blazehttp_gap, fp_reviewed]
+score: 40
+min_level: high
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    # 过宽；升到 high，并要求引号/注释等注入痕迹
+    - field: uri
+      regex: "(?i)(?:'|\\\"|%27).*\\bselect\\b.{0,80}\\bfrom\\b"
+    - field: query
+      regex: "(?i)(?:'|\\\"|%27).*\\bselect\\b.{0,120}\\bfrom\\b"
+    - field: body
+      regex: "(?i)(?:'|\\\"|%27).*\\bselect\\b.{0,120}\\bfrom\\b"
+    - field: uri
+      regex: "(?i)\\bselect\\b.{0,40}\\bfrom\\b.{0,40}(?:information_schema|sleep\\s*\\(|benchmark\\s*\\()"
+    - field: query
+      regex: "(?i)\\bselect\\b.{0,40}\\bfrom\\b.{0,40}(?:information_schema|sleep\\s*\\(|benchmark\\s*\\()"
+    - field: body
+      regex: "(?i)\\bselect\\b.{0,40}\\bfrom\\b.{0,40}(?:information_schema|sleep\\s*\\(|benchmark\\s*\\()"

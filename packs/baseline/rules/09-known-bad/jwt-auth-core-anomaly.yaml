@@ -1,0 +1,102 @@
+id: jwt-auth-core-anomaly
+name: Core JWT and authentication structural anomalies
+severity: high
+score: 40
+action: block
+min_level: low
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    # JWT stubs / malformed
+    - field: query
+      contains: 'aaaa...aaaa'
+    - field: query
+      regex: "(?i)access_token=eyj[^.]*\\.[^.]{0,20}\\.\\.\\."
+    - field: query
+      regex: "(?i)(?:^|[?&])q=\\.\\.eyj"
+    - field: query
+      contains: 'imb2nci6zmfs'
+    - field: query
+      contains: 'not-base64-payload'
+    # XPath
+    - field: query
+      regex: "(?i)(?://\\*|count\\s*\\(|ancestor::|following-sibling::|local-name\\s*\\()"
+    - field: uri
+      regex: "(?i)(?://\\*|ancestor::|following-sibling::|local-name\\s*\\()"
+    - field: body
+      regex: "(?i)(?://\\*|ancestor::|following-sibling::|local-name\\s*\\()"
+    # PHP juggling / session
+    - field: query
+      regex: "(?i)password(?:\\[\\]|\\[\\d+\\])="
+    - field: query
+      contains: 'domain=.attacker'
+    - field: query
+      contains: 'valid_session\\x00'
+    - field: query
+      contains: '%5cx00admin'
+    # XXE / XInclude / UTF-7
+    - field: query
+      contains: 'encoding="utf-7"'
+    - field: query
+      contains: 'encoding=%22utf-7%22'
+    - field: body
+      contains: 'encoding="utf-7"'
+    - field: query
+      contains: 'xinclude'
+    - field: body
+      contains: 'xinclude'
+    - field: query
+      contains: '<?import'
+    - field: query
+      contains: '%3fimport'
+    # Deserialization magic / gadgets
+    - field: body
+      contains: 'templatesimpl'
+    - field: body
+      contains: 'gem::installer'
+    - field: body
+      contains: 'aced0005'
+    - field: body
+      regex: "(?i)__proto__|constructor\\s*\\[|prototype\\s*\\{"
+    - field: body
+      contains: '"prototype"'
+    # Glob / RCE polys
+    - field: query
+      contains: '/????/c?t'
+    - field: query
+      contains: '/????/[c]at'
+    - field: uri
+      contains: '/???/'
+    - field: query
+      regex: "(?i);\\s*/\\?\\?\\?\\?/"
+    - field: query
+      contains: 'lua -e'
+    - field: query
+      contains: 'os.execute'
+    - field: query
+      regex: "(?i)\\|\\s*rev\\)|\\$\\(\\s*printf"
+    - field: body
+      regex: "(?i)\\|\\s*rev\\)|\\$\\(\\s*printf"
+    - field: body
+      contains: "hsab/nib/"
+    - field: query
+      contains: "hsab/nib/"
+    - field: query
+      contains: '{echo,'
+    - field: query
+      contains: 'awk'
+    - field: query
+      regex: "(?i)&\\s*ping\\s+-c"
+    # SSI
+    - field: query
+      contains: '<!--#exec'
+    - field: uri
+      contains: '<!--#exec'
+    - field: body
+      contains: '<!--#exec'
+    - field: query
+      contains: '%3c%21--%23exec'
+    - field: uri
+      contains: '%3c%21--%23exec'
+    - field: body
+      contains: '%3c%21--%23exec'

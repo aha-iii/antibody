@@ -1,0 +1,16 @@
+id: xss-comment-break-alert
+name: 'XSS comment-broken alert identifier'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\[[^\\]]{0,20}/\\*[^*]{0,20}\\*/[^\\]]{0,20}(?:alert|eval)"
+    - field: query
+      regex: "(?i)\\[[^\\]]{0,40}/\\*[^*]{0,40}\\*/[^\\]]{0,40}(?:alert|eval|document)"
+    - field: body
+      regex: "(?i)\\[[^\\]]{0,40}/\\*[^*]{0,40}\\*/[^\\]]{0,40}(?:alert|eval|document)"

@@ -1,0 +1,25 @@
+{
+  "bias": 0.0,
+  "weights": {
+    "attack_shape": 0.42,
+    "operator_hits_norm": 0.32,
+    "quote_ratio": 0.48,
+    "special_ratio": 0.30,
+    "url_encoded_ratio": 0.08,
+    "entropy_norm": 0.015,
+    "large_body_soft": 1.0,
+    "proto_anomaly": 0.5,
+    "method_post": 0.04,
+    "has_query": 0.02,
+    "body_kb_log": 0.03,
+    "header_count_norm": 0.02,
+    "cookie_present": 0.02,
+    "json_ct": 0.03,
+    "multipart_ct": 0.02,
+    "double_encode": 0.06,
+    "sql_comment": 0.08,
+    "xss_angle": 0.10,
+    "path_traversal": 0.12,
+    "sample_len_norm": 0.01
+  }
+}

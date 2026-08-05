@@ -1,0 +1,26 @@
+id: lfi-dotdot-unix
+name: 'LFI ../ traversal'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(\\.\\./){2,}"
+    - field: uri
+      regex: "(?i)(\\.\\.\\\\){2,}"
+    - field: query
+      regex: "(?i)(\\.\\./){2,}"
+    - field: query
+      regex: "(?i)(\\.\\.\\\\){2,}"
+    - field: body
+      regex: "(?i)(\\.\\./){2,}"
+    - field: body
+      regex: "(?i)(\\.\\.\\\\){2,}"
+    - field: header
+      regex: "(?i)(\\.\\./){2,}.*(?:etc/passwd|windows[/\\\\]win\\.ini|/etc/)"
+    - field: header
+      regex: "(?i)(\\.\\.\\\\){2,}"

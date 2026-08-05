@@ -1,0 +1,16 @@
+id: sqli-stacked-drop
+name: 'SQL stacked DROP'
+severity: high
+tags: [sqli, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i);\\s*drop\\s+(table|database)"
+    - field: query
+      regex: "(?i);\\s*drop\\s+(table|database)"
+    - field: body
+      regex: "(?i);\\s*drop\\s+(table|database)"

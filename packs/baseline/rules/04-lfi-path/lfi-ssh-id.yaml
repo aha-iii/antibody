@@ -1,0 +1,22 @@
+id: lfi-ssh-id
+name: 'LFI id_rsa'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'id_rsa'
+    - field: uri
+      contains: '.ssh/authorized_keys'
+    - field: query
+      contains: 'id_rsa'
+    - field: query
+      contains: '.ssh/authorized_keys'
+    - field: body
+      contains: 'id_rsa'
+    - field: body
+      contains: '.ssh/authorized_keys'

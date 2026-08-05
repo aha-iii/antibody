@@ -1,0 +1,29 @@
+[package]
+name = "nerve-antibody-engine"
+version.workspace = true
+edition.workspace = true
+description = "Nerve Antibody / Arc-Cortex Engine (black-box facade)"
+
+[features]
+default = []
+inspect-trace = ["dep:nerve-inspect-trace", "nerve-antibody-runtime/inspect-trace"]
+accel-hyperscan = ["dep:nerve-antibody-accel", "nerve-antibody-accel/accel-hyperscan"]
+accel-hyperscan-ffi = ["dep:nerve-antibody-accel", "nerve-antibody-accel/accel-hyperscan-ffi"]
+onnx = ["nerve-antibody-adaptive/onnx"]
+
+[dependencies]
+nerve-antibody-dsl = { workspace = true }
+nerve-antibody-pack = { workspace = true }
+nerve-antibody-compiler = { workspace = true }
+nerve-antibody-runtime = { workspace = true }
+nerve-antibody-pipeline = { workspace = true }
+nerve-antibody-adaptive = { workspace = true }
+nerve-antibody-semantic = { workspace = true }
+nerve-antibody-signals = { workspace = true }
+nerve-antibody-metrics = { workspace = true }
+nerve-antibody-license = { workspace = true }
+nerve-antibody-accel = { workspace = true, optional = true }
+nerve-inspect-trace = { path = "../../../../../Nerve-defender/crates/engine/nerve-inspect-trace", optional = true }
+parking_lot = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }

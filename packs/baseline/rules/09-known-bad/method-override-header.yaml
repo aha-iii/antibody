@@ -1,0 +1,22 @@
+id: method-override-header
+name: HTTP method override header abuse
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [protocol, self]
+transforms: [lowercase]
+when:
+  any:
+    - field: header
+      regex: "(?i)x-http-method-override\\s*:"
+    - field: header
+      regex: "(?i)x-http-method\\s*:"
+    - field: header
+      regex: "(?i)x-method-override\\s*:"
+    - field: query
+      regex: "(?i)(?:^|[&])_method="
+    - field: query
+      contains: 'constructor][prototype]'
+    - field: query
+      contains: 'constructor.prototype'

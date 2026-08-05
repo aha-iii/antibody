@@ -1,0 +1,16 @@
+id: xss-overlong-utf8
+name: 'XSS overlong UTF-8 tags'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(?:%c0%bc|%e0%80%bc)(?:script|/script|iframe|img|svg)"
+    - field: query
+      regex: "(?i)(?:%c0%bc|%e0%80%bc)(?:script|/script|iframe|img|svg)"
+    - field: body
+      regex: "(?i)(?:%c0%bc|%e0%80%bc)(?:script|/script|iframe|img|svg)"

@@ -1,0 +1,22 @@
+id: xss-data-html
+name: 'XSS data:text/html'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'data:text/html'
+    - field: uri
+      contains: 'data:text/html;base64'
+    - field: query
+      contains: 'data:text/html'
+    - field: query
+      contains: 'data:text/html;base64'
+    - field: body
+      contains: 'data:text/html'
+    - field: body
+      contains: 'data:text/html;base64'

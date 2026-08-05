@@ -1,0 +1,10 @@
+id: sqli-or
+name: SQL tautology
+severity: medium
+tags: [sqli]
+score: 30
+min_level: high
+action: block
+match:
+  field: uri
+  contains: "or 1=1"

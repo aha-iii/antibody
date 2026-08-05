@@ -1,0 +1,19 @@
+id: jwt-alg-none
+name: JWT alg none signature bypass
+severity: critical
+score: 45
+action: block
+min_level: low
+tags: [auth, jwt, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    # 常见 none/NONE/None/nOnE header 的 base64url 前缀
+    - field: query
+      regex: "(?i)eyJhbGciOiJ(?:ub25l|OT05F|Ob25l|uT25F)Iiw"
+    - field: body
+      regex: "(?i)eyJhbGciOiJ(?:ub25l|OT05F|Ob25l|uT25F)Iiw"
+    - field: header
+      regex: "(?i)eyJhbGciOiJ(?:ub25l|OT05F|Ob25l|uT25F)Iiw"
+    - field: uri
+      regex: "(?i)eyJhbGciOiJ(?:ub25l|OT05F|Ob25l|uT25F)Iiw"

@@ -1,0 +1,16 @@
+id: sqli-pg-copy
+name: 'PostgreSQL COPY program'
+severity: high
+tags: [sqli, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bcopy\\s+.*\\bprogram\\b"
+    - field: query
+      regex: "(?i)\\bcopy\\s+.*\\bprogram\\b"
+    - field: body
+      regex: "(?i)\\bcopy\\s+.*\\bprogram\\b"

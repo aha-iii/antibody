@@ -1,0 +1,7 @@
+[regression] building dashboard...
+[regression] starting dashboard on 127.0.0.1:8799
+failed to load pack: regex oscmd-windows-unix: regex parse error:
+    (?i)(?:^|[;&|%0a])\s*type\s+[a-z0-9_"[\]/\\.-]+
+                                ^
+error: unclosed character class
+[regression] manifest 2699 cases · concurrency=40

@@ -1,0 +1,22 @@
+id: ssrf-link-local
+name: 'SSRF link-local'
+severity: high
+tags: [ssrf, rfi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'http://169.254.'
+    - field: uri
+      contains: 'https://169.254.'
+    - field: query
+      contains: 'http://169.254.'
+    - field: query
+      contains: 'https://169.254.'
+    - field: body
+      contains: 'http://169.254.'
+    - field: body
+      contains: 'https://169.254.'

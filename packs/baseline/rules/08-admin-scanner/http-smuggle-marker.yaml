@@ -1,0 +1,30 @@
+id: http-smuggle-marker
+name: HTTP request smuggling markers
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [proto, smuggle]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      contains: 'transfer-encoding%3a%09'
+    - field: query
+      contains: 'transfer-encoding%09'
+    - field: query
+      contains: '%20chunked'
+    - field: query
+      contains: 'xchunked'
+    - field: query
+      contains: 'application/json%00'
+    - field: query
+      contains: '%5cx00text/html'
+    - field: query
+      contains: 'multipart/form-data%3b%20boundary%3d----%3b'
+    - field: header
+      regex: "(?i)transfer-encoding\\s+:"
+    - field: header
+      regex: "(?i)transfer-encoding\\s*:\\s*\\t"
+    - field: header
+      regex: "(?i)transfer-encoding\\s*:\\s*xchunked"

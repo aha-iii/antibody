@@ -1,0 +1,16 @@
+id: java-geoserver-ows
+name: 'GeoServer OWS exploit path'
+severity: high
+tags: [java, cve, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '/geoserver/ows'
+    - field: uri
+      contains: '/geoserver/wfs'
+    - field: query
+      contains: 'j_platformrest'

@@ -1,0 +1,660 @@
+- id: sample-sqli-union-select
+  rule_id: sqli-union-select
+  name: SQL UNION SELECT
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=union all select
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-union-distinct
+  rule_id: sqli-union-distinct
+  name: SQL UNION DISTINCT SELECT
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=union distinct select
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-or-1eq1
+  rule_id: sqli-or-1eq1
+  name: SQL OR 1=1 literal
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: or 1=1
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-or-1eq1-alt
+  rule_id: sqli-or-1eq1
+  name: SQL OR 1=1 literal (alt)
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: or 1=1
+- id: sample-sqli-and-true
+  rule_id: sqli-and-true
+  name: SQL AND tautology
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=and
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-comment-hash
+  rule_id: sqli-comment-hash
+  name: SQL comment probe
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=--
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-sleep
+  rule_id: sqli-sleep
+  name: SQL time-based sleep
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=sleep
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-information-schema
+  rule_id: sqli-information-schema
+  name: SQL information_schema
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id002
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=information_schema
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-information-schema-alt
+  rule_id: sqli-information-schema
+  name: SQL information_schema (alt)
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id002
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=information_schema
+- id: sample-sqli-load-file
+  rule_id: sqli-load-file
+  name: SQL LOAD_FILE
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=load_file
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-into-outfile
+  rule_id: sqli-into-outfile
+  name: SQL INTO OUTFILE
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=into outdumpfile
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-xp-cmdshell
+  rule_id: sqli-xp-cmdshell
+  name: SQL xp_cmdshell
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id003
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=xp_cmdshell
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-xp-cmdshell-alt
+  rule_id: sqli-xp-cmdshell
+  name: SQL xp_cmdshell (alt)
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id003
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=xp_cmdshell
+- id: sample-sqli-stacked-drop
+  rule_id: sqli-stacked-drop
+  name: SQL stacked DROP
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=;drop tabledatabase
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-stacked-delete
+  rule_id: sqli-stacked-delete
+  name: SQL stacked DELETE
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=;delete from
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-stacked-insert
+  rule_id: sqli-stacked-insert
+  name: SQL stacked INSERT
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=;insert into
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-extractvalue
+  rule_id: sqli-extractvalue
+  name: SQL extractvalue/updatexml
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=extractvalue
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-substring-user
+  rule_id: sqli-substring-user
+  name: SQL user()/version() probe
+  category: 01-sqli
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=user
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-hex-0x
+  rule_id: sqli-hex-0x
+  name: SQL hex 0x blob
+  category: 01-sqli
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=0x0{8
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-char-concat
+  rule_id: sqli-char-concat
+  name: SQL CHAR/CONCAT abuse
+  category: 01-sqli
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=concat.
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-having
+  rule_id: sqli-having
+  name: SQL HAVING 1=1
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=having
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-order-by-num
+  rule_id: sqli-order-by-num
+  name: SQL ORDER BY numeric probe
+  category: 01-sqli
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=order
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-group-by
+  rule_id: sqli-group-by
+  name: SQL GROUP BY probe
+  category: 01-sqli
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=group
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-into-dumpfile
+  rule_id: sqli-into-dumpfile
+  name: SQL INTO DUMPFILE
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id004
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=into dumpfile
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-into-dumpfile-alt
+  rule_id: sqli-into-dumpfile
+  name: SQL INTO DUMPFILE (alt)
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id004
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=into dumpfile
+- id: sample-sqli-mysql-comment
+  rule_id: sqli-mysql-comment
+  name: MySQL versioned comment
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q={5}
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-waitfor
+  rule_id: sqli-waitfor
+  name: MSSQL WAITFOR
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id005
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=waitfor delay
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-waitfor-alt
+  rule_id: sqli-waitfor
+  name: MSSQL WAITFOR (alt)
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id005
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=waitfor delay
+- id: sample-sqli-exec-sp
+  rule_id: sqli-exec-sp
+  name: MSSQL EXEC sp_
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=execsp_xp_
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-pg-copy
+  rule_id: sqli-pg-copy
+  name: PostgreSQL COPY program
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=program
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-boolean-null
+  rule_id: sqli-boolean-null
+  name: SQL OR IS NULL
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=null
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-union-null
+  rule_id: sqli-union-null
+  name: SQL UNION NULL pad
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=union select null
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-case-when
+  rule_id: sqli-case-when
+  name: SQL CASE WHEN injection
+  category: 01-sqli
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=case
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-dual
+  rule_id: sqli-dual
+  name: SQL FROM DUAL
+  category: 01-sqli
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=from dual
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-or-true-word
+  rule_id: sqli-or-true-word
+  name: SQL OR TRUE
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=or true
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -1,0 +1,15 @@
+[package]
+name = "nerve-antibody-adaptive"
+version.workspace = true
+edition.workspace = true
+description = "Calibrated adaptive risk scorer (assist-only, never blocks alone)"
+
+[features]
+default = []
+# 打开后编译 ONNX 加载入口（需自行接入 ort / 原生 Runtime）
+onnx = []
+
+[dependencies]
+nerve-antibody-dsl = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

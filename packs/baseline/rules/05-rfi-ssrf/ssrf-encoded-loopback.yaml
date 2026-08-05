@@ -1,0 +1,16 @@
+id: ssrf-encoded-loopback
+name: SSRF encoded loopback / decimal IP
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [ssrf, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)https?://(?:0x7f[0-9a-f]{0,8}|0x7f(?:\\.[0-9a-fx]+)+|2130706433|0177\\.0\\.0\\.1|127\\.1(?:[^\\d]|$)|(?:0)(?:[:/\\?#]|$))"
+    - field: body
+      regex: "(?i)https?://(?:0x7f[0-9a-f]{0,8}|0x7f(?:\\.[0-9a-fx]+)+|2130706433|0177\\.0\\.0\\.1|127\\.1(?:[^\\d]|$)|(?:0)(?:[:/\\?#]|$))"
+    - field: uri
+      regex: "(?i)https?://(?:0x7f[0-9a-f]{0,8}|2130706433|0177\\.0\\.0\\.1|(?:0)(?:[:/\\?#]|$))"

@@ -1,0 +1,22 @@
+id: sqli-extractvalue
+name: 'SQL extractvalue/updatexml'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bextractvalue\\s*\\("
+    - field: uri
+      regex: "(?i)\\bupdatexml\\s*\\("
+    - field: query
+      regex: "(?i)\\bextractvalue\\s*\\("
+    - field: query
+      regex: "(?i)\\bupdatexml\\s*\\("
+    - field: body
+      regex: "(?i)\\bextractvalue\\s*\\("
+    - field: body
+      regex: "(?i)\\bupdatexml\\s*\\("

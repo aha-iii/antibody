@@ -1,0 +1,22 @@
+id: webshell-array-map
+name: 'Webshell array_map callback'
+severity: high
+tags: [webshell, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'array_map($_'
+    - field: uri
+      contains: 'call_user_func($_'
+    - field: query
+      contains: 'array_map($_'
+    - field: query
+      contains: 'call_user_func($_'
+    - field: body
+      contains: 'array_map($_'
+    - field: body
+      contains: 'call_user_func($_'

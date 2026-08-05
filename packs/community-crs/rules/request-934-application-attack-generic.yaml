@@ -1,0 +1,154 @@
+- id: crs-934100
+  name: 'Node.js Injection Attack 1/2'
+  severity: critical
+  tags: [crs, owasp_crs, community, rce, generic]
+  score: 45
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "_(?:\\$\\$ND_FUNC\\$\\$_|_js_function)|(?:\\beval|new[\\s\\x0b]+Function[\\s\\x0b]*)\\(|(?:String\\.fromCharCod|Module:prototyp)e|function\\(\\)\\{|this\\.constructor|module\\.exports=|\\([\\s\\x0b]*[^0-9A-Z_a-z]child_process[^0-9A-Z_a-z][\\s\\x0b]*\\)|cons(?:tructor:constructor|ole(?:\\.(?:(?:debu|lo)g|error|info|trace|warn)(?:\\.call)?\\(|\\[[\"'`](?:(?:debu|lo)g|error|info|trace|warn)[\"'`]\\]))|process(?:\\.(?:(?:a(?:ccess|ppendfile|rgv|vailability)|c(?:aveats|h(?:mod|own)|(?:los|opyfil)e|p|reate(?:read|write)stream)|ex(?:ec(?:file)?|ists)|f(?:ch(?:mod|own)|data(?:sync)?|s(?:tat|ync)|utimes)|inodes|l(?:chmod|ink|stat|utimes)|mkd(?:ir|temp)|open(?:dir)?|r(?:e(?:ad(?:dir|file|link|v)?|name)|m)|s(?:pawn(?:file)?|tat|ymlink)|truncate|u(?:n(?:link|watchfile)|times)|w(?:atchfile|rite(?:file|v)?))(?:sync)?(?:\\.call)?\\(|binding|constructor|env|global|main(?:Module)?|process|require)|\\[[\"'`](?:(?:a(?:ccess|ppendfile|rgv|vailability)|c(?:aveats|h(?:mod|own)|(?:los|opyfil)e|p|reate(?:read|write)stream)|ex(?:ec(?:file)?|ists)|f(?:ch(?:mod|own)|data(?:sync)?|s(?:tat|ync)|utimes)|inodes|l(?:chmod|ink|stat|utimes)|mkd(?:ir|temp)|open(?:dir)?|r(?:e(?:ad(?:dir|file|link|v)?|name)|m)|s(?:pawn(?:file)?|tat|ymlink)|truncate|u(?:n(?:link|watchfile)|times)|w(?:atchfile|rite(?:file|v)?))(?:sync)?|binding|constructor|env|global|main(?:Module)?|process|require)[\"'`]\\])|(?:binding|constructor|env|global|main(?:Module)?|process|require)\\[|require(?:\\.(?:resolve(?:\\.call)?\\(|main|extensions|cache)|\\[[\"'`](?:(?:resolv|cach)e|main|extensions)[\"'`]\\])"
+      - field: header
+        regex: "_(?:\\$\\$ND_FUNC\\$\\$_|_js_function)|(?:\\beval|new[\\s\\x0b]+Function[\\s\\x0b]*)\\(|(?:String\\.fromCharCod|Module:prototyp)e|function\\(\\)\\{|this\\.constructor|module\\.exports=|\\([\\s\\x0b]*[^0-9A-Z_a-z]child_process[^0-9A-Z_a-z][\\s\\x0b]*\\)|cons(?:tructor:constructor|ole(?:\\.(?:(?:debu|lo)g|error|info|trace|warn)(?:\\.call)?\\(|\\[[\"'`](?:(?:debu|lo)g|error|info|trace|warn)[\"'`]\\]))|process(?:\\.(?:(?:a(?:ccess|ppendfile|rgv|vailability)|c(?:aveats|h(?:mod|own)|(?:los|opyfil)e|p|reate(?:read|write)stream)|ex(?:ec(?:file)?|ists)|f(?:ch(?:mod|own)|data(?:sync)?|s(?:tat|ync)|utimes)|inodes|l(?:chmod|ink|stat|utimes)|mkd(?:ir|temp)|open(?:dir)?|r(?:e(?:ad(?:dir|file|link|v)?|name)|m)|s(?:pawn(?:file)?|tat|ymlink)|truncate|u(?:n(?:link|watchfile)|times)|w(?:atchfile|rite(?:file|v)?))(?:sync)?(?:\\.call)?\\(|binding|constructor|env|global|main(?:Module)?|process|require)|\\[[\"'`](?:(?:a(?:ccess|ppendfile|rgv|vailability)|c(?:aveats|h(?:mod|own)|(?:los|opyfil)e|p|reate(?:read|write)stream)|ex(?:ec(?:file)?|ists)|f(?:ch(?:mod|own)|data(?:sync)?|s(?:tat|ync)|utimes)|inodes|l(?:chmod|ink|stat|utimes)|mkd(?:ir|temp)|open(?:dir)?|r(?:e(?:ad(?:dir|file|link|v)?|name)|m)|s(?:pawn(?:file)?|tat|ymlink)|truncate|u(?:n(?:link|watchfile)|times)|w(?:atchfile|rite(?:file|v)?))(?:sync)?|binding|constructor|env|global|main(?:Module)?|process|require)[\"'`]\\])|(?:binding|constructor|env|global|main(?:Module)?|process|require)\\[|require(?:\\.(?:resolve(?:\\.call)?\\(|main|extensions|cache)|\\[[\"'`](?:(?:resolv|cach)e|main|extensions)[\"'`]\\])"
+      - field: query
+        regex: "_(?:\\$\\$ND_FUNC\\$\\$_|_js_function)|(?:\\beval|new[\\s\\x0b]+Function[\\s\\x0b]*)\\(|(?:String\\.fromCharCod|Module:prototyp)e|function\\(\\)\\{|this\\.constructor|module\\.exports=|\\([\\s\\x0b]*[^0-9A-Z_a-z]child_process[^0-9A-Z_a-z][\\s\\x0b]*\\)|cons(?:tructor:constructor|ole(?:\\.(?:(?:debu|lo)g|error|info|trace|warn)(?:\\.call)?\\(|\\[[\"'`](?:(?:debu|lo)g|error|info|trace|warn)[\"'`]\\]))|process(?:\\.(?:(?:a(?:ccess|ppendfile|rgv|vailability)|c(?:aveats|h(?:mod|own)|(?:los|opyfil)e|p|reate(?:read|write)stream)|ex(?:ec(?:file)?|ists)|f(?:ch(?:mod|own)|data(?:sync)?|s(?:tat|ync)|utimes)|inodes|l(?:chmod|ink|stat|utimes)|mkd(?:ir|temp)|open(?:dir)?|r(?:e(?:ad(?:dir|file|link|v)?|name)|m)|s(?:pawn(?:file)?|tat|ymlink)|truncate|u(?:n(?:link|watchfile)|times)|w(?:atchfile|rite(?:file|v)?))(?:sync)?(?:\\.call)?\\(|binding|constructor|env|global|main(?:Module)?|process|require)|\\[[\"'`](?:(?:a(?:ccess|ppendfile|rgv|vailability)|c(?:aveats|h(?:mod|own)|(?:los|opyfil)e|p|reate(?:read|write)stream)|ex(?:ec(?:file)?|ists)|f(?:ch(?:mod|own)|data(?:sync)?|s(?:tat|ync)|utimes)|inodes|l(?:chmod|ink|stat|utimes)|mkd(?:ir|temp)|open(?:dir)?|r(?:e(?:ad(?:dir|file|link|v)?|name)|m)|s(?:pawn(?:file)?|tat|ymlink)|truncate|u(?:n(?:link|watchfile)|times)|w(?:atchfile|rite(?:file|v)?))(?:sync)?|binding|constructor|env|global|main(?:Module)?|process|require)[\"'`]\\])|(?:binding|constructor|env|global|main(?:Module)?|process|require)\\[|require(?:\\.(?:resolve(?:\\.call)?\\(|main|extensions|cache)|\\[[\"'`](?:(?:resolv|cach)e|main|extensions)[\"'`]\\])"
+      - field: uri
+        regex: "_(?:\\$\\$ND_FUNC\\$\\$_|_js_function)|(?:\\beval|new[\\s\\x0b]+Function[\\s\\x0b]*)\\(|(?:String\\.fromCharCod|Module:prototyp)e|function\\(\\)\\{|this\\.constructor|module\\.exports=|\\([\\s\\x0b]*[^0-9A-Z_a-z]child_process[^0-9A-Z_a-z][\\s\\x0b]*\\)|cons(?:tructor:constructor|ole(?:\\.(?:(?:debu|lo)g|error|info|trace|warn)(?:\\.call)?\\(|\\[[\"'`](?:(?:debu|lo)g|error|info|trace|warn)[\"'`]\\]))|process(?:\\.(?:(?:a(?:ccess|ppendfile|rgv|vailability)|c(?:aveats|h(?:mod|own)|(?:los|opyfil)e|p|reate(?:read|write)stream)|ex(?:ec(?:file)?|ists)|f(?:ch(?:mod|own)|data(?:sync)?|s(?:tat|ync)|utimes)|inodes|l(?:chmod|ink|stat|utimes)|mkd(?:ir|temp)|open(?:dir)?|r(?:e(?:ad(?:dir|file|link|v)?|name)|m)|s(?:pawn(?:file)?|tat|ymlink)|truncate|u(?:n(?:link|watchfile)|times)|w(?:atchfile|rite(?:file|v)?))(?:sync)?(?:\\.call)?\\(|binding|constructor|env|global|main(?:Module)?|process|require)|\\[[\"'`](?:(?:a(?:ccess|ppendfile|rgv|vailability)|c(?:aveats|h(?:mod|own)|(?:los|opyfil)e|p|reate(?:read|write)stream)|ex(?:ec(?:file)?|ists)|f(?:ch(?:mod|own)|data(?:sync)?|s(?:tat|ync)|utimes)|inodes|l(?:chmod|ink|stat|utimes)|mkd(?:ir|temp)|open(?:dir)?|r(?:e(?:ad(?:dir|file|link|v)?|name)|m)|s(?:pawn(?:file)?|tat|ymlink)|truncate|u(?:n(?:link|watchfile)|times)|w(?:atchfile|rite(?:file|v)?))(?:sync)?|binding|constructor|env|global|main(?:Module)?|process|require)[\"'`]\\])|(?:binding|constructor|env|global|main(?:Module)?|process|require)\\[|require(?:\\.(?:resolve(?:\\.call)?\\(|main|extensions|cache)|\\[[\"'`](?:(?:resolv|cach)e|main|extensions)[\"'`]\\])"
+- id: crs-934130
+  name: 'JavaScript Prototype Pollution'
+  severity: critical
+  tags: [crs, owasp_crs, community, rce, generic]
+  score: 45
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "__proto__|constructor[\\s\\x0b]*(?:\\.|\\]?\\[)[\\s\\x0b]*prototype"
+      - field: header
+        regex: "__proto__|constructor[\\s\\x0b]*(?:\\.|\\]?\\[)[\\s\\x0b]*prototype"
+      - field: query
+        regex: "__proto__|constructor[\\s\\x0b]*(?:\\.|\\]?\\[)[\\s\\x0b]*prototype"
+- id: crs-934150
+  name: 'Ruby Injection Attack'
+  severity: critical
+  tags: [crs, owasp_crs, community, rce, generic]
+  score: 45
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "Process[\\s\\x0b]*\\.[\\s\\x0b]*spawn[\\s\\x0b]*\\("
+      - field: header
+        regex: "Process[\\s\\x0b]*\\.[\\s\\x0b]*spawn[\\s\\x0b]*\\("
+      - field: query
+        regex: "Process[\\s\\x0b]*\\.[\\s\\x0b]*spawn[\\s\\x0b]*\\("
+- id: crs-934160
+  name: 'Node.js DoS attack'
+  severity: critical
+  tags: [crs, owasp_crs, community, rce, generic]
+  score: 45
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "while[\\s\\x0b]*\\([\\s\\x0b\\(]*(?:!+(?:false|null|undefined|NaN|[\\+\\-]?0|\"{2}|'{2}|`{2})|(?:!!)*(?:(?:t(?:rue|his)|[\\+\\-]?(?:Infinity|[1-9][0-9]*)|new [A-Za-z][0-9A-Z_a-z]*|window|String|(?:Boolea|Functio)n|Object|Array)\\b|\\{[^\\}]*\\}|\\[[^\\]]*\\]|\"[^\"]+\"|'[^']+'|`[^`]+`)).*\\)"
+      - field: header
+        regex: "while[\\s\\x0b]*\\([\\s\\x0b\\(]*(?:!+(?:false|null|undefined|NaN|[\\+\\-]?0|\"{2}|'{2}|`{2})|(?:!!)*(?:(?:t(?:rue|his)|[\\+\\-]?(?:Infinity|[1-9][0-9]*)|new [A-Za-z][0-9A-Z_a-z]*|window|String|(?:Boolea|Functio)n|Object|Array)\\b|\\{[^\\}]*\\}|\\[[^\\]]*\\]|\"[^\"]+\"|'[^']+'|`[^`]+`)).*\\)"
+      - field: query
+        regex: "while[\\s\\x0b]*\\([\\s\\x0b\\(]*(?:!+(?:false|null|undefined|NaN|[\\+\\-]?0|\"{2}|'{2}|`{2})|(?:!!)*(?:(?:t(?:rue|his)|[\\+\\-]?(?:Infinity|[1-9][0-9]*)|new [A-Za-z][0-9A-Z_a-z]*|window|String|(?:Boolea|Functio)n|Object|Array)\\b|\\{[^\\}]*\\}|\\[[^\\]]*\\]|\"[^\"]+\"|'[^']+'|`[^`]+`)).*\\)"
+      - field: uri
+        regex: "while[\\s\\x0b]*\\([\\s\\x0b\\(]*(?:!+(?:false|null|undefined|NaN|[\\+\\-]?0|\"{2}|'{2}|`{2})|(?:!!)*(?:(?:t(?:rue|his)|[\\+\\-]?(?:Infinity|[1-9][0-9]*)|new [A-Za-z][0-9A-Z_a-z]*|window|String|(?:Boolea|Functio)n|Object|Array)\\b|\\{[^\\}]*\\}|\\[[^\\]]*\\]|\"[^\"]+\"|'[^']+'|`[^`]+`)).*\\)"
+- id: crs-934170
+  name: 'PHP data scheme attack'
+  severity: high
+  tags: [crs, owasp_crs, community, ssrf, generic]
+  score: 35
+  min_level: low
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "^data:(?:(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)/(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)|\\*)(?:[\\s\\x0b]*;[\\s\\x0b]*(?:charset[\\s\\x0b]*=[\\s\\x0b]*\"?(?:iso-8859-15?|utf-8|windows-1252)\\b\"?|(?:[^\\s\\x0b-\"\\(\\),/:-\\?\\[-\\]c\\{\\}]|c(?:[^!\"\\(\\),/:-\\?\\[-\\]h\\{\\}]|h(?:[^!\"\\(\\),/:-\\?\\[-\\]a\\{\\}]|a(?:[^!\"\\(\\),/:-\\?\\[-\\]r\\{\\}]|r(?:[^!\"\\(\\),/:-\\?\\[-\\]s\\{\\}]|s(?:[^!\"\\(\\),/:-\\?\\[-\\]e\\{\\}]|e[^!\"\\(\\),/:-\\?\\[-\\]t\\{\\}]))))))[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]*[\\s\\x0b]*=[\\s\\x0b]*[^!\\(\\),/:-\\?\\[-\\]\\{\\}]+);?)*(?:[\\s\\x0b]*,[\\s\\x0b]*(?:(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)/(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)|\\*)(?:[\\s\\x0b]*;[\\s\\x0b]*(?:charset[\\s\\x0b]*=[\\s\\x0b]*\"?(?:iso-8859-15?|utf-8|windows-1252)\\b\"?|(?:[^\\s\\x0b-\"\\(\\),/:-\\?\\[-\\]c\\{\\}]|c(?:[^!\"\\(\\),/:-\\?\\[-\\]h\\{\\}]|h(?:[^!\"\\(\\),/:-\\?\\[-\\]a\\{\\}]|a(?:[^!\"\\(\\),/:-\\?\\[-\\]r\\{\\}]|r(?:[^!\"\\(\\),/:-\\?\\[-\\]s\\{\\}]|s(?:[^!\"\\(\\),/:-\\?\\[-\\]e\\{\\}]|e[^!\"\\(\\),/:-\\?\\[-\\]t\\{\\}]))))))[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]*[\\s\\x0b]*=[\\s\\x0b]*[^!\\(\\),/:-\\?\\[-\\]\\{\\}]+);?)*)*"
+      - field: header
+        regex: "^data:(?:(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)/(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)|\\*)(?:[\\s\\x0b]*;[\\s\\x0b]*(?:charset[\\s\\x0b]*=[\\s\\x0b]*\"?(?:iso-8859-15?|utf-8|windows-1252)\\b\"?|(?:[^\\s\\x0b-\"\\(\\),/:-\\?\\[-\\]c\\{\\}]|c(?:[^!\"\\(\\),/:-\\?\\[-\\]h\\{\\}]|h(?:[^!\"\\(\\),/:-\\?\\[-\\]a\\{\\}]|a(?:[^!\"\\(\\),/:-\\?\\[-\\]r\\{\\}]|r(?:[^!\"\\(\\),/:-\\?\\[-\\]s\\{\\}]|s(?:[^!\"\\(\\),/:-\\?\\[-\\]e\\{\\}]|e[^!\"\\(\\),/:-\\?\\[-\\]t\\{\\}]))))))[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]*[\\s\\x0b]*=[\\s\\x0b]*[^!\\(\\),/:-\\?\\[-\\]\\{\\}]+);?)*(?:[\\s\\x0b]*,[\\s\\x0b]*(?:(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)/(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)|\\*)(?:[\\s\\x0b]*;[\\s\\x0b]*(?:charset[\\s\\x0b]*=[\\s\\x0b]*\"?(?:iso-8859-15?|utf-8|windows-1252)\\b\"?|(?:[^\\s\\x0b-\"\\(\\),/:-\\?\\[-\\]c\\{\\}]|c(?:[^!\"\\(\\),/:-\\?\\[-\\]h\\{\\}]|h(?:[^!\"\\(\\),/:-\\?\\[-\\]a\\{\\}]|a(?:[^!\"\\(\\),/:-\\?\\[-\\]r\\{\\}]|r(?:[^!\"\\(\\),/:-\\?\\[-\\]s\\{\\}]|s(?:[^!\"\\(\\),/:-\\?\\[-\\]e\\{\\}]|e[^!\"\\(\\),/:-\\?\\[-\\]t\\{\\}]))))))[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]*[\\s\\x0b]*=[\\s\\x0b]*[^!\\(\\),/:-\\?\\[-\\]\\{\\}]+);?)*)*"
+      - field: query
+        regex: "^data:(?:(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)/(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)|\\*)(?:[\\s\\x0b]*;[\\s\\x0b]*(?:charset[\\s\\x0b]*=[\\s\\x0b]*\"?(?:iso-8859-15?|utf-8|windows-1252)\\b\"?|(?:[^\\s\\x0b-\"\\(\\),/:-\\?\\[-\\]c\\{\\}]|c(?:[^!\"\\(\\),/:-\\?\\[-\\]h\\{\\}]|h(?:[^!\"\\(\\),/:-\\?\\[-\\]a\\{\\}]|a(?:[^!\"\\(\\),/:-\\?\\[-\\]r\\{\\}]|r(?:[^!\"\\(\\),/:-\\?\\[-\\]s\\{\\}]|s(?:[^!\"\\(\\),/:-\\?\\[-\\]e\\{\\}]|e[^!\"\\(\\),/:-\\?\\[-\\]t\\{\\}]))))))[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]*[\\s\\x0b]*=[\\s\\x0b]*[^!\\(\\),/:-\\?\\[-\\]\\{\\}]+);?)*(?:[\\s\\x0b]*,[\\s\\x0b]*(?:(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)/(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)|\\*)(?:[\\s\\x0b]*;[\\s\\x0b]*(?:charset[\\s\\x0b]*=[\\s\\x0b]*\"?(?:iso-8859-15?|utf-8|windows-1252)\\b\"?|(?:[^\\s\\x0b-\"\\(\\),/:-\\?\\[-\\]c\\{\\}]|c(?:[^!\"\\(\\),/:-\\?\\[-\\]h\\{\\}]|h(?:[^!\"\\(\\),/:-\\?\\[-\\]a\\{\\}]|a(?:[^!\"\\(\\),/:-\\?\\[-\\]r\\{\\}]|r(?:[^!\"\\(\\),/:-\\?\\[-\\]s\\{\\}]|s(?:[^!\"\\(\\),/:-\\?\\[-\\]e\\{\\}]|e[^!\"\\(\\),/:-\\?\\[-\\]t\\{\\}]))))))[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]*[\\s\\x0b]*=[\\s\\x0b]*[^!\\(\\),/:-\\?\\[-\\]\\{\\}]+);?)*)*"
+      - field: uri
+        regex: "^data:(?:(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)/(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)|\\*)(?:[\\s\\x0b]*;[\\s\\x0b]*(?:charset[\\s\\x0b]*=[\\s\\x0b]*\"?(?:iso-8859-15?|utf-8|windows-1252)\\b\"?|(?:[^\\s\\x0b-\"\\(\\),/:-\\?\\[-\\]c\\{\\}]|c(?:[^!\"\\(\\),/:-\\?\\[-\\]h\\{\\}]|h(?:[^!\"\\(\\),/:-\\?\\[-\\]a\\{\\}]|a(?:[^!\"\\(\\),/:-\\?\\[-\\]r\\{\\}]|r(?:[^!\"\\(\\),/:-\\?\\[-\\]s\\{\\}]|s(?:[^!\"\\(\\),/:-\\?\\[-\\]e\\{\\}]|e[^!\"\\(\\),/:-\\?\\[-\\]t\\{\\}]))))))[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]*[\\s\\x0b]*=[\\s\\x0b]*[^!\\(\\),/:-\\?\\[-\\]\\{\\}]+);?)*(?:[\\s\\x0b]*,[\\s\\x0b]*(?:(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)/(?:\\*|[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]+)|\\*)(?:[\\s\\x0b]*;[\\s\\x0b]*(?:charset[\\s\\x0b]*=[\\s\\x0b]*\"?(?:iso-8859-15?|utf-8|windows-1252)\\b\"?|(?:[^\\s\\x0b-\"\\(\\),/:-\\?\\[-\\]c\\{\\}]|c(?:[^!\"\\(\\),/:-\\?\\[-\\]h\\{\\}]|h(?:[^!\"\\(\\),/:-\\?\\[-\\]a\\{\\}]|a(?:[^!\"\\(\\),/:-\\?\\[-\\]r\\{\\}]|r(?:[^!\"\\(\\),/:-\\?\\[-\\]s\\{\\}]|s(?:[^!\"\\(\\),/:-\\?\\[-\\]e\\{\\}]|e[^!\"\\(\\),/:-\\?\\[-\\]t\\{\\}]))))))[^!\"\\(\\),/:-\\?\\[-\\]\\{\\}]*[\\s\\x0b]*=[\\s\\x0b]*[^!\\(\\),/:-\\?\\[-\\]\\{\\}]+);?)*)*"
+- id: crs-934101
+  name: 'Node.js Injection Attack 2/2'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, generic]
+  score: 30
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?:close|exists|fork|(?:ope|spaw)n|re(?:ad|quire)|w(?:atch|rite))[\\s\\x0b]*\\("
+      - field: header
+        regex: "(?:close|exists|fork|(?:ope|spaw)n|re(?:ad|quire)|w(?:atch|rite))[\\s\\x0b]*\\("
+      - field: query
+        regex: "(?:close|exists|fork|(?:ope|spaw)n|re(?:ad|quire)|w(?:atch|rite))[\\s\\x0b]*\\("
+      - field: uri
+        regex: "(?:close|exists|fork|(?:ope|spaw)n|re(?:ad|quire)|w(?:atch|rite))[\\s\\x0b]*\\("
+- id: crs-934120
+  name: 'Possible Server Side Request Forgery (SSRF) Attack: URL Parameter using IP Address'
+  severity: high
+  tags: [crs, owasp_crs, community, ssrf, generic]
+  score: 30
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?i)(?:a(?:cap|f[ps]|ttachment)|b(?:eshare|itcoin|lob)|c(?:a(?:llto|p)|id|vs|ompress.(?:zlib|bzip2))|d(?:a(?:v|ta)|ict|n(?:s|tp))|e(?:d2k|xpect)|f(?:(?:ee)?d|i(?:le|nger|sh)|tps?)|g(?:it|o(?:pher)?|lob)|h(?:323|ttps?)|i(?:ax|cap|(?:ma|p)ps?|rc[6s]?)|ja(?:bbe)?r|l(?:dap[is]?|ocal_file)|m(?:a(?:ilto|ven)|ms|umble)|n(?:e(?:tdoc|ws)|fs|ntps?)|ogg|p(?:aparazzi|h(?:ar|p)|op(?:2|3s?)|r(?:es|oxy)|syc)|r(?:mi|sync|tm(?:f?p)?|ar)|s(?:3|ftp|ips?|m(?:[bs]|tps?)|n(?:ews|mp)|sh(?:2(?:.(?:s(?:hell|(?:ft|c)p)|exec|tunnel))?)?|vn(?:\\+ssh)?)|t(?:e(?:amspeak|lnet)|ftp|urns?)|u(?:dp|nreal|t2004)|v(?:entrilo|iew-source|nc)|w(?:ebcal|ss?)|x(?:mpp|ri)|zip):/?/?(?:[0-9]{7,10}|(?:0x[0-9a-f]{2}\\.){3}0x[0-9a-f]{2}|0x(?:[0-9a-f]{8}|[0-9a-f]{16})|(?:0{1,4}[0-9]{1,3}\\.){3}0{1,4}[0-9]{1,3}|[0-9]{1,3}\\.(?:[0-9]{1,3}\\.[0-9]{5}|[0-9]{8})|(?:\\x5c\\x5c[\\-0-9a-z]\\.?_?)+|\\[[0-:a-f]+(?:[\\.0-9]+|%[0-9A-Z_a-z]+)?\\]|[a-z][\\-\\.0-9A-Z_a-z]{1,255}:[0-9]{1,5}(?:#?[\\s\\x0b]*&?@(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|[a-z][\\-\\.0-9A-Z_a-z]{1,255}):[0-9]{1,5}/?)+|[\\.0-9]{0,11}(?:\\x{e2}(?:\\x91[\\xa0-\\x{bf}]|\\x92[\\x80-\\x{bf}]|\\x93[\\x80-\\x{a9}\\x{ab}-\\x{bf}])|\\x{e3}\\x80\\x82)+)"
+      - field: header
+        regex: "(?i)(?:a(?:cap|f[ps]|ttachment)|b(?:eshare|itcoin|lob)|c(?:a(?:llto|p)|id|vs|ompress.(?:zlib|bzip2))|d(?:a(?:v|ta)|ict|n(?:s|tp))|e(?:d2k|xpect)|f(?:(?:ee)?d|i(?:le|nger|sh)|tps?)|g(?:it|o(?:pher)?|lob)|h(?:323|ttps?)|i(?:ax|cap|(?:ma|p)ps?|rc[6s]?)|ja(?:bbe)?r|l(?:dap[is]?|ocal_file)|m(?:a(?:ilto|ven)|ms|umble)|n(?:e(?:tdoc|ws)|fs|ntps?)|ogg|p(?:aparazzi|h(?:ar|p)|op(?:2|3s?)|r(?:es|oxy)|syc)|r(?:mi|sync|tm(?:f?p)?|ar)|s(?:3|ftp|ips?|m(?:[bs]|tps?)|n(?:ews|mp)|sh(?:2(?:.(?:s(?:hell|(?:ft|c)p)|exec|tunnel))?)?|vn(?:\\+ssh)?)|t(?:e(?:amspeak|lnet)|ftp|urns?)|u(?:dp|nreal|t2004)|v(?:entrilo|iew-source|nc)|w(?:ebcal|ss?)|x(?:mpp|ri)|zip):/?/?(?:[0-9]{7,10}|(?:0x[0-9a-f]{2}\\.){3}0x[0-9a-f]{2}|0x(?:[0-9a-f]{8}|[0-9a-f]{16})|(?:0{1,4}[0-9]{1,3}\\.){3}0{1,4}[0-9]{1,3}|[0-9]{1,3}\\.(?:[0-9]{1,3}\\.[0-9]{5}|[0-9]{8})|(?:\\x5c\\x5c[\\-0-9a-z]\\.?_?)+|\\[[0-:a-f]+(?:[\\.0-9]+|%[0-9A-Z_a-z]+)?\\]|[a-z][\\-\\.0-9A-Z_a-z]{1,255}:[0-9]{1,5}(?:#?[\\s\\x0b]*&?@(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|[a-z][\\-\\.0-9A-Z_a-z]{1,255}):[0-9]{1,5}/?)+|[\\.0-9]{0,11}(?:\\x{e2}(?:\\x91[\\xa0-\\x{bf}]|\\x92[\\x80-\\x{bf}]|\\x93[\\x80-\\x{a9}\\x{ab}-\\x{bf}])|\\x{e3}\\x80\\x82)+)"
+      - field: query
+        regex: "(?i)(?:a(?:cap|f[ps]|ttachment)|b(?:eshare|itcoin|lob)|c(?:a(?:llto|p)|id|vs|ompress.(?:zlib|bzip2))|d(?:a(?:v|ta)|ict|n(?:s|tp))|e(?:d2k|xpect)|f(?:(?:ee)?d|i(?:le|nger|sh)|tps?)|g(?:it|o(?:pher)?|lob)|h(?:323|ttps?)|i(?:ax|cap|(?:ma|p)ps?|rc[6s]?)|ja(?:bbe)?r|l(?:dap[is]?|ocal_file)|m(?:a(?:ilto|ven)|ms|umble)|n(?:e(?:tdoc|ws)|fs|ntps?)|ogg|p(?:aparazzi|h(?:ar|p)|op(?:2|3s?)|r(?:es|oxy)|syc)|r(?:mi|sync|tm(?:f?p)?|ar)|s(?:3|ftp|ips?|m(?:[bs]|tps?)|n(?:ews|mp)|sh(?:2(?:.(?:s(?:hell|(?:ft|c)p)|exec|tunnel))?)?|vn(?:\\+ssh)?)|t(?:e(?:amspeak|lnet)|ftp|urns?)|u(?:dp|nreal|t2004)|v(?:entrilo|iew-source|nc)|w(?:ebcal|ss?)|x(?:mpp|ri)|zip):/?/?(?:[0-9]{7,10}|(?:0x[0-9a-f]{2}\\.){3}0x[0-9a-f]{2}|0x(?:[0-9a-f]{8}|[0-9a-f]{16})|(?:0{1,4}[0-9]{1,3}\\.){3}0{1,4}[0-9]{1,3}|[0-9]{1,3}\\.(?:[0-9]{1,3}\\.[0-9]{5}|[0-9]{8})|(?:\\x5c\\x5c[\\-0-9a-z]\\.?_?)+|\\[[0-:a-f]+(?:[\\.0-9]+|%[0-9A-Z_a-z]+)?\\]|[a-z][\\-\\.0-9A-Z_a-z]{1,255}:[0-9]{1,5}(?:#?[\\s\\x0b]*&?@(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|[a-z][\\-\\.0-9A-Z_a-z]{1,255}):[0-9]{1,5}/?)+|[\\.0-9]{0,11}(?:\\x{e2}(?:\\x91[\\xa0-\\x{bf}]|\\x92[\\x80-\\x{bf}]|\\x93[\\x80-\\x{a9}\\x{ab}-\\x{bf}])|\\x{e3}\\x80\\x82)+)"
+      - field: uri
+        regex: "(?i)(?:a(?:cap|f[ps]|ttachment)|b(?:eshare|itcoin|lob)|c(?:a(?:llto|p)|id|vs|ompress.(?:zlib|bzip2))|d(?:a(?:v|ta)|ict|n(?:s|tp))|e(?:d2k|xpect)|f(?:(?:ee)?d|i(?:le|nger|sh)|tps?)|g(?:it|o(?:pher)?|lob)|h(?:323|ttps?)|i(?:ax|cap|(?:ma|p)ps?|rc[6s]?)|ja(?:bbe)?r|l(?:dap[is]?|ocal_file)|m(?:a(?:ilto|ven)|ms|umble)|n(?:e(?:tdoc|ws)|fs|ntps?)|ogg|p(?:aparazzi|h(?:ar|p)|op(?:2|3s?)|r(?:es|oxy)|syc)|r(?:mi|sync|tm(?:f?p)?|ar)|s(?:3|ftp|ips?|m(?:[bs]|tps?)|n(?:ews|mp)|sh(?:2(?:.(?:s(?:hell|(?:ft|c)p)|exec|tunnel))?)?|vn(?:\\+ssh)?)|t(?:e(?:amspeak|lnet)|ftp|urns?)|u(?:dp|nreal|t2004)|v(?:entrilo|iew-source|nc)|w(?:ebcal|ss?)|x(?:mpp|ri)|zip):/?/?(?:[0-9]{7,10}|(?:0x[0-9a-f]{2}\\.){3}0x[0-9a-f]{2}|0x(?:[0-9a-f]{8}|[0-9a-f]{16})|(?:0{1,4}[0-9]{1,3}\\.){3}0{1,4}[0-9]{1,3}|[0-9]{1,3}\\.(?:[0-9]{1,3}\\.[0-9]{5}|[0-9]{8})|(?:\\x5c\\x5c[\\-0-9a-z]\\.?_?)+|\\[[0-:a-f]+(?:[\\.0-9]+|%[0-9A-Z_a-z]+)?\\]|[a-z][\\-\\.0-9A-Z_a-z]{1,255}:[0-9]{1,5}(?:#?[\\s\\x0b]*&?@(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|[a-z][\\-\\.0-9A-Z_a-z]{1,255}):[0-9]{1,5}/?)+|[\\.0-9]{0,11}(?:\\x{e2}(?:\\x91[\\xa0-\\x{bf}]|\\x92[\\x80-\\x{bf}]|\\x93[\\x80-\\x{a9}\\x{ab}-\\x{bf}])|\\x{e3}\\x80\\x82)+)"
+- id: crs-934140
+  name: 'Perl Injection Attack'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, generic]
+  score: 30
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "@+\\{[\\s\\x0b]*\\["
+      - field: header
+        regex: "@+\\{[\\s\\x0b]*\\["
+      - field: query
+        regex: "@+\\{[\\s\\x0b]*\\["
+- id: crs-934180
+  name: 'SSTI Attack'
+  severity: high
+  tags: [crs, owasp_crs, community, rce, generic]
+  score: 30
+  min_level: medium
+  action: block
+  transforms: [url_decode, lowercase, html_entity_decode, strip_null]
+  when:
+    any:
+      - field: body
+        regex: "(?:\\{%[^%}]*%}|<%=?[^%>]*%>)"
+      - field: header
+        regex: "(?:\\{%[^%}]*%}|<%=?[^%>]*%>)"
+      - field: query
+        regex: "(?:\\{%[^%}]*%}|<%=?[^%>]*%>)"

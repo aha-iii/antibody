@@ -1,0 +1,22 @@
+id: sqli-shutdown-udf
+name: SQLi SHUTDOWN / CREATE FUNCTION RCE
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [sqli, rce, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)'?;\\s*shutdown\\b|';s+function\\s+\\w+|drop\\s+function\\s+"
+    - field: body
+      regex: "(?i)'?;\\s*shutdown\\b|create\\s+function\\s+"
+    - field: query
+      regex: "(?i)/\\?\\?\\?\\?/[cp]\\?[st]|/\\?\\?\\?\\?/\\[[cp]\\]"
+    - field: query
+      regex: "(?i)select(?:%09|\\s|%a0|\\xa0)+.*(?:%09|\\s|%a0)+from"
+    - field: query
+      contains: '%ef%bc%87'
+    - field: query
+      contains: '%c0%bc'

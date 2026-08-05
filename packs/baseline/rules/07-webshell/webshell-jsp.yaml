@@ -1,0 +1,22 @@
+id: webshell-jsp
+name: 'Webshell JSP runtime'
+severity: high
+tags: [webshell, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'runtime.getruntime'
+    - field: uri
+      contains: 'processbuilder('
+    - field: query
+      contains: 'runtime.getruntime'
+    - field: query
+      contains: 'processbuilder('
+    - field: body
+      contains: 'runtime.getruntime'
+    - field: body
+      contains: 'processbuilder('

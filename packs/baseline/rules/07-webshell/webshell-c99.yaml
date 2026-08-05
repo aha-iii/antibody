@@ -1,0 +1,34 @@
+id: webshell-c99
+name: 'Webshell known names'
+severity: high
+tags: [webshell, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'c99shell'
+    - field: uri
+      contains: 'r57shell'
+    - field: uri
+      contains: 'wso.php'
+    - field: uri
+      contains: 'b374k'
+    - field: query
+      contains: 'c99shell'
+    - field: query
+      contains: 'r57shell'
+    - field: query
+      contains: 'wso.php'
+    - field: query
+      contains: 'b374k'
+    - field: body
+      contains: 'c99shell'
+    - field: body
+      contains: 'r57shell'
+    - field: body
+      contains: 'wso.php'
+    - field: body
+      contains: 'b374k'

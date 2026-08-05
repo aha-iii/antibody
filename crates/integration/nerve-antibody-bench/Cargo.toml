@@ -1,0 +1,19 @@
+[package]
+name = "nerve-antibody-bench"
+version.workspace = true
+edition.workspace = true
+description = "HTTP adapter for blazehttp / WAF interception benchmarks against Antibody Engine"
+publish = false
+
+[[bin]]
+name = "nerve-antibody-bench"
+path = "src/main.rs"
+
+[dependencies]
+nerve-antibody-engine = { workspace = true }
+axum = { version = "0.8", features = ["json"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "signal"] }
+http-body-util = "0.1"
+bytes = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

@@ -1,0 +1,19 @@
+# 放行：健康检查 / ping 端点（避免 proto-anomaly 等误拦）
+id: legit-health-endpoint-allow
+name: Allow health check and ping endpoints
+severity: low
+score: 50
+action: allow
+min_level: low
+tags: [fp, health]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/(?:api/)?(?:health|healthz|ping)(?:/|$|\\?)"
+    - field: uri
+      contains: '/server/ping'
+    - field: uri
+      regex: "(?i)^/-/health(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/healthz(?:/|$|\\?)"

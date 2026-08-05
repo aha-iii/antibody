@@ -1,0 +1,20 @@
+id: java-jndi-login-module
+name: JndiLoginModule / JAAS JNDI RCE
+severity: critical
+score: 45
+action: block
+min_level: medium
+tags: [java, jndi, rce, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      contains: 'jndiloginmodule'
+    - field: body
+      contains: 'user.provider.url'
+    - field: body
+      contains: 'sasl.jaas.config'
+    - field: query
+      contains: 'jndiloginmodule'
+    - field: uri
+      contains: '/druid/indexer'

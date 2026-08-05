@@ -1,0 +1,22 @@
+id: rce-rm-rf
+name: 'RCE rm -rf'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'rm -rf'
+    - field: uri
+      contains: 'rm -fr'
+    - field: query
+      contains: 'rm -rf'
+    - field: query
+      contains: 'rm -fr'
+    - field: body
+      contains: 'rm -rf'
+    - field: body
+      contains: 'rm -fr'

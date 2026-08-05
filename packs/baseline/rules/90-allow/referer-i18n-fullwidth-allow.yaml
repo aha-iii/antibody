@@ -1,0 +1,17 @@
+# 放行：Referer 含全角/Unicode 标点（i18n 页面，非 %ef%bc 逃逸探测）
+id: referer-i18n-fullwidth-allow
+name: Allow i18n Referer with fullwidth punctuation
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, evasion, referer]
+transforms: [lowercase]
+when:
+  all:
+    - field: header
+      header_name: Referer
+      contains: '%ef%bc%'
+    - field: header
+      header_name: Referer
+      regex: "(?i)^https?://"

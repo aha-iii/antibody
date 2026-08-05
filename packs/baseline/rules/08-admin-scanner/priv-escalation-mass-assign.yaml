@@ -1,0 +1,22 @@
+id: priv-escalation-mass-assign
+name: Privilege escalation via mass assignment
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [auth, logic, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      regex: "(?i)[\"']role[\"']\\s*:\\s*[\"'](?:admin|superadmin|root|owner)[\"']"
+    - field: body
+      regex: "(?i)[\"']is_admin[\"']\\s*:\\s*true"
+    - field: body
+      regex: "(?i)[\"']permissions[\"']\\s*:\\s*\\["
+    - field: uri
+      regex: "(?i)/(?:promote|grant-access|make-admin|escalate)(?:/|$|\\?)"
+    - field: body
+      regex: "(?i)[\"'](?:superuser|is_superuser|is_staff|default_role)[\"']\\s*:\\s*(?:true|[\"']admin[\"'])"
+    - field: body
+      regex: "(?i)[\"']command[\"']\\s*:\\s*[\"']grant_admin[\"']"

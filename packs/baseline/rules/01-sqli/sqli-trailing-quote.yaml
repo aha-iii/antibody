@@ -1,0 +1,22 @@
+id: sqli-trailing-quote
+name: SQLi trailing quote / broken comment union
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [sqli, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[&])\\w{1,32}=\\d+'\\s*(?:$|&|or\\b|and\\b|--|#|%00)"
+    - field: uri
+      regex: "(?i)[?&]\\w{1,32}=\\d+'\\s*(?:$|&|or\\b|and\\b|--|#|%00)"
+    - field: query
+      regex: "(?i)un(?:/\\*\\*/)+ion|sel(?:/\\*\\*/)+ect|union/\\*|/\\*union\\*"
+    - field: body
+      regex: "(?i)un(?:/\\*\\*/)+ion|sel(?:/\\*\\*/)+ect"
+    - field: query
+      regex: "(?i)\\bchar\\s*\\(\\s*\\d|\\bascii\\s*\\(\\s*\\w|\\bconcat\\s*\\("
+    - field: body
+      regex: "(?i)\\bchar\\s*\\(\\s*\\d|\\bascii\\s*\\(\\s*\\w|\\bconcat\\s*\\("

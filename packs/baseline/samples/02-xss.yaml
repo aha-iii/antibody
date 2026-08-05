@@ -1,0 +1,928 @@
+- id: sample-xss-script-tag
+  rule_id: xss-script-tag
+  name: XSS script tag
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=<script
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-script-tag-alt
+  rule_id: xss-script-tag
+  name: XSS script tag (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=<script
+- id: sample-xss-script-close
+  rule_id: xss-script-close
+  name: XSS script close
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id002
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=</script
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-script-close-alt
+  rule_id: xss-script-close
+  name: XSS script close (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id002
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=</script
+- id: sample-xss-javascript-uri
+  rule_id: xss-javascript-uri
+  name: 'XSS javascript: URI'
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id003
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: 'q=javascript:'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-javascript-uri-alt
+  rule_id: xss-javascript-uri
+  name: 'XSS javascript: URI (alt)'
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id003
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: 'payload=javascript:'
+- id: sample-xss-vbscript-uri
+  rule_id: xss-vbscript-uri
+  name: 'XSS vbscript: URI'
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id004
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: 'q=vbscript:'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-vbscript-uri-alt
+  rule_id: xss-vbscript-uri
+  name: 'XSS vbscript: URI (alt)'
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id004
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: 'payload=vbscript:'
+- id: sample-xss-data-html
+  rule_id: xss-data-html
+  name: XSS data:text/html
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id005
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=data:text/html
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-data-html-alt
+  rule_id: xss-data-html
+  name: XSS data:text/html (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id005
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=data:text/html
+- id: sample-xss-onerror
+  rule_id: xss-onerror
+  name: XSS onerror handler
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id006
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: onerror=
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-onerror-alt
+  rule_id: xss-onerror
+  name: XSS onerror handler (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id006
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: onerror=
+- id: sample-xss-onload
+  rule_id: xss-onload
+  name: XSS onload handler
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id007
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: onload=
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-onload-alt
+  rule_id: xss-onload
+  name: XSS onload handler (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id007
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: onload=
+- id: sample-xss-onclick
+  rule_id: xss-onclick
+  name: XSS onclick handler
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id008
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: onclick=
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-onclick-alt
+  rule_id: xss-onclick
+  name: XSS onclick handler (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id008
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: onclick=
+- id: sample-xss-onmouseover
+  rule_id: xss-onmouseover
+  name: XSS onmouseover/onfocus
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id009
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: onmouseover=
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-onmouseover-alt
+  rule_id: xss-onmouseover
+  name: XSS onmouseover/onfocus (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id009
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: onmouseover=
+- id: sample-xss-svg-onload
+  rule_id: xss-svg-onload
+  name: XSS SVG onload
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id010
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=<svg
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-svg-onload-alt
+  rule_id: xss-svg-onload
+  name: XSS SVG onload (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id010
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=<svg
+- id: sample-xss-iframe
+  rule_id: xss-iframe
+  name: XSS iframe tag
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id011
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=<iframe
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-iframe-alt
+  rule_id: xss-iframe
+  name: XSS iframe tag (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id011
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=<iframe
+- id: sample-xss-img-onerror
+  rule_id: xss-img-onerror
+  name: XSS img onerror
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: onerror=
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-body-on
+  rule_id: xss-body-on
+  name: XSS body event
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=<body
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-object-embed
+  rule_id: xss-object-embed
+  name: XSS object/embed
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id012
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=<object
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-object-embed-alt
+  rule_id: xss-object-embed
+  name: XSS object/embed (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id012
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=<object
+- id: sample-xss-meta-refresh
+  rule_id: xss-meta-refresh
+  name: XSS meta refresh
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: http-equiv='
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-document-cookie
+  rule_id: xss-document-cookie
+  name: XSS document.cookie
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id013
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=document.cookie
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-document-cookie-alt
+  rule_id: xss-document-cookie
+  name: XSS document.cookie (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id013
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=document.cookie
+- id: sample-xss-document-write
+  rule_id: xss-document-write
+  name: XSS document.write
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id014
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=document.write
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-document-write-alt
+  rule_id: xss-document-write
+  name: XSS document.write (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id014
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=document.write
+- id: sample-xss-eval
+  rule_id: xss-eval
+  name: XSS eval call
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=eval
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-fromcharcode
+  rule_id: xss-fromcharcode
+  name: XSS fromCharCode
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id015
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=fromcharcode
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-fromcharcode-alt
+  rule_id: xss-fromcharcode
+  name: XSS fromCharCode (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id015
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=fromcharcode
+- id: sample-xss-expression
+  rule_id: xss-expression
+  name: XSS CSS expression
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id016
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=expression(
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-expression-alt
+  rule_id: xss-expression
+  name: XSS CSS expression (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id016
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=expression(
+- id: sample-xss-import-css
+  rule_id: xss-import-css
+  name: XSS CSS @import
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id017
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=@import
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-import-css-alt
+  rule_id: xss-import-css
+  name: XSS CSS @import (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id017
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=@import
+- id: sample-xss-base-href
+  rule_id: xss-base-href
+  name: XSS base href hijack
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=<base
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-formaction
+  rule_id: xss-formaction
+  name: XSS formaction
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id018
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: formaction=
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-formaction-alt
+  rule_id: xss-formaction
+  name: XSS formaction (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id018
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: formaction=
+- id: sample-xss-srcdoc
+  rule_id: xss-srcdoc
+  name: XSS iframe srcdoc
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id019
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: srcdoc=
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-srcdoc-alt
+  rule_id: xss-srcdoc
+  name: XSS iframe srcdoc (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id019
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: srcdoc=
+- id: sample-xss-marquee
+  rule_id: xss-marquee
+  name: XSS marquee onstart
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=<marquee
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-math-xlink
+  rule_id: xss-math-xlink
+  name: XSS math/xlink
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id020
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=xlink:href
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-math-xlink-alt
+  rule_id: xss-math-xlink
+  name: XSS math/xlink (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id020
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=xlink:href
+- id: sample-xss-template-literal
+  rule_id: xss-template-literal
+  name: XSS template injection marker
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id021
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=${alert
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-template-literal-alt
+  rule_id: xss-template-literal
+  name: XSS template injection marker (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id021
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=${alert
+- id: sample-xss-svg-animate
+  rule_id: xss-svg-animate
+  name: XSS SVG animate
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id022
+  - xss
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=<animate
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-svg-animate-alt
+  rule_id: xss-svg-animate
+  name: XSS SVG animate (alt)
+  category: 02-xss
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id022
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=<animate

@@ -1,0 +1,9 @@
+[package]
+name = "nerve-antibody-signals"
+version.workspace = true
+edition.workspace = true
+description = "Request features and fingerprints for native WAF rules"
+
+[dependencies]
+serde = { workspace = true }
+serde_yaml = { workspace = true }

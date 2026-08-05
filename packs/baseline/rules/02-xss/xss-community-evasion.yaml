@@ -1,0 +1,56 @@
+id: xss-community-evasion
+name: Community XSS encoding evasions
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)alert\\?\\.|document\\?\\.(?:cookie|domain)|eval\\s*\\(\\s*atob\\s*\\("
+    - field: body
+      regex: "(?i)alert\\?\\.|document\\?\\.(?:cookie|domain)|eval\\s*\\(\\s*atob\\s*\\("
+    - field: uri
+      regex: "(?i)alert\\?\\.|document\\?\\.(?:cookie|domain)|eval\\s*\\(\\s*atob\\s*\\("
+    - field: query
+      contains: 'onpointermove='
+    - field: body
+      contains: 'onpointermove='
+    - field: uri
+      contains: 'onpointermove='
+    - field: query
+      contains: 'onpointerrawupdate='
+    - field: body
+      contains: 'onpointerrawupdate='
+    - field: query
+      contains: 'onauxclick='
+    - field: body
+      contains: 'onauxclick='
+    - field: uri
+      contains: 'onauxclick='
+    - field: query
+      contains: 'ontoggle='
+    - field: body
+      contains: 'ontoggle='
+    - field: query
+      contains: 'javascript:%ef%bb%bf'
+    - field: body
+      contains: 'javascript:%ef%bb%bf'
+    - field: query
+      contains: 'object/data=javascript'
+    - field: body
+      contains: 'object/data=javascript'
+    - field: query
+      contains: 'document["cookie"]'
+    - field: body
+      contains: 'document["cookie"]'
+    - field: query
+      contains: '-webkit-user-modify'
+    - field: body
+      contains: '-webkit-user-modify'
+    - field: query
+      contains: 'data:text/html'
+    - field: body
+      contains: 'data:text/html'

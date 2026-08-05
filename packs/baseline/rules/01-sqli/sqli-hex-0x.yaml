@@ -1,0 +1,17 @@
+id: sqli-hex-0x
+name: 'SQL hex 0x blob (context)'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+# 必须邻近 SQL 关键字，避免百度 rsv_pq=0x... 误报
+when:
+  any:
+    - field: uri
+      regex: "(?i)(?:\\b(?:select|union|from|where|and|or|sleep|benchmark|hex)\\b.{0,96}\\b0x[0-9a-f]{6,}|\\b0x[0-9a-f]{6,}.{0,96}\\b(?:select|union|from|where|and|or|sleep|benchmark)\\b)"
+    - field: query
+      regex: "(?i)(?:\\b(?:select|union|from|where|and|or|sleep|benchmark|hex)\\b.{0,96}\\b0x[0-9a-f]{6,}|\\b0x[0-9a-f]{6,}.{0,96}\\b(?:select|union|from|where|and|or|sleep|benchmark)\\b)"
+    - field: body
+      regex: "(?i)(?:\\b(?:select|union|from|where|and|or|sleep|benchmark|hex)\\b.{0,96}\\b0x[0-9a-f]{6,}|\\b0x[0-9a-f]{6,}.{0,96}\\b(?:select|union|from|where|and|or|sleep|benchmark)\\b)"

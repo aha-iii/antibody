@@ -1,0 +1,28 @@
+id: lfi-unicode-enc
+name: LFI unicode / partial-encoded traversal
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [lfi, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      contains: '%u2216'
+    - field: query
+      contains: '%uff3c'
+    - field: query
+      contains: '%2525%255c'
+    - field: query
+      contains: '%255c'
+    - field: query
+      regex: "(?i)\\.\\.2f(?:\\.\\.2f)+etc2f"
+    - field: query
+      regex: "(?i)\\\\\\\\\\.\\\\[a-z]:"
+    - field: uri
+      contains: '%c0%af'
+    - field: query
+      regex: "(?i)%(?:25)?(?:u2216|uff3c|uff0f)"
+    - field: query
+      contains: '%ef%b8%92'

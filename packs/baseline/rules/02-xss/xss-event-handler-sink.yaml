@@ -1,0 +1,56 @@
+id: xss-event-handler-sink
+name: XSS via generic event handler sinks
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)on(?:wheel|error|load|click|focus|blur|mouse(?:over|enter|out|leave)|pointer\\w*|animationstart|toggle|submit)\\s*="
+    - field: uri
+      regex: "(?i)on(?:wheel|error|load|click|focus|blur|mouse(?:over|over|enter|out|leave)|pointer\\w*|animationstart|toggle|submit)\\s*="
+    - field: body
+      regex: "(?i)on(?:wheel|error|load|click|focus|blur|mouse(?:over|enter|out|leave)|pointer\\w*|animationstart|toggle|submit)\\s*="
+    - field: query
+      regex: "(?i)(?:alert|prompt|confirm)\\.(?:call|apply)\\s*\\("
+    - field: uri
+      regex: "(?i)(?:alert|prompt|confirm)\\.(?:call|apply)\\s*\\("
+    - field: body
+      regex: "(?i)(?:alert|prompt|confirm)\\.(?:call|apply)\\s*\\("
+    - field: query
+      regex: "(?i)\\((?:alert|prompt|confirm)\\)\\s*\\(|(?:alert|prompt|confirm)`"
+    - field: body
+      regex: "(?i)\\((?:alert|prompt|confirm)\\)\\s*\\(|(?:alert|prompt|confirm)`"
+    - field: uri
+      regex: "(?i)\\((?:alert|prompt|confirm)\\)\\s*\\("
+    - field: query
+      contains: '__proto__[v-if]'
+    - field: body
+      contains: '__proto__[v-if]'
+    - field: uri
+      contains: '__proto__[v-if]'
+    - field: query
+      regex: "(?i)setinterval\\(['\"](?:ale|fet|con|prom)['\"]\\+"
+    - field: body
+      regex: "(?i)setinterval\\(['\"](?:ale|fet|con|prom)['\"]\\+"
+    - field: query
+      contains: 'javascript:setinterval'
+    - field: body
+      contains: 'javascript:setinterval'
+    - field: uri
+      contains: 'javascript:setinterval'
+    - field: query
+      contains: 'onx='
+    - field: body
+      contains: 'onx='
+    - field: query
+      contains: 'autof'
+    - field: query
+      regex: "(?i)onmouseenter\\s*=|onmouseover\\s*="
+    - field: body
+      regex: "(?i)onmouseenter\\s*=|onmouseover\\s*="
+    - field: uri
+      regex: "(?i)onmouseenter\\s*=|onmouseover\\s*="

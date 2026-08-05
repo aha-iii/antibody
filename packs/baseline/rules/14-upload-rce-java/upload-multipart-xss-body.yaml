@@ -1,0 +1,23 @@
+# 上传：multipart body 内 XSS / webshell
+id: upload-multipart-xss-body
+name: XSS or script payload inside multipart upload body
+severity: high
+score: 45
+action: block
+min_level: low
+tags: [upload, xss, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)^/api/upload/?$"
+        - field: body
+          regex: "(?i)content-disposition:[^\\n]+filename=\"[^\"]+\\.php\""
+    - all:
+        - field: uri
+          regex: "(?i)^/api/upload/?$"
+        - field: body
+          regex: "(?i)<script[^>]*>alert\\s*\\("
+    - field: body
+      regex: "(?i)multipart/form-data.{0,400}<script[^>]*>alert"

@@ -1,0 +1,26 @@
+id: lfi-unc-windows
+name: Windows UNC / device namespace LFI
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [lfi, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)\\\\\\\\\\.\\\\[a-z]:\\\\"
+    - field: query
+      regex: "(?i)\\\\\\\\\\?\\\\[a-z]:\\\\"
+    - field: query
+      regex: "(?i)\\\\\\\\(?:127\\.0\\.0\\.1|localhost|::1)\\\\[a-z]\\$\\\\"
+    - field: query
+      contains: 'c$\\windows'
+    - field: query
+      contains: '%5c%5c.%5cc%3a'
+    - field: query
+      contains: '%5c%5c%3f%5cc%3a'
+    - field: query
+      contains: '%ef%b8%92'
+    - field: uri
+      regex: "(?i)\\\\\\\\\\.\\\\[a-z]:\\\\"

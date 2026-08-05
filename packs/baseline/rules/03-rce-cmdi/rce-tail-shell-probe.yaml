@@ -1,0 +1,23 @@
+# RCE/命令注入：超长填充后尾部 shell 片段（GoTestWAF community-*-rce / padded body）
+id: rce-tail-shell-probe
+name: Padded payload tail shell command probe
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [rce, cmdi, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:;|\\||%3b|%7c|%0a)\\s*(?:/bin/(?:ba)?sh|/bin/sh|cmd\\.exe|powershell(?:\\.exe)?|wget\\s+|curl\\s+|cat\\s+/etc/|/etc/passwd)"
+    - field: body
+      regex: "(?i)(?:;|\\||%3b|%7c|%0a)\\s*(?:/bin/(?:ba)?sh|/bin/sh|cmd\\.exe|powershell(?:\\.exe)?|wget\\s+|curl\\s+|cat\\s+/etc/|/etc/passwd)"
+    - field: query
+      regex: "(?i)(?:;|\\||%3b|%7c)\\s*(?:dir\\s+|type\\s+[a-z]:\\\\|whoami|net\\s+user|system\\()"
+    - field: body
+      regex: "(?i)(?:;|\\||%3b|%7c)\\s*(?:dir\\s+|type\\s+[a-z]:\\\\|whoami|net\\s+user|system\\()"
+    - field: query
+      regex: "(?i)\\$\\(@?(?:print|system|exec)\\("
+    - field: query
+      contains: 'cmd=${@print'

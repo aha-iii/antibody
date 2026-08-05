@@ -1,0 +1,20 @@
+id: allow-script-prose-binary
+name: 'Allow binary<script is incorrect prose'
+severity: low
+tags: [allow, fp_reviewed, xss]
+score: 40
+min_level: low
+action: allow
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)binary\\s*<script\\s+is\\s+incorrect"
+    - field: uri
+      regex: "(?i)binary\\s*<script\\s+is\\s+incorrect"
+    - field: body
+      regex: "(?i)binary\\s*<script\\s+is\\s+incorrect"
+    - field: query
+      regex: "(?i)<script\\s+ability\\b"
+    - field: body
+      regex: "(?i)<script\\s+ability\\b"

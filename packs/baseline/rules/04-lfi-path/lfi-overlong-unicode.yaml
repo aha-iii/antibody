@@ -1,0 +1,40 @@
+id: lfi-overlong-unicode
+name: LFI overlong / unicode slash traversal
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [lfi, self]
+transforms: []
+when:
+  any:
+    - field: uri
+      contains: '%c0%af'
+    - field: query
+      contains: '%c0%af'
+    - field: uri
+      contains: '%c1%9c'
+    - field: query
+      contains: '%c1%9c'
+    - field: uri
+      contains: '%c1%1c'
+    - field: query
+      contains: '%c1%1c'
+    - field: query
+      contains: '%u2216'
+    - field: query
+      contains: '%ef%bc%8f'
+    - field: query
+      contains: '%25ef%25bc%258f'
+    - field: query
+      contains: '%25e0%2580%25af'
+    - field: query
+      contains: '%25c1%251c'
+    - field: query
+      contains: '%25f0%2580%2580%25af'
+    - field: query
+      contains: '%25uff0f'
+    - field: query
+      contains: '%25bg%25qf'
+    - field: query
+      regex: "(?i)\\.\\.%25(?:ef%25bc%258f|c1%251c|e0%2580%25af|uff0f)"

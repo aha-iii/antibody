@@ -1,0 +1,16 @@
+id: java-weblogic-uddiexplorer
+name: 'WebLogic/UDDI explorer paths'
+severity: high
+tags: [java, cve, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '/uddiexplorer'
+    - field: uri
+      contains: '/wls-wsat/'
+    - field: uri
+      contains: '_async/AsyncResponseService'

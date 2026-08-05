@@ -1,0 +1,16 @@
+id: sqli-order-by-num
+name: 'SQL ORDER BY numeric probe'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\border\\s+by\\s+\\d{1,3}\\b"
+    - field: query
+      regex: "(?i)\\border\\s+by\\s+\\d{1,3}\\b"
+    - field: body
+      regex: "(?i)\\border\\s+by\\s+\\d{1,3}\\b"

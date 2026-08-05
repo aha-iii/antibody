@@ -1,0 +1,14 @@
+id: known-feedback-opaque-post
+name: Opaque base64 POST to feedback add API
+severity: medium
+score: 40
+action: block
+min_level: high
+tags: [upload, known-bad, self]
+transforms: [lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)/feedback/api/.*/feedback/add"
+    - field: uri
+      contains: '/uc/feedback/'

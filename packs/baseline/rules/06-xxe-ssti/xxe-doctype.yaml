@@ -1,0 +1,16 @@
+id: xxe-doctype
+name: 'XXE DOCTYPE with ENTITY/SYSTEM'
+severity: high
+tags: [xxe, ssti, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)<!doctype[^>]{0,200}(?:entity|system)"
+    - field: query
+      regex: "(?i)<!doctype[^>]{0,200}(?:entity|system)"
+    - field: body
+      regex: "(?i)<!doctype[^>]{0,400}(?:<!entity|system\\s+[\"'])"

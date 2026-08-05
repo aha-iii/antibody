@@ -1,0 +1,22 @@
+id: sqli-all-tables
+name: 'SQL all_tables / schema enum'
+severity: high
+tags: [sqli, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'all_tables'
+    - field: query
+      contains: 'all_tables'
+    - field: body
+      contains: 'all_tables'
+    - field: uri
+      contains: 'table_name'
+    - field: query
+      contains: 'table_name'
+    - field: body
+      contains: 'table_schema'

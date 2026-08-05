@@ -1,0 +1,46 @@
+id: mail-protocol-crlf-inject
+name: Mail protocol CRLF injection
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [injection]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[\\r\\n])v\\d+\\s+(?:capability|fetch)\\b"
+    - field: uri
+      regex: "(?i)(?:^|[\\r\\n])v\\d+\\s+(?:capability|fetch)\\b"
+    - field: body
+      regex: "(?i)(?:^|[\\r\\n])v\\d+\\s+(?:capability|fetch)\\b"
+    - field: query
+      regex: "(?i)(?:^|[\\r\\n])(?:quit|rcpt\\s+to:|mail\\s+from:|ehlo|helo)\\b"
+    - field: uri
+      regex: "(?i)(?:^|[\\r\\n])(?:quit|rcpt\\s+to:|mail\\s+from:|ehlo|helo)\\b"
+    - field: body
+      regex: "(?i)(?:^|[\\r\\n])(?:quit|rcpt\\s+to:|mail\\s+from:|ehlo|helo)\\b"
+    - field: query
+      contains: 'v100 capability'
+    - field: body
+      contains: 'v100 capability'
+    - field: uri
+      contains: 'v100 capability'
+    - field: query
+      contains: 'rcpt to:'
+    - field: body
+      contains: 'rcpt to:'
+    - field: uri
+      contains: 'rcpt to:'
+    - field: query
+      contains: 'v101 fetch'
+    - field: body
+      contains: 'v101 fetch'
+    - field: uri
+      contains: 'v101 fetch'
+    - field: query
+      contains: 'quit'
+    - field: body
+      contains: 'quit'
+    - field: uri
+      contains: 'quit'

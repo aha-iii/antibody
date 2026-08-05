@@ -1,0 +1,22 @@
+id: sensitive-api-recon
+name: Sensitive API / secrets / swagger recon
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [recon, admin, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?(?:secrets|config\\.json|swagger\\.json|workflows)(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)/users/\\d+/private(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/(?:rest/workflows|application/o/(?:token|authorize)|source/saml/)(?:|$|\\?)"
+    - field: uri
+      regex: "(?i)^/api/v3/core/users/?$"
+    - field: uri
+      regex: "(?i)^/api/(?:sudo|settings)/?$"
+    - field: uri
+      regex: "(?i)/users/\\d+/role(?:/|$|\\?)"

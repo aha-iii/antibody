@@ -1,0 +1,16 @@
+id: sqli-and-empty-quote
+name: 'SQL AND empty-quote tautology'
+severity: high
+tags: [sqli, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)and\\s+['\"]{1,2}\\s*=\\s*['\"]{1,2}"
+    - field: query
+      regex: "(?i)and\\s+['\"]{1,2}\\s*=\\s*['\"]{1,2}"
+    - field: body
+      regex: "(?i)and\\s+['\"]{1,2}\\s*=\\s*['\"]{1,2}"

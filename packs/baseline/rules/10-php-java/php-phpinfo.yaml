@@ -1,0 +1,22 @@
+id: php-phpinfo
+name: 'PHP phpinfo probe'
+severity: high
+tags: [php, java, app]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'phpinfo('
+    - field: uri
+      contains: 'phpinfo ()'
+    - field: query
+      contains: 'phpinfo('
+    - field: query
+      contains: 'phpinfo ()'
+    - field: body
+      contains: 'phpinfo('
+    - field: body
+      contains: 'phpinfo ()'

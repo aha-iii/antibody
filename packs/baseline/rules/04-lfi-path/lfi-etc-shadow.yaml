@@ -1,0 +1,22 @@
+id: lfi-etc-shadow
+name: 'LFI /etc/shadow'
+severity: high
+tags: [lfi, path, owasp]
+score: 50
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/etc/shadow'
+    - field: uri
+      contains: '../etc/shadow'
+    - field: query
+      contains: '/etc/shadow'
+    - field: query
+      contains: '../etc/shadow'
+    - field: body
+      contains: '/etc/shadow'
+    - field: body
+      contains: '../etc/shadow'

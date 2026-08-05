@@ -1,0 +1,20 @@
+id: idor-bola-headers
+name: BOLA header / batch enumeration probes
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [idor, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: header
+      regex: "(?i)(?:x-account-id|x-tenant-id|x-user-id|x-org-id)\\s*:\\s*\\d+"
+    - field: uri
+      regex: "(?i)/api/users/(?:by-email|batch)"
+    - field: query
+      regex: "(?i)(?:^|[&])ids?=\\d+(?:,\\d+){3,}"
+    - field: query
+      regex: "(?i)(?:^|[&])user_id=\\d+"
+    - field: uri
+      regex: "(?i)/api/(?:transactions|documents)\\?"

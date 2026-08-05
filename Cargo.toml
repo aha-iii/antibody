@@ -1,0 +1,68 @@
+[profile.release]
+strip = true
+lto = "thin"
+codegen-units = 1
+
+[workspace]
+resolver = "2"
+members = [
+    "crates/engine/contract/nerve-antibody-dsl",
+    "crates/engine/contract/nerve-antibody-pack",
+    "crates/engine/contract/nerve-antibody-license",
+    "crates/engine/compile/nerve-antibody-compiler",
+    "crates/engine/compile/nerve-antibody-signals",
+    "crates/engine/pipeline/nerve-antibody-pipeline",
+    "crates/engine/pipeline/nerve-antibody-accel",
+    "crates/engine/pipeline/nerve-antibody-semantic",
+    "crates/engine/pipeline/nerve-antibody-adaptive",
+    "crates/engine/pipeline/nerve-antibody-runtime",
+    "crates/engine/facade/nerve-antibody-engine",
+    "crates/engine/facade/nerve-antibody-cache",
+    "crates/engine/facade/nerve-antibody-metrics",
+    "crates/engine/facade/nerve-antibody-admission",
+    "crates/integration/nerve-antibody",
+    "crates/integration/nerve-antibody-dashboard",
+    "crates/integration/nerve-antibody-bench",
+    "crates/integration/nerve-antibody-route-trainer",
+]
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "proprietary"
+authors = ["Nerve"]
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+thiserror = "2"
+regex = "1"
+toml = "0.8"
+sha2 = "0.10"
+hmac = "0.12"
+hex = "0.4"
+parking_lot = "0.12"
+base64 = "0.22"
+aes-gcm = "0.10"
+tar = "0.4"
+tempfile = "3"
+rand = "0.8"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
+aho-corasick = "1"
+nerve-antibody-dsl = { path = "crates/engine/contract/nerve-antibody-dsl" }
+nerve-antibody-signals = { path = "crates/engine/compile/nerve-antibody-signals" }
+nerve-antibody-pack = { path = "crates/engine/contract/nerve-antibody-pack" }
+nerve-antibody-license = { path = "crates/engine/contract/nerve-antibody-license" }
+nerve-antibody-compiler = { path = "crates/engine/compile/nerve-antibody-compiler" }
+nerve-antibody-runtime = { path = "crates/engine/pipeline/nerve-antibody-runtime" }
+nerve-antibody-pipeline = { path = "crates/engine/pipeline/nerve-antibody-pipeline" }
+nerve-antibody-accel = { path = "crates/engine/pipeline/nerve-antibody-accel" }
+nerve-antibody-semantic = { path = "crates/engine/pipeline/nerve-antibody-semantic" }
+nerve-antibody-adaptive = { path = "crates/engine/pipeline/nerve-antibody-adaptive" }
+nerve-antibody-dashboard = { path = "crates/integration/nerve-antibody-dashboard" }
+nerve-antibody-admission = { path = "crates/engine/facade/nerve-antibody-admission" }
+nerve-antibody-bench = { path = "crates/integration/nerve-antibody-bench" }
+nerve-antibody-route-trainer = { path = "crates/integration/nerve-antibody-route-trainer" }
+nerve-antibody-metrics = { path = "crates/engine/facade/nerve-antibody-metrics" }
+nerve-antibody-cache = { path = "crates/engine/facade/nerve-antibody-cache" }
+nerve-antibody-engine = { path = "crates/engine/facade/nerve-antibody-engine" }

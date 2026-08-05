@@ -1,0 +1,12 @@
+id: xss-script
+name: XSS script tag
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+transforms: [url_decode, lowercase]
+action: block
+when:
+  all:
+    - field: uri
+      contains: "<script"

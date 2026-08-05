@@ -1,0 +1,94 @@
+# BOLA/BFLA：特权 API 变更 / 批量枚举 / 路径穿越（WAFTester logic）
+id: bola-privilege-mutation
+name: BOLA privilege mutation and enumeration probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [idor, bola, bfla, logic, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?users/me/\\.\\./"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?users/batch(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?users/by-email/"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?(?:system/restore|api-keys|debug/(?:info|sql))(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?users/\\d+/wallets/\\d+/traesactions/\\d+"
+    - field: uri
+      regex: "(?i)^/api/internal/users/\\d+"
+    - all:
+        - field: method
+          regex: "(?i)^(?:put|patch|delete|post)$"
+        - field: uri
+          regex: "(?i)^/api/(?:v\\d+/)?(?:users/me|workflows/\\d+|system/restore|api-keys|tokens|albums/\\d+/share|organizations/\\d+)(?:/|$|\\?)"
+    - all:
+        - field: method
+          regex: "(?i)^put$"
+        - field: uri
+          regex: "(?i)^/api/(?:v\\d+/)?users/\\d+(?:/|$|\\?)"
+    - all:
+        - field: method
+          regex: "(?i)^put$"
+        - field: uri
+          regex: "(?i)^/api/(?:v\\d+/)?workflows/\\d+(?:/|$|\\?)"
+    - all:
+        - field: uri
+          regex: "(?i)^/api/(?:v\\d+/)?users(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])(?:email|phone)="
+    - all:
+        - field: uri
+          regex: "(?i)^/api/(?:v\\d+/)?(?:orders|events)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])(?:customer_id|owner_id)="
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?users/\\d+(?:/|$|\\?|/settings)"
+    - all:
+        - field: uri
+          regex: "(?i)^/api/(?:v\\d+/)?users/?$"
+        - field: query
+          regex: "(?i)(?:^|[&])id=\\d+"
+    - all:
+        - field: method
+          regex: "(?i)^post$"
+        - field: uri
+          regex: "(?i)^/api/(?:v\\d+/)?users/profile(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?(?:v\\d+/)?accounts/\\d+"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?organizations/\\d+/members"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?subscriptions/sub_"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?documents/(?:00000000|ffffffff)-"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?posts/admin-secret"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?organizations/\\d+/projects/\\d+/tasks/\\d+"
+    - all:
+        - field: method
+          regex: "(?i)^get$"
+        - field: uri
+          regex: "(?i)^/graphql(?:/|$|\\?)"
+    - all:
+        - field: method
+          regex: "(?i)^post$"
+        - field: uri
+          regex: "(?i)^/api/(?:v\\d+/)?workflows/\\d+/activate"
+    - all:
+        - field: method
+          regex: "(?i)^post$"
+        - field: uri
+          regex: "(?i)^/api/(?:v\\d+/)?users/\\d+\\?_method=delete"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?documents\\?(?:[^#]*&)?ids=\\d+(?:,\\d+)+"
+    - all:
+        - field: uri
+          regex: "(?i)^/api/(?:v\\d+/)?traesactions(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])user_id=\\d+"

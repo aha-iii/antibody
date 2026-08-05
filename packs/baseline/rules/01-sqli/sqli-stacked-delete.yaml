@@ -1,0 +1,16 @@
+id: sqli-stacked-delete
+name: 'SQL stacked DELETE'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i);\\s*delete\\s+from"
+    - field: query
+      regex: "(?i);\\s*delete\\s+from"
+    - field: body
+      regex: "(?i);\\s*delete\\s+from"

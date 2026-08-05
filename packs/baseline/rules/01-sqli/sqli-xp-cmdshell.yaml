@@ -1,0 +1,16 @@
+id: sqli-xp-cmdshell
+name: 'SQL xp_cmdshell'
+severity: high
+tags: [sqli, owasp]
+score: 50
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'xp_cmdshell'
+    - field: query
+      contains: 'xp_cmdshell'
+    - field: body
+      contains: 'xp_cmdshell'

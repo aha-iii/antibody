@@ -1,0 +1,89 @@
+id: shell-xxe-user-agent
+name: Shell invocation in User-Agent and XXE probes
+severity: high
+score: 40
+action: block
+min_level: low
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: header
+      regex: "(?i)openvas|nuclei|sqlmap|ffuf|fuzz faster|winrm client openvas|mercuryboard_user_agent|\\.nasl|interact\\.sh|oast\\.me|burpcollaborator"
+    - field: header
+      contains: 'mercuryboard_user_agent'
+    - field: header
+      contains: '.nasl'
+    - field: header
+      contains: '${jndi:'
+    - field: header
+      contains: 'root@'
+    - field: query
+      regex: "(?i)ev\\s*al\\s*\\(|ex\\\"&\\\"e\\\"&\\\"cute|server\\.scripttimeout|!!python/object/new:exec"
+    - field: body
+      regex: "(?i)ev\\s*al\\s*\\(|ex\\\"&\\\"e\\\"&\\\"cute|server\\.scripttimeout|!!python/object/new:exec"
+    - field: uri
+      regex: "(?i)ev\\s*al\\s*\\(|server\\.scripttimeout|!!python/object/new:exec"
+    - field: query
+      contains: 'scripttimeout'
+    - field: body
+      contains: 'scripttimeout'
+    - field: query
+      contains: 'cmd=cat'
+    - field: body
+      contains: 'cmd=cat'
+    - field: uri
+      contains: 'cmd='
+    - field: query
+      contains: '&& ls'
+    - field: uri
+      contains: '&& ls'
+    - field: body
+      contains: '&& ls /etc'
+    - field: query
+      contains: '&& ls /etc'
+    - field: body
+      contains: "cat /et'c/pa'ss'wd"
+    - field: body
+      contains: 'ax--exec='
+    - field: query
+      contains: '() { :; };'
+    - field: body
+      contains: '() { :; };'
+    - field: query
+      contains: 'cmd=${@print(md5'
+    - field: body
+      contains: 'cmd=${@print(md5'
+    - field: query
+      contains: '@print(md5'
+    - field: body
+      contains: '@print(md5'
+    - field: body
+      contains: 'encoding="utf-7"'
+    - field: body
+      contains: '+adw'
+    - field: body
+      contains: '<!DOCTYPE'
+    - field: query
+      contains: 'autof<x>ocus'
+    - field: uri
+      contains: 'autof<x>ocus'
+    - field: body
+      contains: 'autof<x>ocus'
+    - field: query
+      contains: 'o<x>nfocus'
+    - field: uri
+      contains: 'o<x>nfocus'
+    - field: body
+      contains: 'o<x>nfocus'
+    - field: uri
+      contains: '%5c%22autof'
+    - field: query
+      contains: '%5c%22autof'
+    - field: body
+      contains: '%5c%22autof'
+    - field: uri
+      contains: 'xcjhdxrvzjx4pm9jdxm'
+    - field: body
+      contains: 'xcjhdxrvzjx4pm9jdxm'
+    - field: query
+      contains: 'xcjhdxrvzjx4pm9jdxm'

@@ -1,0 +1,22 @@
+id: php-auto-prepend
+name: 'PHP auto_prepend_file'
+severity: high
+tags: [php, java, app]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'auto_prepend_file'
+    - field: uri
+      contains: 'auto_append_file'
+    - field: query
+      contains: 'auto_prepend_file'
+    - field: query
+      contains: 'auto_append_file'
+    - field: body
+      contains: 'auto_prepend_file'
+    - field: body
+      contains: 'auto_append_file'

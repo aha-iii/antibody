@@ -1,0 +1,17 @@
+id: jwt-header-url-ssrf
+name: JWT kid/jku/x5u remote URL SSRF
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [auth, jwt, ssrf, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    # header JSON 里 kid/jku/x5u=http 的常见 b64 片段：ImtpZCI6Imh0dHA / ImpydSI6Imh0dHA / Ing1dSI6Imh0dHA
+    - field: query
+      regex: "(?i)(?:ImtpZCI6Imh0dHA|ImpydSI6Imh0dHA|Ing1dSI6Imh0dHA|ImprdSI6Imh0dHA)"
+    - field: body
+      regex: "(?i)(?:ImtpZCI6Imh0dHA|ImpydSI6Imh0dHA|Ing1dSI6Imh0dHA|ImprdSI6Imh0dHA)"
+    - field: header
+      regex: "(?i)(?:ImtpZCI6Imh0dHA|ImpydSI6Imh0dHA|Ing1dSI6Imh0dHA|ImprdSI6Imh0dHA)"

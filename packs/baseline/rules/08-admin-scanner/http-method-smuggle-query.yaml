@@ -1,0 +1,21 @@
+# 协议异常：query 参数内嵌 raw HTTP 方法行（method smuggling / request splitting 探测）
+id: http-method-smuggle-query
+name: Embedded raw HTTP method line in query parameter
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [proto, fuzz, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:^|[&])q=(?:get|post|put|delete|head|patch|trace|track|debug|connect|options|%09|%20)[^&]{0,80}http/1\\.[01]"
+    - field: query
+      regex: "(?i)(?:^|[&])q=[^&]*%0d%0a(?:host|content-length|transfer-encoding)\\s*:"
+    - field: query
+      regex: "(?i)(?:^|[&])q=(?:invalid|getpostputdelete|gpost|[0-9]{1,4}|[a-z](?:\\s+[a-z]){0,4})(?:%20|\\s)+(?:/|%2f|%2F)(?:%20|\\s)*http/1\\.[01]"
+    - field: query
+      regex: "(?i)(?:^|[&])q=gpost(?:%20|\\s)+(?:/|%2f|%2F)"
+    - field: query
+      regex: "(?i)(?:^|[&])q=content-length(?:%20|%20|%3a|%3A)"

@@ -1,0 +1,14 @@
+id: rce-f5-bash-util
+name: F5 BIG-IP tm util bash
+severity: critical
+score: 45
+action: block
+min_level: low
+tags: [rce, known_bad, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '/tm/util/bash'
+    - field: uri
+      contains: '/mgmt/tm/util/bash'

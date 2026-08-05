@@ -1,0 +1,28 @@
+id: webshell-base64-post
+name: 'Webshell base64 POST'
+severity: high
+tags: [webshell, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'base64_decode($_post'
+    - field: uri
+      contains: 'base64_decode($_get'
+    - field: uri
+      contains: 'gzinflate(base64_decode'
+    - field: query
+      contains: 'base64_decode($_post'
+    - field: query
+      contains: 'base64_decode($_get'
+    - field: query
+      contains: 'gzinflate(base64_decode'
+    - field: body
+      contains: 'base64_decode($_post'
+    - field: body
+      contains: 'base64_decode($_get'
+    - field: body
+      contains: 'gzinflate(base64_decode'

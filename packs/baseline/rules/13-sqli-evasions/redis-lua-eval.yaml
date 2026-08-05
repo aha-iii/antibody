@@ -1,0 +1,24 @@
+id: redis-lua-eval
+name: Redis EVAL / Lua injection and n8n code RCE
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [nosql, rce, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      contains: 'redis.call'
+    - field: body
+      contains: 'redis.call'
+    - field: body
+      contains: 'child_process'
+    - field: body
+      contains: 'n8n-nodes-base.code'
+    - field: body
+      contains: 'n8n-nodes-base.httprequest'
+    - field: query
+      regex: "(?i)\\beval\\s+\""
+    - field: body
+      regex: "(?i)\\beval\\s+\""

@@ -1,0 +1,27 @@
+# 反序列化：常见 gadget / @type / PHP serialize 标记
+id: deser-gadget-marker
+name: Deserialization gadget and type confusion markers
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [deser, rce, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      contains: '@type'
+    - field: body
+      contains: 'aced0005'
+    - field: body
+      regex: "(?i)o:\\d+:\""
+    - field: body
+      contains: 'gem::specification'
+    - field: body
+      contains: 'templatesimpl'
+    - field: body
+      contains: 'fastjson'
+    - field: body
+      contains: 'inet4address'
+    - field: body
+      regex: "(?i)\"@c\"\\s*:"

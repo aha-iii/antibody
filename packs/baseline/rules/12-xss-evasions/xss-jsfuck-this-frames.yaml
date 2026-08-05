@@ -1,0 +1,24 @@
+id: xss-jsfuck-this-frames
+name: 'XSS JSFuck this/frames/window bracket'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(?:this|frames|window|parent|top|self)\\[\\(+\\{"
+    - field: query
+      regex: "(?i)(?:this|frames|window|parent|top|self)\\[\\(+\\{"
+    - field: body
+      regex: "(?i)(?:this|frames|window|parent|top|self)\\[\\(+\\{"
+    - field: uri
+      contains: '[(![]+[])'
+    - field: query
+      contains: '[(![]+[])'
+    - field: uri
+      contains: '(+{}+[])'
+    - field: query
+      contains: '(+{}+[])'

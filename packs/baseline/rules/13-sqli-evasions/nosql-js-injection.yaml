@@ -1,0 +1,30 @@
+id: nosql-js-injection
+name: NoSQL / Redis JS and command injection
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [nosql, injection, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)return\\s+true\\s*;"
+    - field: body
+      regex: "(?i)return\\s+true\\s*;"
+    - field: query
+      regex: "(?i)this\\.password\\s*\\."
+    - field: body
+      regex: "(?i)this\\.password\\s*\\."
+    - field: query
+      regex: "(?i)allow\\s+filtering\\b"
+    - field: body
+      regex: "(?i)allow\\s+filtering\\b"
+    - field: query
+      regex: "(?i)\\bkeys\\s+\\*"
+    - field: body
+      regex: "(?i)\\bkeys\\s+\\*"
+    - field: query
+      regex: "(?i)\\bconfig\\s+get\\b"
+    - field: body
+      regex: "(?i)\\bconfig\\s+get\\b"

@@ -1,0 +1,20 @@
+id: xss-base-href
+name: 'XSS base href hijack'
+severity: high
+tags: [xss, owasp, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)<base\\b[^>]{0,120}href\\s*=\\s*['\"]?(?:javascript:|data:)"
+    - field: query
+      regex: "(?i)<base\\b[^>]{0,120}href\\s*=\\s*['\"]?(?:javascript:|data:)"
+    - field: body
+      regex: "(?i)<base\\b[^>]{0,120}href\\s*=\\s*['\"]?(?:javascript:|data:)"
+    - field: uri
+      regex: "(?i)<base\\b[^>]{0,80}href\\s*="
+    - field: query
+      regex: "(?i)<base\\b[^>]{0,80}href\\s*="

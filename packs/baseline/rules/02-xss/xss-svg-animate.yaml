@@ -1,0 +1,22 @@
+id: xss-svg-animate
+name: 'XSS SVG animate'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '<animate'
+    - field: uri
+      contains: 'onalert='
+    - field: query
+      contains: '<animate'
+    - field: query
+      contains: 'onalert='
+    - field: body
+      contains: '<animate'
+    - field: body
+      contains: 'onalert='

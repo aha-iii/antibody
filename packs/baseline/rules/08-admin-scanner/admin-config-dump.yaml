@@ -1,0 +1,15 @@
+# 管理面探测：Admin config dump via query parameters
+id: admin-config-dump
+name: Admin configuration dump probe
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [admin, recon, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      contains: 'dumpconfig='
+    - field: query
+      contains: 'fuec=admin:appstate'

@@ -1,0 +1,28 @@
+id: ssrf-gopher
+name: 'SSRF gopher/dict'
+severity: high
+tags: [ssrf, rfi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'gopher://'
+    - field: uri
+      contains: 'dict://'
+    - field: uri
+      contains: 'ftp://127.'
+    - field: query
+      contains: 'gopher://'
+    - field: query
+      contains: 'dict://'
+    - field: query
+      contains: 'ftp://127.'
+    - field: body
+      contains: 'gopher://'
+    - field: body
+      contains: 'dict://'
+    - field: body
+      contains: 'ftp://127.'

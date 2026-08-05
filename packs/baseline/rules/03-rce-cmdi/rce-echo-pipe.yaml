@@ -1,0 +1,16 @@
+id: rce-echo-pipe
+name: 'RCE echo pipe sh'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)echo\\s+.*\\|\\s*(sh|bash)"
+    - field: query
+      regex: "(?i)echo\\s+.*\\|\\s*(sh|bash)"
+    - field: body
+      regex: "(?i)echo\\s+.*\\|\\s*(sh|bash)"

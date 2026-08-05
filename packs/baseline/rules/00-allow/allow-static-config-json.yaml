@@ -1,0 +1,16 @@
+id: allow-static-config-json
+name: 'Allow static widget config.json'
+severity: low
+tags: [allow, fp_reviewed]
+score: 40
+min_level: low
+action: allow
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)/pkgs/.+/config\\.json$"
+    - field: uri
+      regex: "(?i)/Release/pkgs/.+/config\\.json$"
+    - field: uri
+      regex: "(?i)/assets/.+/config\\.json$"

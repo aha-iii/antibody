@@ -1,0 +1,17 @@
+id: xss-animation-download
+name: XSS animationcancel / download attribute
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [xss, blazehttp_gap]
+transforms: [url_decode_uni, lowercase, html_entity_decode]
+when:
+  any:
+    - field: query
+      regex: "(?i)onanimationcancel\\s*=|@keyframes|download\\s*="
+    - field: uri
+      regex: "(?i)onanimationcancel\\s*=|@keyframes|download\\s*="
+    - field: header
+      header_name: Referer
+      regex: "(?i)onanimationcancel\\s*=|@keyframes|download\\s*="

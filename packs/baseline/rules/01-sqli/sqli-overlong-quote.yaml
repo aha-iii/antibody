@@ -1,0 +1,18 @@
+id: sqli-overlong-quote
+name: Overlong UTF-8 quote SQLi
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [sqli, self]
+transforms: []
+when:
+  any:
+    - field: query
+      contains: '%c0%27'
+    - field: query
+      contains: '%c0%22'
+    - field: uri
+      contains: '%c0%27'
+    - field: query
+      regex: "(?i)%ef%bc%9[ce]|%ef%bd%8[1-9a-e]"

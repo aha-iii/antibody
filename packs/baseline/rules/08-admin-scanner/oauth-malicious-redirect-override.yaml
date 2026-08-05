@@ -1,0 +1,36 @@
+# 开放重定向：OAuth/SAML authorize 端点上的恶意 redirect_uri（压过 oauth-authorize-flow-allow）
+id: oauth-malicious-redirect-override
+name: Malicious redirect_uri on OAuth authorize endpoints
+severity: critical
+score: 200
+action: block
+min_level: low
+tags: [redirect, oauth, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)(?:^|/)(?:oauth2?|authorize|application/o/authorize|saml/login|saml/acs)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])(?:redirect_uri|relaystate)=(?:https?://[^&]*(?:evil\\.com|attacker\\.com|\\.evil\\.com)|javascript:|data:)"
+    - all:
+        - field: uri
+          regex: "(?i)(?:^|/)(?:oauth2?|authorize|application/o/authorize)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)redirect_uri=[^&]*(?:@attacker|@evil|localhost[0-9]*@|%40attacker|%40evil)"
+    - field: query
+      regex: "(?i)redirect_uri=(?:javascript:|data:text/html)"
+    - field: query
+      regex: "(?i)response_type=[^&]*(?:token|id_token)[^&]*&[^&]*redirect_uri=https?://(?:attacker|evil)"
+    - field: query
+      regex: "(?i)redirect_uri=https://legitimate\\.com(?:%0d%0a|%0a|%0d)host:"
+    - field: uri
+      regex: "(?i)^/redirect/https?://"
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|redirect|redirect_uri|goto|relaystate|service)=\\\\s*(?:%20|%0a|%0d|%09)*https?://[^&]*evil\\.com"
+    - all:
+        - field: uri
+          regex: "(?i)(?:^|/)(?:sso/login|sso/logout|saml/login)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])(?:service|redirect|relaystate)=https?://[^&]*evil\\.com"

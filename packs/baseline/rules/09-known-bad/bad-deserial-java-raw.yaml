@@ -1,0 +1,24 @@
+id: bad-deserial-java-raw
+name: 'Java deserialization URL-encoded / raw markers'
+severity: high
+tags: [known_bad, cve]
+score: 40
+min_level: low
+action: block
+transforms: []
+when:
+  any:
+    - field: query
+      contains: 'rO0AB'
+    - field: query
+      contains: '%ac%ed%00%05'
+    - field: query
+      contains: '%ac%ed'
+    - field: uri
+      contains: 'rO0AB'
+    - field: uri
+      contains: '%ac%ed%00%05'
+    - field: body
+      contains: 'rO0AB'
+    - field: body
+      contains: '%ac%ed%00%05'

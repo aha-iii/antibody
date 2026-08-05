@@ -1,0 +1,14 @@
+id: sqli-json-base64-pipe
+name: 'SQLi JSON base64 command pipe'
+severity: high
+tags: [sqli, rce, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)\"id\"\\s*:\\s*\"[A-Za-z0-9+/=]{16,}\""
+    - field: body
+      regex: "(?i)\"id\"\\s*:\\s*\"[A-Za-z0-9+/=]{16,}\""

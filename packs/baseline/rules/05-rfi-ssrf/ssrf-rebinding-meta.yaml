@@ -1,0 +1,22 @@
+id: ssrf-rebinding-meta
+name: SSRF DNS rebinding / nip.io metadata aliases
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [ssrf, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:127\\.0\\.0\\.1|169\\.254\\.169\\.254|0\\.0\\.0\\.0)\\.(?:nip\\.io|xip\\.io|sslip\\.io)"
+    - field: body
+      regex: "(?i)(?:127\\.0\\.0\\.1|169\\.254\\.169\\.254)\\.(?:nip\\.io|xip\\.io|sslip\\.io)"
+    - field: query
+      regex: "(?i)(?:make-\\d|rebind|1u\\.ms|r3dir\\.me|rancher-metadata|192\\.0\\.0\\.192)"
+    - field: body
+      regex: "(?i)(?:make-\\d|rebind|1u\\.ms|r3dir\\.me|rancher-metadata|192\\.0\\.0\\.192)"
+    - field: query
+      regex: "(?i)https?://[^/\\s]*@[^/\\s]+"
+    - field: query
+      regex: "(?i)https?:[^/]"

@@ -1,0 +1,22 @@
+id: lfi-var-log
+name: 'LFI /var/log'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/var/log/'
+    - field: uri
+      contains: '../var/log/'
+    - field: query
+      contains: '/var/log/'
+    - field: query
+      contains: '../var/log/'
+    - field: body
+      contains: '/var/log/'
+    - field: body
+      contains: '../var/log/'

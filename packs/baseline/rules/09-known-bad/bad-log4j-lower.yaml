@@ -1,0 +1,26 @@
+id: bad-log4j-lower
+name: 'Log4Shell lower obfuscation'
+severity: high
+tags: [known_bad, cve]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '${jndi:${lower:'
+    - field: uri
+      contains: '${${::-j}${::-n}${::-d}${::-i}:'
+    - field: query
+      contains: '${jndi:${lower:'
+    - field: query
+      contains: '${${::-j}${::-n}${::-d}${::-i}:'
+    - field: body
+      contains: '${jndi:${lower:'
+    - field: body
+      contains: '${${::-j}${::-n}${::-d}${::-i}:'
+    - field: header
+      contains: '${jndi:${lower:'
+    - field: header
+      contains: '${${::-j}${::-n}${::-d}${::-i}:'

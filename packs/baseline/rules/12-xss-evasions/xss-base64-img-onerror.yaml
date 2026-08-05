@@ -1,0 +1,28 @@
+id: xss-base64-img-onerror
+name: 'XSS img onerror / base64 fragment'
+severity: high
+tags: [xss, evasion, blazehttp_gap, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)onerror\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window)"
+    - field: query
+      regex: "(?i)onerror\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window)"
+    - field: body
+      regex: "(?i)onerror\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window)"
+    - field: uri
+      contains: 'b25lcnjvcj'
+    - field: query
+      contains: 'b25lcnjvcj'
+    - field: body
+      contains: 'b25lcnjvcj'
+    - field: uri
+      contains: 'pgltzy'
+    - field: query
+      contains: 'pgltzy'
+    - field: body
+      contains: 'pgltzy'

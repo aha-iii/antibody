@@ -1,0 +1,49 @@
+# 开放重定向：外站跳转 / 可疑 redirect 参数（无 lookahead；OAuth 见 90-allow/oauth-authorize-flow-allow）
+id: open-redirect-uri-fast
+name: Open redirect endpoint with outbound URL parameter
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [redirect, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    # 重定向端点 + 任意外站 URL（WAFTester/gotestwaf 恶意样本）
+    - all:
+        - field: uri
+          regex: "(?i)(?:^|/)(?:redirect|oauth|login|logout|sso|saml|callback|signin|signout)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])(?:url|next|return|returnurl|redirect|redirect_uri|goto|continue|destination|relaystate|service|post_logout_redirect_uri)=https?://"
+    - all:
+        - field: uri
+          contains: '/redirect'
+        - field: query
+          regex: "(?i)(?:^|[&])(?:url|next|return|returnurl|redirect|goto|continue|destination)=https?://"
+    - all:
+        - field: uri
+          contains: '/redirect'
+        - field: query
+          regex: "(?i)(?:^|[&])(?:url|next|return|redirect|goto|destination)=[^&]*(?:%40|%253a|%2f%2f|//@)"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:login|logout|saml|sso)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])(?:url|next|return|redirect|goto|destination)=https?://"
+    - all:
+        - field: uri
+          regex: "(?i)^/(?:login|logout|saml|sso)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])(?:url|next|return|redirect|goto|destination)=[^&]*(?:%40|%253a|%2f%2f|//@)"
+    - field: query
+      contains: 'url=//'
+    - field: query
+      contains: '%253a%252f%252f'
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|redirect)=https?://\\\\d{8,12}(?:/|$|&)"
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|redirect)=https?://\\\\[[0-9a-f:.]+\\\\]"
+    - field: query
+      regex: "(?i)(?:^|[&])(?:url|next|redirect)=https?://xn--"
+    - field: query
+      regex: "(?i)(?:^|[&])redirect_uri=https?://[^&]+//"

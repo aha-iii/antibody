@@ -1,0 +1,40 @@
+id: sqli-json-extract-function
+name: SQLi via JSON_EXTRACT and extended procedures
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [sqli]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      contains: 'json_extract'
+    - field: uri
+      contains: 'json_extract'
+    - field: body
+      contains: 'json_extract'
+    - field: query
+      contains: 'json_depth'
+    - field: uri
+      contains: 'json_depth'
+    - field: body
+      contains: 'json_depth'
+    - field: query
+      regex: "(?i)select\\s*\\(\\s*sleep\\s*\\(|sleep\\s*\\(\\s*\\d+"
+    - field: uri
+      regex: "(?i)select\\s*\\(\\s*sleep\\s*\\(|sleep\\s*\\(\\s*\\d+"
+    - field: body
+      regex: "(?i)select\\s*\\(\\s*sleep\\s*\\(|sleep\\s*\\(\\s*\\d+"
+    - field: query
+      contains: 'xp_cmdshell'
+    - field: uri
+      contains: 'xp_cmdshell'
+    - field: body
+      contains: 'xp_cmdshell'
+    - field: query
+      contains: 'fn_varbintohexstr'
+    - field: body
+      contains: 'fn_varbintohexstr'
+    - field: uri
+      contains: 'fn_varbintohexstr'

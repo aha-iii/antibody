@@ -1,0 +1,16 @@
+//! 默认线性模型权重（可复制到 pack 旁并由 `policy.adaptive.model_path` 引用）。
+
+{
+  "version": "linear-v1",
+  "bias": -2.2,
+  "special_ratio": 1.8,
+  "sql_keyword_hits": 0.9,
+  "xss_keyword_hits": 0.85,
+  "path_keyword_hits": 0.7,
+  "rule_block_count": 0.35,
+  "semantic_score": 0.0125,
+  "view_count": 0.05,
+  "param_count": 0.04,
+  "semantic_veto": -2.5,
+  "short_benign": -1.2
+}

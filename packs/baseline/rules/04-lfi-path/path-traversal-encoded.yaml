@@ -1,0 +1,34 @@
+id: path-traversal-encoded
+name: Encoded path traversal sequences
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [lfi]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)(?:\\.\\./|\\.\\.\\\\){2,}(?:etc/passwd|windows|ntuser)"
+    - field: uri
+      regex: "(?i)(?:\\.\\./|\\.\\.\\\\){2,}(?:etc/passwd|windows|ntuser)"
+    - field: body
+      regex: "(?i)(?:\\.\\./|\\.\\.\\\\){2,}(?:etc/passwd|windows|ntuser)"
+    - field: query
+      contains: '::1\\c$'
+    - field: uri
+      contains: '::1\\c$'
+    - field: body
+      contains: '::1\\c$'
+    - field: query
+      contains: 'ntuser.dat'
+    - field: uri
+      contains: 'ntuser.dat'
+    - field: body
+      contains: 'ntuser.dat'
+    - field: query
+      contains: '/etc/passwd'
+    - field: uri
+      contains: '/etc/passwd'
+    - field: body
+      contains: '/etc/passwd'

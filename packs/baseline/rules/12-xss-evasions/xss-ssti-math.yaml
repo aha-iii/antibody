@@ -1,0 +1,17 @@
+id: xss-ssti-math
+name: 'SSTI-like math in XSS sink'
+severity: medium
+tags: [xss, ssti, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    # {{43426*'41827'}} / {{7*7}} / { 3331*3330 }
+    - field: query
+      regex: "\\{\\{?\\s*[0-9]+\\s*[\\*\\+/]\\s*['\"]?[0-9]+['\"]?\\s*\\}?"
+    - field: uri
+      regex: "\\{\\{?\\s*[0-9]+\\s*[\\*\\+/]\\s*['\"]?[0-9]+['\"]?\\s*\\}?"
+    - field: body
+      regex: "\\{\\{?\\s*[0-9]+\\s*[\\*\\+/]\\s*['\"]?[0-9]+['\"]?\\s*\\}?"

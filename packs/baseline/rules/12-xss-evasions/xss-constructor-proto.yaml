@@ -1,0 +1,16 @@
+id: xss-constructor-proto
+name: 'XSS constructor.prototype pollution sink'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: 'constructor.prototype'
+    - field: query
+      contains: 'constructor.prototype'
+    - field: body
+      contains: 'constructor.prototype'

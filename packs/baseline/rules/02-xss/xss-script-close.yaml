@@ -1,0 +1,21 @@
+id: xss-script-close
+name: 'XSS script close'
+severity: high
+tags: [xss, owasp, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    # body 里代码编辑器常见 </script>；提升档位，uri/query 仍拦
+    - field: uri
+      regex: "(?i)</script[\\s>]"
+    - field: query
+      regex: "(?i)</script[\\s>]"
+    - field: uri
+      regex: "(?i)%3c/script(?:%3e|[\\s>])"
+    - field: query
+      regex: "(?i)%3c/script(?:%3e|[\\s>])"
+    - field: body
+      regex: "(?i)<[^>]{0,40}</script[\\s>]"

@@ -1,0 +1,30 @@
+id: upload-webshell-filename
+name: Webshell filename in upload metadata
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [upload, rce, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)filename\\s*=\\s*[\"'][^\"']+\\.(?:php\\d*|phtml|phar|asp|aspx|ashx|asmx|jsp|jspx|cgi|cfm|cfc|pl|py|rb|hta|shtml|shtm|dll|so|war|jar|ear|exe|inc|module|theme|engine)[\"']"
+    - field: body
+      regex: "(?i)filename\\s*=\\s*[\"'][^\"']+\\.(?:php\\d*|phtml|phar|asp|aspx|ashx|asmx|jsp|jspx|cgi|cfm|cfc|pl|py|rb|hta|shtml|shtm|dll|so|war|jar|ear|exe|inc|module|theme|engine)[\"']"
+    - field: query
+      regex: "(?i)filename\\s*=\\s*[\"'][^\"']+\\.p\\.h\\.p[\"']"
+    - field: body
+      regex: "(?i)filename\\s*=\\s*[\"'][^\"']+\\.p\\.h\\.p[\"']"
+    - field: query
+      regex: "(?i)filename\\s*=\\s*[\"']\\.(?:htaccess|user\\.ini|htpasswd)[\"']"
+    - field: body
+      regex: "(?i)filename\\s*=\\s*[\"']\\.(?:htaccess|user\\.ini|htpasswd)[\"']"
+    - field: query
+      contains: 'application/x-httpd-php'
+    - field: body
+      contains: 'application/x-httpd-php'
+    - field: query
+      contains: '/openaction'
+    - field: query
+      contains: '%pdf'

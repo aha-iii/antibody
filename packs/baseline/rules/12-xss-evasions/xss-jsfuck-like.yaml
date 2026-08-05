@@ -1,0 +1,16 @@
+id: xss-jsfuck-like
+name: 'XSS JSFuck-like bracket encoding'
+severity: medium
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?:\\+\\{\\}\\+\\[\\]|!\\[\\]\\+\\[\\]|\\!\\!\\[\\]).{0,40}(?:alert|constructor)"
+    - field: query
+      regex: "(?:\\+\\{\\}\\+\\[\\]|!\\[\\]\\+\\[\\]|\\!\\!\\[\\]).{0,80}"
+    - field: body
+      regex: "(?:\\+\\{\\}\\+\\[\\]|!\\[\\]\\+\\[\\]|\\!\\!\\[\\]).{0,80}"

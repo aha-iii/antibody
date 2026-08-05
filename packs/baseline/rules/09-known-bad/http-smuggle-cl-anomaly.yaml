@@ -1,0 +1,22 @@
+id: http-smuggle-cl-anomaly
+name: Content-Length / TE naming anomalies
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [protocol, smuggle, self]
+transforms: [lowercase]
+when:
+  any:
+    - field: header
+      regex: "(?i)content-length\\s*:\\s*0*\\d{10,}"
+    - field: header
+      regex: "(?i)content-length\\s*:\\s*\\d+\\s+$"
+    - field: header
+      regex: "(?i)transfer[_ ]encoding\\s*:"
+    - field: header
+      regex: "(?i)content-length\\s*:\\s*0\\d+"
+    - field: uri
+      regex: "(?i)^@|/@|https?://[^/]*@"
+    - field: uri
+      contains: '@evil.'

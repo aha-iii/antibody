@@ -1,0 +1,28 @@
+id: bad-thinkphp-rce
+name: 'ThinkPHP RCE markers'
+severity: high
+tags: [known_bad, cve]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'invokefunction'
+    - field: uri
+      contains: 'call_user_func_array'
+    - field: uri
+      contains: '/index.php?s='
+    - field: query
+      contains: 'invokefunction'
+    - field: query
+      contains: 'call_user_func_array'
+    - field: query
+      contains: '/index.php?s='
+    - field: body
+      contains: 'invokefunction'
+    - field: body
+      contains: 'call_user_func_array'
+    - field: body
+      contains: '/index.php?s='

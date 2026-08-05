@@ -1,0 +1,28 @@
+id: cache-deception-ext
+name: Web cache deception sensitive path with static extension
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [cache, self, wt]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)/api/(?:user|users|account|profile|admin)[^?]*/[^/]+\\.(?:js|css|png|jpg|gif|ico|svg|woff2?)(?:$|\\?)"
+    - field: uri
+      regex: "(?i)/api/[^?;#]+[?;].*\\.(?:js|css|png|woff2?)"
+    - field: uri
+      regex: "(?i)/api/[^#]+#+\\.(?:js|css)"
+    - field: uri
+      regex: "(?i)//api/(?:user|users|profile|admin|data)/"
+    - field: uri
+      regex: "(?i)/api/user/profile/\\.\\./"
+    - field: uri
+      regex: "(?i)/api/user/profile/\\.\\./[^/]+\\.(?:js|css)"
+    - field: uri
+      contains: '/api/user/profile/%00'
+    - field: uri
+      regex: "(?i)/api/user/profile/[^/]*\\.(?:css|woff)(?:$|\\?)"
+    - field: uri
+      regex: "(?i)/api/user/profile/[^/]*;\\.(?:woff|css|js)"

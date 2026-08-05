@@ -1,0 +1,29 @@
+id: xss-unicode-js-escape
+name: Unicode-escaped JS XSS (alert/onclick/onmouse)
+severity: high
+score: 40
+action: block
+min_level: high
+tags: [xss, evasion, self]
+transforms: []
+when:
+  any:
+    # \u0061\u006c\u0065\u0072\u0074 = alert
+    - field: body
+      contains: '\u0061\u006c\u0065\u0072\u0074'
+    - field: query
+      contains: '\u0061\u006c\u0065\u0072\u0074'
+    # \u006f\u006e\u0063\u006c\u0069\u0063\u006b = onclick
+    - field: body
+      contains: '\u006f\u006e\u0063\u006c\u0069\u0063\u006b'
+    - field: body
+      contains: '\u006f\u006e\u006d\u006f\u0075\u0073\u0065'
+    # base64 of \u0061\u006c... fragments common in blaze evasions
+    - field: body
+      contains: 'XHUwMDYxXHUwMDZjXHUwMDY1XHUwMDcyXHUwMDc0'
+    - field: body
+      contains: 'XHUwMDZmXHUwMDZlXHUwMDZjXHUwMDZjXHUwMDZj'
+    - field: body
+      regex: "(?i)onmouseenter\\s*="
+    - field: body
+      regex: "(?i)onclick\\s*="

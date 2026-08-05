@@ -1,0 +1,22 @@
+id: lfi-git-config
+name: 'LFI .git/config'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '.git/config'
+    - field: uri
+      contains: '/.git/'
+    - field: query
+      contains: '.git/config'
+    - field: query
+      contains: '/.git/'
+    - field: body
+      contains: '.git/config'
+    - field: body
+      contains: '/.git/'

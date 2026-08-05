@@ -1,0 +1,28 @@
+id: xss-js-hex-alert
+name: 'XSS JS hex/unicode escaped sinks'
+severity: high
+tags: [xss, evasion, blazehttp_gap, fp_reviewed]
+score: 40
+min_level: medium
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\\\x61\\\\x6c\\\\x65\\\\x72\\\\x74|\\\\x65\\\\x76\\\\x61\\\\x6c|\\\\x70\\\\x72\\\\x6f\\\\x6d\\\\x70\\\\x74|\\\\x63\\\\x6f\\\\x6e\\\\x66\\\\x69\\\\x72\\\\x6d"
+    - field: query
+      regex: "(?i)\\\\x61\\\\x6c\\\\x65\\\\x72\\\\x74|\\\\x65\\\\x76\\\\x61\\\\x6c|\\\\x70\\\\x72\\\\x6f\\\\x6d\\\\x70\\\\x74|\\\\x63\\\\x6f\\\\x6e\\\\x66\\\\x69\\\\x72\\\\x6d"
+    - field: body
+      regex: "(?i)\\\\x61\\\\x6c\\\\x65\\\\x72\\\\x74|\\\\x65\\\\x76\\\\x61\\\\x6c|\\\\x70\\\\x72\\\\x6f\\\\x6d\\\\x70\\\\x74|\\\\x63\\\\x6f\\\\x6e\\\\x66\\\\x69\\\\x72\\\\x6d"
+    - field: uri
+      regex: "(?i)\\\\u0{0,2}61\\\\u0{0,2}6c\\\\u0{0,2}65\\\\u0{0,2}72\\\\u0{0,2}74"
+    - field: query
+      regex: "(?i)\\\\u0{0,2}61\\\\u0{0,2}6c\\\\u0{0,2}65\\\\u0{0,2}72\\\\u0{0,2}74"
+    - field: body
+      regex: "(?i)\\\\u0{0,2}61\\\\u0{0,2}6c\\\\u0{0,2}65\\\\u0{0,2}72\\\\u0{0,2}74"
+    - field: uri
+      regex: "(?i)\\\\141\\\\154\\\\145\\\\162\\\\164|\\\\145\\\\166\\\\141\\\\154"
+    - field: query
+      regex: "(?i)\\\\141\\\\154\\\\145\\\\162\\\\164|\\\\145\\\\166\\\\141\\\\154"
+    - field: body
+      regex: "(?i)\\\\141\\\\154\\\\145\\\\162\\\\164|\\\\145\\\\166\\\\141\\\\154"

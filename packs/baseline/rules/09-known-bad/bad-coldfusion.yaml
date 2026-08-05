@@ -1,0 +1,12 @@
+id: bad-coldfusion
+name: 'ColdFusion probe'
+severity: high
+tags: [known_bad, cve]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/cfide/'

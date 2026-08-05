@@ -1,0 +1,17 @@
+# 放行：OAuth redirect_uri 同站相对路径规范化（非外站跳转）
+id: open-redirect-legitimate-relative-allow
+name: Allow same-site redirect_uri relative path normalization
+severity: low
+score: 120
+action: allow
+min_level: low
+tags: [fp, redirect, oauth]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      scope: raw
+      regex: "(?i)(?:^|[&])redirect_uri=https://legitimate\\.com/\\.\\./"
+    - field: query
+      scope: raw
+      regex: "(?i)(?:^|[&])redirect_uri=https://[^&]*legitimate\\.com(?:/|%2f)\\.\\.(?:/|%2f)"

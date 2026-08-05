@@ -1,0 +1,28 @@
+id: rce-invoke-expression
+name: 'RCE IEX downloadstring'
+severity: high
+tags: [rce, cmdi, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: 'invoke-expression'
+    - field: uri
+      contains: 'iex('
+    - field: uri
+      contains: 'downloadstring'
+    - field: query
+      contains: 'invoke-expression'
+    - field: query
+      contains: 'iex('
+    - field: query
+      contains: 'downloadstring'
+    - field: body
+      contains: 'invoke-expression'
+    - field: body
+      contains: 'iex('
+    - field: body
+      contains: 'downloadstring'

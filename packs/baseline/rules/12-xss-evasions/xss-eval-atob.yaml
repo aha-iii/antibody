@@ -1,0 +1,28 @@
+id: xss-eval-atob
+name: 'XSS eval/Function(atob(...))'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)(?:eval|function|settimeout|setinterval)\\s*\\(\\s*atob\\s*\\("
+    - field: query
+      regex: "(?i)(?:eval|function|settimeout|setinterval)\\s*\\(\\s*atob\\s*\\("
+    - field: body
+      regex: "(?i)(?:eval|function|settimeout|setinterval)\\s*\\(\\s*atob\\s*\\("
+    - field: uri
+      contains: 'phnjcmlwd'
+    - field: query
+      contains: 'phnjcmlwd'
+    - field: body
+      contains: 'phnjcmlwd'
+    - field: uri
+      contains: 'ywxlenqo'
+    - field: query
+      contains: 'ywxlenqo'
+    - field: body
+      contains: 'ywxlenqo'

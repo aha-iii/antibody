@@ -1,0 +1,17 @@
+id: proto-crlf-header-inject
+name: CRLF header injection markers
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [proto, crlf, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    # 编码 CRLF 对 + 注入目标头；仅 query/uri（body 易误伤 JSON/表单白样本）
+    - field: query
+      regex: "(?i)(?:%0d%0a|%0a%0d|%u000d%u000a|%e5%98%8a%e5%98%8d|[\\r\\n\\x{560a}\\x{560d}]).{0,40}(?:set-cookie\\s*:|location\\s*:|content-length\\s*:|bcc\\s*:|x-[\\w-]{1,40}\\s*:|http/1\\.)"
+    - field: uri
+      regex: "(?i)(?:%0d%0a|%0a%0d|%u000d%u000a|%e5%98%8a%e5%98%8d|[\\r\\n\\x{560a}\\x{560d}]).{0,40}(?:set-cookie\\s*:|location\\s*:)"
+    - field: query
+      regex: "(?i)%0d%0a(?:set-cookie|location|content-length)\\s*:"

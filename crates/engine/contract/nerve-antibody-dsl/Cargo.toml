@@ -1,0 +1,12 @@
+[package]
+name = "nerve-antibody-dsl"
+version.workspace = true
+edition.workspace = true
+description = "Native protection rule DSL"
+
+[dependencies]
+nerve-waf-canonical = { path = "../../../../../Nerve-defender/crates/engine/nerve-waf-canonical" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+thiserror = { workspace = true }

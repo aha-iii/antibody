@@ -1,0 +1,47 @@
+# CRLF 注入：单头字段值内的 CRLF（按 header_name 扫描，不扫整段 header 块）
+id: proto-crlf-injectable-header-value
+name: CRLF injection inside injectable header values
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [proto, crlf, header, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: header
+      header_name: x-forwarded-for
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|cookie\\s*:|bcc\\s*:|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: referer
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|cookie\\s*:|bcc\\s*:|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: cookie
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: user-agent
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: authorization
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: host
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: x-forwarded-host
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: x-forwarded-scheme
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|javascript:|cookie\\s*:|bcc\\s*:|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: origin
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|cookie\\s*:|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: x-api-key
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|cookie\\s*:|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: x-cache-key
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|cookie\\s*:|x-[\\w-]+\\s*:)\\s*"
+    - field: header
+      header_name: x-custom
+      regex: "(?i)(?:%0d%0a|\\r\\n).{0,96}(?:set-cookie|location|content-type|transfer-encoding|access-control|cookie\\s*:|x-[\\w-]+\\s*:)\\s*"

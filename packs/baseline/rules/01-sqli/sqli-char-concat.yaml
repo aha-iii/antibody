@@ -1,0 +1,22 @@
+id: sqli-char-concat
+name: 'SQL CHAR/CONCAT abuse'
+severity: high
+tags: [sqli, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bconcat\\s*\\(.*\\bselect\\b"
+    - field: uri
+      regex: "(?i)\\bchar\\s*\\(\\s*\\d+"
+    - field: query
+      regex: "(?i)\\bconcat\\s*\\(.*\\bselect\\b"
+    - field: query
+      regex: "(?i)\\bchar\\s*\\(\\s*\\d+"
+    - field: body
+      regex: "(?i)\\bconcat\\s*\\(.*\\bselect\\b"
+    - field: body
+      regex: "(?i)\\bchar\\s*\\(\\s*\\d+"

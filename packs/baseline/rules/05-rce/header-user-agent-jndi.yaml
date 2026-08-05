@@ -1,0 +1,16 @@
+id: header-user-agent-jndi
+name: User-Agent Log4j/JNDI
+severity: critical
+score: 50
+action: block
+min_level: low
+tags: [rce, log4j, header]
+transforms: [lowercase]
+when:
+  any:
+    - field: header
+      header_name: User-Agent
+      contains: "${jndi:"
+    - field: header
+      header_name: User-Agent
+      contains: "${lower:${"

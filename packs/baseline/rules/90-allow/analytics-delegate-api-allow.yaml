@@ -1,0 +1,25 @@
+# 放行：云 API delegate/describe 类 POST（query 含 and/数字，非 SQLi）
+id: analytics-delegate-api-allow
+name: Allow cloud analytics delegate API queries
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, sqli, api]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: method
+          regex: "(?i)^post$"
+        - field: uri
+          regex: "(?i)(?:^|/)(?:capi|cgi/capi|gateway|delegate|describe[a-z]*)(?:/|$|\\?)"
+        - field: query
+          regex: "(?i)(?:^|[&])action=delegate"
+    - all:
+        - field: method
+          regex: "(?i)^post$"
+        - field: uri
+          contains: '/capi'
+        - field: query
+          regex: "(?i)cmd=describe"

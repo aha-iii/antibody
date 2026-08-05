@@ -1,0 +1,14 @@
+# 放行：Prompt 注入 delimiter 白样本（存储型文本，非协议走私）
+id: prompt-injection-delimiter-allow
+name: Allow prompt injection delimiter white samples
+severity: low
+score: 120
+action: allow
+min_level: low
+tags: [fp, ai, prompt]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      scope: raw
+      regex: "(?i)^q=---end user input---"

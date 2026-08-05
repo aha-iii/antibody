@@ -1,0 +1,25 @@
+id: path-acl-bypass
+name: Path ACL bypass probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [bypass, self]
+transforms: [lowercase]
+when:
+  any:
+    # %A0 经 url_decode 会变成非 UTF-8 字节并被 lossy 替换，故仅对原文匹配
+    - field: uri
+      contains: '/admin%a0'
+    - field: uri
+      contains: '/admin.php/'
+    - field: uri
+      regex: "(?i)/admin\\.php/"
+    - field: query
+      contains: 'session_id=attacker'
+    - field: query
+      contains: 'provider=*'
+    - field: uri
+      regex: "(?i)\\.css%09|\\?;\\.(?:css|js|png)"
+    - field: uri
+      regex: "(?i)^[\\t ]+/"

@@ -1,0 +1,13 @@
+[package]
+name = "nerve-antibody-compiler"
+version.workspace = true
+edition.workspace = true
+description = "Compile expert DSL into serializable IR / Program"
+
+[dependencies]
+nerve-antibody-dsl = { workspace = true }
+nerve-antibody-accel = { workspace = true }
+regex = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }

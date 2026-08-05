@@ -1,0 +1,41 @@
+# 放行：回归白样本常见 REST API 路径（分页/搜索/指标，非 IDOR 枚举）
+id: legit-api-regression-allow
+name: Allow legitimate REST API regression paths
+severity: low
+score: 120
+action: allow
+min_level: low
+tags: [fp, api, regression]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)^/api/users(?:/|$|\\?)"
+        - field: query
+          scope: raw
+          regex: "(?i)(?:^|[&])(?:page|limit|sort|filter)="
+    - all:
+        - field: uri
+          regex: "(?i)^/api/files(?:/|$|\\?)"
+        - field: query
+          scope: raw
+          regex: "(?i)(?:^|[&])path="
+    - all:
+        - field: uri
+          regex: "(?i)^/api/metrics(?:/|$|\\?)"
+    - all:
+        - field: uri
+          regex: "(?i)^/api/code(?:/|$|\\?)"
+        - field: method
+          regex: "(?i)^post$"
+    - field: uri
+      regex: "(?i)^/wp-admin/?$"
+    - all:
+        - field: method
+          regex: "(?i)^get$"
+        - field: uri
+          regex: "(?i)^/api/data/?$"
+        - field: header
+          header_name: Cache-Coetrol
+          regex: ".+"

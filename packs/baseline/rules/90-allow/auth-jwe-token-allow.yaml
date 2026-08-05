@@ -1,0 +1,28 @@
+# 放行：JWE 令牌白样本（base64 header 含 enc/A128KW/dir 标记）
+
+id: auth-jwe-token-allow
+
+name: Allow JWE access_token query samples
+
+severity: low
+
+score: 200
+
+action: allow
+
+min_level: low
+
+tags: [fp, auth, jwt]
+
+transforms: [url_decode_uni, lowercase]
+
+when:
+
+  any:
+
+    - field: query
+
+      scope: raw
+
+      regex: "(?i)access_token=eyj[^&]*(?:jbmtigk1wci|jbmtigk1ci|jbmtiyw|hbgcioijka|hbgcijka|a128kw|a128cbc|a256gcm|a256kw|qudjijw|lbwmci6|a256cbc-hs256)[^&]*"
+

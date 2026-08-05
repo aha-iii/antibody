@@ -1,0 +1,34 @@
+id: sqli-sleep
+name: 'SQL time-based sleep'
+severity: high
+tags: [sqli, owasp]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      regex: "(?i)\\bsleep\\s*\\("
+    - field: uri
+      regex: "(?i)\\bbenchmark\\s*\\("
+    - field: uri
+      regex: "(?i)waitfor\\s+delay"
+    - field: uri
+      regex: "(?i)\\bpg_sleep\\s*\\("
+    - field: query
+      regex: "(?i)\\bsleep\\s*\\("
+    - field: query
+      regex: "(?i)\\bbenchmark\\s*\\("
+    - field: query
+      regex: "(?i)waitfor\\s+delay"
+    - field: query
+      regex: "(?i)\\bpg_sleep\\s*\\("
+    - field: body
+      regex: "(?i)\\bsleep\\s*\\("
+    - field: body
+      regex: "(?i)\\bbenchmark\\s*\\("
+    - field: body
+      regex: "(?i)waitfor\\s+delay"
+    - field: body
+      regex: "(?i)\\bpg_sleep\\s*\\("

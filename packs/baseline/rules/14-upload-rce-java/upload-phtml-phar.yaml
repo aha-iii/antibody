@@ -1,0 +1,16 @@
+id: upload-phtml-phar
+name: 'Upload phtml/phar shell filename'
+severity: high
+tags: [upload, webshell, blazehttp_gap]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: body
+      regex: "(?i)filename\\s*=\\s*[\"']?[^\"';\\r\\n]*\\.(?:phtml|phar|asp|aspx|jsp|jspx)\\b"
+    - field: header
+      regex: "(?i)filename\\s*=\\s*[\"']?[^\"';\\r\\n]*\\.(?:phtml|phar|asp|aspx|jsp|jspx)\\b"
+    - field: uri
+      regex: "(?i)/upload[^?]+\\.(?:phtml|phar)\\b"

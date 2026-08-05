@@ -1,0 +1,28 @@
+id: lfi-proc-self
+name: 'LFI proc self'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '/proc/self/'
+    - field: uri
+      contains: '/proc/self/environ'
+    - field: uri
+      contains: '/proc/version'
+    - field: query
+      contains: '/proc/self/'
+    - field: query
+      contains: '/proc/self/environ'
+    - field: query
+      contains: '/proc/version'
+    - field: body
+      contains: '/proc/self/'
+    - field: body
+      contains: '/proc/self/environ'
+    - field: body
+      contains: '/proc/version'

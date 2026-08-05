@@ -1,0 +1,11 @@
+/target/
+Cargo.lock
+**/*.rs.bk
+.idea/
+.vscode/
+.crs-json-tmp/
+/scripts/
+**/node_modules/
+/dist/
+.env
+**/*.local.env

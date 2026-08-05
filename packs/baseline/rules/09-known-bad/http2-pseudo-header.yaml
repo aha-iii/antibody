@@ -1,0 +1,28 @@
+id: http2-pseudo-header
+name: HTTP/2 pseudo-header abuse markers
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [protocol, http2, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: header
+      header_name: ':method'
+      regex: ".+"
+    - field: header
+      header_name: ':path'
+      regex: ".+"
+    - field: header
+      header_name: ':authority'
+      regex: ".+"
+    - field: header
+      header_name: ':scheme'
+      regex: ".+"
+    - field: query
+      regex: "(?i):method\\b|:path\\b|:authority\\b|:scheme\\b"
+    - field: query
+      regex: "(?i)pri\\s+\\*\\s+http/2"
+    - field: body
+      regex: "(?i)pri\\s+\\*\\s+http/2"

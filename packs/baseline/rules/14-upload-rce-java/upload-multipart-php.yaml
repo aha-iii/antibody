@@ -1,0 +1,16 @@
+id: upload-multipart-php
+name: Multipart upload PHP/webshell filename
+severity: high
+score: 45
+action: block
+min_level: low
+tags: [upload, webshell, blazehttp_gap]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: body
+      regex: "(?i)filename\\s*=\\s*\"[^\"]+\\.(?:php\\d?|phtml|phar|jsp|asp|aspx|exe|sh)\""
+    - field: body
+      regex: "(?i)filename\\s*=\\s*[^;\\r\\n]+\\.(?:php\\d?|phtml|phar|jsp)"
+    - field: body
+      regex: "(?i)content-disposition:[^\\n]+filename=[^\\n]+\\.(?:php\\d?|phtml|phar)"

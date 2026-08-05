@@ -1,0 +1,22 @@
+id: ssti-erb
+name: 'SSTI ERB'
+severity: high
+tags: [xxe, ssti, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '<%='
+    - field: uri
+      contains: '<% '
+    - field: query
+      contains: '<%='
+    - field: query
+      contains: '<% '
+    - field: body
+      contains: '<%='
+    - field: body
+      contains: '<% '

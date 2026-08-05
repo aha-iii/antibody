@@ -1,0 +1,28 @@
+id: lfi-null-byte
+name: 'LFI null byte truncation'
+severity: high
+tags: [lfi, path, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '%00.'
+    - field: uri
+      contains: '%00.jpg'
+    - field: uri
+      contains: '.php%00'
+    - field: query
+      contains: '%00.'
+    - field: query
+      contains: '%00.jpg'
+    - field: query
+      contains: '.php%00'
+    - field: body
+      contains: '%00.'
+    - field: body
+      contains: '%00.jpg'
+    - field: body
+      contains: '.php%00'

@@ -1,0 +1,16 @@
+id: admin-env-leak-path
+name: 'Admin / env leak path'
+severity: medium
+tags: [recon, admin, fp_reviewed]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)/(?:\\.env|env\\.bak|phpinfo\\.php|server-status|server-info)(?:$|\\?)"
+    - field: uri
+      regex: "(?i)/(?:actuator/env|admin/config\\.(?:php|yml)|wp-config\\.php)(?:$|\\?)"
+    - field: uri
+      contains: '/.git/config'

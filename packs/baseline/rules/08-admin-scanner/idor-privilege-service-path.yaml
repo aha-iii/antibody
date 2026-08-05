@@ -1,0 +1,59 @@
+id: idor-privilege-service-path
+name: IDOR, privilege escalation, and service path probes
+severity: high
+score: 40
+action: block
+min_level: low
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: header
+      regex: "(?i)(?:x-account-id|x-tenant-id|x-user-id|x-org-id)\\s*:"
+    - field: uri
+      regex: "(?i)/api/(?:documents|invoices)\\?(?:ref=|)|/api/invoices/inv-|/api/documents\\?ref="
+    - field: uri
+      contains: '/api/execute-workflow'
+    - field: uri
+      contains: '/api/webhooks/admin'
+    - field: uri
+      contains: '/rest/credentials'
+    - field: uri
+      contains: '/rest/executions'
+    - field: uri
+      contains: '/webhook/ai-chat'
+    - field: uri
+      contains: '/api/face'
+    - field: uri
+      contains: '/api/people/reassign'
+    - field: uri
+      contains: '/api/transfer'
+    - field: uri
+      contains: '/api/deserialize'
+    - field: uri
+      contains: '/api\\admin'
+    - field: uri
+      contains: '/api/user/profile?;'
+    - field: uri
+      regex: "(?i)/api/users/me"
+    - field: uri
+      contains: '/rest/login'
+    - field: body
+      contains: 'function node'
+    - field: body
+      contains: '"type":"function"'
+    - field: body
+      contains: 'functionnode'
+    - field: query
+      contains: '%3finjected='
+    - field: uri
+      contains: '%3finjected='
+    - field: body
+      contains: 'isadmin'
+    - field: body
+      contains: 'administrators'
+    - field: body
+      contains: '__proto__'
+    - field: body
+      contains: 'chatml'
+    - field: body
+      contains: '<|im_start|>'

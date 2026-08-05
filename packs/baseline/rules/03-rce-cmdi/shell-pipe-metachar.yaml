@@ -1,0 +1,20 @@
+# Shell 元字符：管道 / OR（评测 FUZZ-META-* / RCE 探测）
+id: shell-pipe-metachar
+name: Shell pipe and OR metacharacter probes
+severity: medium
+score: 40
+action: block
+min_level: low
+tags: [rce, shell, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      scope: raw
+      regex: "(?i)(?:^|[&])q=%7c(?:%7c|%20|%09|$|[&])"
+    - field: query
+      scope: raw
+      regex: "(?i)(?:^|[&])q=\\|(?:\\||\\s|$|[&])"
+    - field: query
+      scope: raw
+      regex: "(?i)(?:^|[&])q=%25d(?:%25d){4,}"

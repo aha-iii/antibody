@@ -1,0 +1,18 @@
+id: rce-ansic-escape
+name: ANSI-C / variable-splice command execution
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [rce, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)\\$'(?:\\\\x[0-9a-f]{2}){2,}"
+    - field: body
+      regex: "(?i)\\$'(?:\\\\x[0-9a-f]{2}){2,}"
+    - field: query
+      regex: "(?i);\\s*\\w\\]\\w;\\w\\]\\w\\[;\\$"
+    - field: query
+      regex: "(?i)url\\[\\]=https?://"

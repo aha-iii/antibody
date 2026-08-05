@@ -1,0 +1,22 @@
+id: java-struts-redirect-ognl
+name: 'Struts redirect/OGNL markers'
+severity: high
+tags: [java, cve, blazehttp_gap]
+score: 45
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '/index.action'
+    - field: uri
+      contains: 'redirect:'
+    - field: query
+      contains: 'redirect:'
+    - field: uri
+      contains: 'ognl'
+    - field: query
+      contains: '${#'
+    - field: body
+      contains: '${#'

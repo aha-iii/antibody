@@ -1,0 +1,22 @@
+id: ssti-spel
+name: 'SSTI Spring EL'
+severity: high
+tags: [xxe, ssti, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '${t('
+    - field: uri
+      contains: 't(java.lang.Runtime)'
+    - field: query
+      contains: '${t('
+    - field: query
+      contains: 't(java.lang.Runtime)'
+    - field: body
+      contains: '${t('
+    - field: body
+      contains: 't(java.lang.Runtime)'

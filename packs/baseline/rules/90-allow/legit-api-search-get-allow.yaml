@@ -1,0 +1,17 @@
+# 放行：合法 API 搜索 GET（URL 编码空格等；非 SQLi/XSS/协议探测）
+id: legit-api-search-get-allow
+name: Allow legitimate GET API search queries
+severity: low
+score: 200
+action: allow
+min_level: low
+tags: [fp, api, search]
+transforms: [url_decode_uni, lowercase]
+when:
+  all:
+    - field: method
+      regex: "(?i)^get$"
+    - field: uri
+      regex: "(?i)^/api/search/?$"
+    - field: query
+      regex: "(?i)^q=(?:[a-z0-9]|%[0-9a-f]{2}|\\+|%20|_|\\.|-|\\s)+$"

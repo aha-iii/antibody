@@ -1,0 +1,16 @@
+id: allow-captcha-onload-callback
+name: 'Allow captcha/recaptcha onload callback'
+severity: low
+tags: [allow, fp_reviewed]
+score: 40
+min_level: low
+action: allow
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)/(?:recaptcha|turnstile)/.*[?&]onload="
+    - field: query
+      regex: "(?i)onload=(?:_cf_chl|captcha|onloadcallback|grecaptcha)"
+    - field: uri
+      regex: "(?i)[?&]onload=(?:_cf_chl|captcha|onloadcallback)"

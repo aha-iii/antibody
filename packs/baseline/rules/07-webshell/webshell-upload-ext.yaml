@@ -1,0 +1,40 @@
+id: webshell-upload-ext
+name: 'Webshell double extension'
+severity: high
+tags: [webshell, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase, html_entity_decode]
+when:
+  any:
+    - field: uri
+      contains: '.php.jpg'
+    - field: uri
+      contains: '.php.png'
+    - field: uri
+      contains: '.php.gif'
+    - field: uri
+      contains: '.asp;.jpg'
+    - field: uri
+      contains: '.aspx;.jpg'
+    - field: query
+      contains: '.php.jpg'
+    - field: query
+      contains: '.php.png'
+    - field: query
+      contains: '.php.gif'
+    - field: query
+      contains: '.asp;.jpg'
+    - field: query
+      contains: '.aspx;.jpg'
+    - field: body
+      contains: '.php.jpg'
+    - field: body
+      contains: '.php.png'
+    - field: body
+      contains: '.php.gif'
+    - field: body
+      contains: '.asp;.jpg'
+    - field: body
+      contains: '.aspx;.jpg'

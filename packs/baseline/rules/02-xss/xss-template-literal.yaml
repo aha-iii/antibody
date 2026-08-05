@@ -1,0 +1,28 @@
+id: xss-template-literal
+name: 'XSS template injection marker'
+severity: high
+tags: [xss, owasp]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_numeric_decode, html_entity_decode, js_unescape, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '${alert'
+    - field: uri
+      contains: '${prompt'
+    - field: uri
+      contains: '${confirm'
+    - field: query
+      contains: '${alert'
+    - field: query
+      contains: '${prompt'
+    - field: query
+      contains: '${confirm'
+    - field: body
+      contains: '${alert'
+    - field: body
+      contains: '${prompt'
+    - field: body
+      contains: '${confirm'

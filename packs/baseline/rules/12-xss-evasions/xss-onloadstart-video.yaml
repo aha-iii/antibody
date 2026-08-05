@@ -1,0 +1,22 @@
+id: xss-onloadstart-video
+name: 'XSS video onloadstart / autofocus'
+severity: high
+tags: [xss, evasion, blazehttp_gap]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, html_entity_decode, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)on(?:loadstart|animationend|animationstart|toggle)\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window|location)"
+    - field: query
+      regex: "(?i)on(?:loadstart|animationend|animationstart|toggle)\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window|location)"
+    - field: body
+      regex: "(?i)on(?:loadstart|animationend|animationstart|toggle)\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval|document|window|location)"
+    - field: uri
+      regex: "(?i)autofocus.{0,120}?onfocus\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval)"
+    - field: query
+      regex: "(?i)autofocus.{0,120}?onfocus\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval)"
+    - field: body
+      regex: "(?i)autofocus.{0,120}?onfocus\\s*=\\s*[\"']?(?:alert|prompt|confirm|eval)"

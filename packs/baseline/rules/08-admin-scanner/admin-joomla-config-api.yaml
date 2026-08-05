@@ -1,0 +1,14 @@
+id: admin-joomla-config-api
+name: 'Joomla config application API probe'
+severity: medium
+tags: [admin, scanner, joomla]
+score: 40
+min_level: low
+action: block
+transforms: [url_decode, lowercase]
+when:
+  any:
+    - field: uri
+      contains: '/api/index.php/v1/config/application'
+    - field: uri
+      contains: '/api/index.php/v1/config'

@@ -1,0 +1,34 @@
+id: cache-poison-unkeyed-header
+name: Cache poisoning via unkeyed request headers
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [cache, header]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: header
+      header_name: X-Forwarded-Proto
+      regex: "(?i)(?:javascript:|<script|onerror\\s*=|onload\\s*=)"
+    - field: header
+      header_name: X-Forwarded-Scheme
+      regex: "(?i)(?:javascript:|<script|onerror\\s*=|onload\\s*=)"
+    - field: header
+      header_name: Accept-Language
+      regex: "(?i)(?:<script|javascript:|onerror\\s*=|onload\\s*=|<svg)"
+    - field: header
+      header_name: Translate
+      regex: "(?i)(?:<script|javascript:|onerror\\s*=|onload\\s*=|<svg)"
+    - field: header
+      header_name: X-Forwarded-Port
+      regex: "(?i)(?:<script|javascript:|onerror\\s*=|onload\\s*=|<svg)"
+    - field: header
+      regex: "(?i)^host\\s*:\\s*[^\\r\\n]+\\r?\\nhost\\s*:"
+    - field: header
+      header_name: Accept-Encoding
+      regex: "(?i)(?:<script|javascript:|onerror\\s*=|onload\\s*=|<svg)"
+    - field: uri
+      contains: '/api/user/profile?;'
+    - field: query
+      contains: '%3finjected='

@@ -1,0 +1,26 @@
+id: idor-numeric-api
+name: Numeric IDOR / object enumeration API paths
+severity: medium
+score: 35
+action: block
+min_level: high
+tags: [idor, recon, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?(?:users|orders|invoices|accounts|customers|documents|messages|photos|albums|executions|assets|credentials|sharing|organizations|tenants|shops|files)/\\d+(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?(?:users|orders|messages|photos|albums|executions|assets|credentials)/[0-9a-f-]{8,}(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?users/(?:admin|root|test|-?\\d+)(?:/|$|\\?|,)"
+    - field: uri
+      regex: "(?i)^/api/(?:v\\d+/)?users/?$"
+    - field: uri
+      regex: "(?i)/api/(?:v\\d+/)?(?:organizations|tenants|shops)/[^/]+/(?:members|data|products)(?:/|$|\\?)"
+    - field: uri
+      regex: "(?i)/api/files/private/"
+    - field: uri
+      regex: "(?i)/api/(?:assets|sharing/links|credentials)/\\d+"
+    - field: body
+      regex: "(?i)[\"'](?:user_id|userid|account_id|org_id)[\"']\\s*:\\s*\\d+"

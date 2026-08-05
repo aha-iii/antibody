@@ -1,0 +1,13 @@
+id: proto-crlf-uri
+name: 'CRLF injection in URI path'
+severity: medium
+tags: [proto, crlf, owasp]
+score: 40
+min_level: low
+action: block
+transforms: []
+when:
+  any:
+    # 仅路径内 CRLF（/admin/%0dtest），禁止匹配普通 query 里的 %0a
+    - field: uri
+      regex: "(?i)/%0d|/%0a|%0d%0a"
