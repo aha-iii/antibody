@@ -1,0 +1,59 @@
+- id: sample-php-auto-prepend
+  rule_id: php-auto-prepend
+  name: PHP auto_prepend_file
+  category: 10-php-java
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - php
+  - java
+  - app
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=auto_prepend_file
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-php-auto-prepend-alt
+  rule_id: php-auto-prepend
+  name: PHP auto_prepend_file (alt)
+  category: 10-php-java
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=auto_prepend_file
+- id: sample-php-auto-prepend-gen-pass
+  rule_id: php-auto-prepend
+  name: PHP auto_prepend_file (neg)
+  category: 10-php-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - php
+  - java
+  - app
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

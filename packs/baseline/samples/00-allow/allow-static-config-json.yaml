@@ -1,0 +1,57 @@
+- id: sample-allow-static-config-json-matched-allow
+  rule_id: allow-static-config-json
+  name: Allow static widget config.json (allow+)
+  category: 00-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - allow
+  - fp_reviewed
+  request:
+    method: GET
+    host: example.com
+    uri: /pkgs/ /config.json
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-allow-static-config-json-matched-allow
+  rule_id: allow-static-config-json
+  name: Allow static widget config.json (allow+)
+  category: 00-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - allow
+  - fp_reviewed
+  request:
+    method: GET
+    host: example.com
+    uri: /pkgs/
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-allow-static-config-json-gen-pass
+  rule_id: allow-static-config-json
+  name: Allow static widget config.json (neg)
+  category: 00-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - allow
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -10,11 +10,23 @@ when:
   any:
     - field: body
       contains: '__proto__'
+    # query 键形态（含嵌套 q=?a[__proto__]…）；勿拦 n8n {{$json.__proto__.x}}
     - field: query
-      contains: '__proto__'
+      contains: '[__proto__]'
+    - field: query
+      contains: '__proto__['
+    - field: query
+      contains: '__proto__%5b'
+    - field: query
+      contains: '%5b__proto__%5d'
+    - field: query
+      contains: '%22__proto__%22'
     - field: body
       contains: 'constructor.prototype'
     - field: query
       contains: 'constructor.prototype'
     - field: body
       regex: "(?i)\"constructor\"\\s*:\\s*\\{\\s*\"prototype\""
+    # a[constructor][prototype] 或 constructor][prototype
+    - field: query
+      regex: "(?i)constructor(?:%5d|\\])?(?:%5b|\\[)prototype"

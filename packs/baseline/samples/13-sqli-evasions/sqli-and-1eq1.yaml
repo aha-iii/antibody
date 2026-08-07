@@ -1,0 +1,41 @@
+- id: sample-sqli-and-1eq1-gen-block
+  rule_id: sqli-and-1eq1
+  name: SQL AND 1=1 (pos)
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - blazehttp_gap
+  - fp_reviewed
+  request:
+    method: GET
+    host: example.com
+    uri: "/'and\t1=1"
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-and-1eq1-gen-pass
+  rule_id: sqli-and-1eq1
+  name: SQL AND 1=1 (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - blazehttp_gap
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

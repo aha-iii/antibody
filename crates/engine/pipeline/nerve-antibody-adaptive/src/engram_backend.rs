@@ -4,7 +4,7 @@
 //! POST `{ "features": { ... } }` → `{ "score": 0-100, "contributed": bool, "label": "..." }`
 
 use crate::scorer::{AdaptiveInput, AdaptiveOutput};
-use crate::{is_suspicious, score_cap, RiskModel};
+use crate::{effective_score_cap, is_suspicious, RiskModel};
 use nerve_antibody_dsl::NativeLevel;
 use serde::Deserialize;
 use std::time::Duration;
@@ -98,7 +98,7 @@ impl RiskModel for EngramBackeed {
                 };
             }
         };
-        let cap = score_cap(input.level);
+        let cap = effective_score_cap(input);
         let raw = parsed.score.clamp(0.0, 100.0) as u32;
         let model_score = raw.min(cap);
         let p = (model_score as f32 / cap.max(1) as f32).clamp(0.0, 1.0);

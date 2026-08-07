@@ -7,6 +7,8 @@
 
 mod bench;
 mod datasets;
+mod ris_calibrate;
+mod vp;
 
 use axum::extract::{Query, State};
 use axum::http::StatusCode;
@@ -30,12 +32,14 @@ use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
 use tracing::{info, warn};
 
-struct AppState {
-    engine: Arc<Engine>,
-    packs_root: PathBuf,
+pub(crate) struct AppState {
+    pub(crate) engine: Arc<Engine>,
+    pub(crate) packs_root: PathBuf,
     /// 当前包目录名（相对 packs_root），如 `demo`。
-    current_pack: RwLock<String>,
-    bench: Arc<BenchRuntime>,
+    pub(crate) current_pack: RwLock<String>,
+    pub(crate) bench: Arc<BenchRuntime>,
+    /// 最近一次 RIS 校准曲线。
+    pub(crate) last_ris_curve: RwLock<Option<nerve_antibody_runtime::RisCalibrateReport>>,
 }
 
 #[tokio::main]
@@ -110,6 +114,7 @@ async fn main() {
         packs_root,
         current_pack: RwLock::new(default_pack),
         bench,
+        last_ris_curve: RwLock::new(None),
     });
 
     let ui_dist = resolve_ui_dist();
@@ -125,12 +130,24 @@ async fn main() {
         .route("/api/bench/stop", post(api_bench_stop))
         .route("/api/bench/results", get(api_bench_results))
         .route("/api/bench/report", get(api_bench_report))
+        .route("/api/ris/calibrate", post(ris_calibrate::api_ris_calibrate))
+        .route("/api/ris/curve", get(ris_calibrate::api_ris_curve_get))
         .route("/metrics", get(api_metrics_prometheus))
         .route("/api/metrics", get(api_metrics_json))
         .route("/api/shadow/recent", get(api_shadow_recent))
         .route("/api/shadow/feedback", post(api_shadow_feedback))
         .route("/api/shadow/feedback", get(api_shadow_feedback_list))
         .route("/api/shadow/export-rules", get(api_shadow_export_rules))
+        .route("/api/vp", get(vp::api_vp_list))
+        .route("/api/vp/status", get(vp::api_vp_status))
+        .route("/api/vp/sandbox", post(vp::api_vp_sandbox))
+        .route("/api/vp/promote", post(vp::api_vp_promote))
+        .route("/api/vp/rollback", post(vp::api_vp_rollback))
+        .route("/api/vp/import", post(vp::api_vp_import))
+        .route("/api/vp/probe", post(vp::api_vp_probe))
+        .route("/api/vp/updates/check", get(vp::api_vp_updates_check))
+        .route("/api/vp/updates/fetch", post(vp::api_vp_updates_fetch))
+        .route("/api/vp/ingest", post(vp::api_vp_ingest))
         .with_state(state);
 
     let app = if ui_dist.join("index.html").is_file() {
@@ -315,28 +332,44 @@ struct SamplesOut {
     samples: Vec<SampleCase>,
 }
 
+/// Recursively collect `samples/**/*.yaml` (mirrors `rules/<cat>/<id>.yaml`).
+fn collect_sample_yaml_files(dir: &Path) -> Result<Vec<std::path::PathBuf>, String> {
+    let mut out = Vec::new();
+    fn walk(d: &Path, out: &mut Vec<std::path::PathBuf>) -> Result<(), String> {
+        for e in std::fs::read_dir(d).map_err(|e| e.to_string())? {
+            let e = e.map_err(|e| e.to_string())?;
+            let p = e.path();
+            if p.is_dir() {
+                walk(&p, out)?;
+                continue;
+            }
+            let ok = p
+                .extension()
+                .and_then(|x| x.to_str())
+                .map(|x| x == "yaml" || x == "yml")
+                .unwrap_or(false);
+            if ok {
+                out.push(p);
+            }
+        }
+        Ok(())
+    }
+    walk(dir, &mut out)?;
+    out.sort();
+    Ok(out)
+}
+
 fn load_pack_samples(packs_root: &Path, pack: &str) -> Result<Vec<SampleCase>, String> {
     let dir = packs_root.join(pack).join("samples");
     if !dir.is_dir() {
         return Ok(Vec::new());
     }
-    let mut files: Vec<_> = std::fs::read_dir(&dir)
-        .map_err(|e| e.to_string())?
-        .filter_map(|e| e.ok())
-        .map(|e| e.path())
-        .filter(|p| {
-            p.extension()
-                .and_then(|x| x.to_str())
-                .map(|x| x == "yaml" || x == "yml")
-                .unwrap_or(false)
-        })
-        .collect();
-    files.sort();
+    let files = collect_sample_yaml_files(&dir)?;
     let mut out = Vec::new();
     for f in files {
         let text = std::fs::read_to_string(&f).map_err(|e| format!("{}: {e}", f.display()))?;
-        let list: Vec<SampleCase> = serde_yaml::from_str(&text)
-            .map_err(|e| format!("{}: {e}", f.display()))?;
+        let list: Vec<SampleCase> =
+            serde_yaml::from_str(&text).map_err(|e| format!("{}: {e}", f.display()))?;
         out.extend(list);
     }
     Ok(out)
@@ -656,19 +689,20 @@ async fn api_shadow_recent(State(st): State<Arc<AppState>>) -> Json<serde_json::
                 "action": r.action,
                 "total_score": r.total_score,
                 "rule_id": r.rule_id,
+                "source": r.source,
             })
         })
         .collect();
     Json(serde_json::json!({ "count": rows.len(), "samples": rows }))
 }
 
-struct ApiError {
+pub(crate) struct ApiError {
     status: StatusCode,
     msg: String,
 }
 
 impl ApiError {
-    fn bad(msg: impl Into<String>) -> Self {
+    pub(crate) fn bad(msg: impl Into<String>) -> Self {
         Self {
             status: StatusCode::BAD_REQUEST,
             msg: msg.into(),

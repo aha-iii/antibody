@@ -1,0 +1,49 @@
+pack=packs/baseline level=medium
+TOTAL	968
+OK	845
+FAIL_POS	123
+FAIL_NEG	0
+ERRORS	0
+PASS_RATE	87.29%
+report packs/baseline/samples-regression-report.txt
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-boolean-null	sample-sqli-boolean-null-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-char-concat	sample-sqli-char-concat-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-dual	sample-sqli-dual
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-extractvalue	sample-sqli-extractvalue-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-having	sample-sqli-having-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-into-dumpfile	sample-sqli-into-dumpfile
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-into-dumpfile	sample-sqli-into-dumpfile-alt
+FAIL	expect=block	actual=observe	hit_rule=sqli-json-extract-function	01-sqli	sqli-json-extract-function	sample-sqli-json-extract-function-gen-block
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-mysql-comment	sample-sqli-mysql-comment-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-order-by-num	sample-sqli-order-by-num-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-stacked-delete	sample-sqli-stacked-delete
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-stacked-drop	sample-sqli-stacked-drop
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-substring-user	sample-sqli-substring-user-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-union-distinct	sample-sqli-union-distinct
+FAIL	expect=block	actual=pass	hit_rule=-	01-sqli	sqli-waitfor	sample-sqli-waitfor
+FAIL	expect=block	actual=pass	hit_rule=-	02-xss	xss-marquee	sample-xss-marquee-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	02-xss	xss-meta-refresh	sample-xss-meta-refresh-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	02-xss	xss-onload	sample-xss-onload-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	oscmd-windows-unix	sample-oscmd-windows-unix-amp-id
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-backtick	sample-rce-backtick-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-busybox	sample-rce-busybox
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-busybox	sample-rce-busybox-alt
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-chmod	sample-rce-chmod
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-chmod	sample-rce-chmod-alt
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-dollar-paren	sample-rce-dollar-paren-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-elfinder-archive	sample-rce-elfinder-archive-gen-block
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-php-r	sample-rce-php-r
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-php-r	sample-rce-php-r-alt
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-python-c	sample-rce-python-c
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-python-c	sample-rce-python-c-alt
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-rm-rf	sample-rce-rm-rf
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-rm-rf	sample-rce-rm-rf-alt
+FAIL	expect=block	actual=observe	hit_rule=rce-spel-header	03-rce-cmdi	rce-spel-header	sample-rce-spel-header-gen-block
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-system-call	sample-rce-system-call-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-windows-lolbin	sample-rce-windows-lolbin
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	rce-windows-lolbin	sample-rce-windows-lolbin-alt
+FAIL	expect=block	actual=pass	hit_rule=-	03-rce-cmdi	shell-pipe-metachar	sample-shell-pipe-metachar-gen-block
+FAIL	expect=block	actual=pass	hit_rule=-	04-lfi-path	lfi-env-file	sample-lfi-env-file
+FAIL	expect=block	actual=pass	hit_rule=-	04-lfi-path	lfi-file-scheme	sample-lfi-file-scheme-matched-block
+FAIL	expect=block	actual=pass	hit_rule=-	04-lfi-path	lfi-null-byte	sample-lfi-null-byte
+... and 83 more (see report)

@@ -1,0 +1,41 @@
+- id: sample-xss-header-ua-script-gen-block
+  rule_id: xss-header-ua-script
+  name: XSS script/event sinks in UA and injectable headers (pos)
+  category: 12-xss-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - xss
+  - header
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=ok
+    headers:
+      User-Agent: "<script\t"
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-header-ua-script-gen-pass
+  rule_id: xss-header-ua-script
+  name: XSS script/event sinks in UA and injectable headers (neg)
+  category: 12-xss-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - xss
+  - header
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

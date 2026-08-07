@@ -1,0 +1,57 @@
+- id: sample-webshell-asp
+  rule_id: webshell-asp
+  name: Webshell ASP/ASPX
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=eval(request(
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-asp-alt
+  rule_id: webshell-asp
+  name: Webshell ASP/ASPX (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=eval(request(
+- id: sample-webshell-asp-gen-pass
+  rule_id: webshell-asp
+  name: Webshell ASP/ASPX (neg)
+  category: 07-webshell
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - webshell
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

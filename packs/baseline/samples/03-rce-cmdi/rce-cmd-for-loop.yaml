@@ -1,0 +1,41 @@
+- id: sample-rce-cmd-for-loop-matched-block
+  rule_id: rce-cmd-for-loop
+  name: Windows cmd FOR /F loop execution (pos)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - rce
+  - cmdi
+  - windows
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: "q=for\t/f\t%"
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rce-cmd-for-loop-matched-pass
+  rule_id: rce-cmd-for-loop
+  name: Windows cmd FOR /F loop execution (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - cmdi
+  - windows
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/v1/items
+    query: q=hello-world&page=1&sort=name
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

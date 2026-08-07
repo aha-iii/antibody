@@ -1,0 +1,19 @@
+id: sqli-null-byte-keyword
+name: SQLi keyword split by double-encoded null
+severity: high
+score: 42
+action: block
+min_level: low
+tags: [sqli, evasion]
+# 保留原文匹配双编码；另加一次 decode 匹配分裂后关键字
+transforms: [lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)sel%2500ect|uni%2500on|%2500ect"
+    - field: query
+      regex: "(?i)%2553%2545%254c%2545%2543%2554"
+    - field: query
+      regex: "(?i)%25u0053%25u0045%25u004c%25u0045%25u0043%25u0054"
+    - field: uri
+      regex: "(?i)sel%2500ect"

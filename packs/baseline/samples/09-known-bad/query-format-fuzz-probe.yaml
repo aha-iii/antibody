@@ -1,0 +1,20 @@
+- id: sample-query-format-fuzz-probe-gen-pass
+  rule_id: query-format-fuzz-probe
+  name: Format string and fuzz probes in query (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fuzz
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -9,6 +9,7 @@ export type PageId =
   | "bench"
   | "metrics"
   | "shadow"
+  | "vp"
   | "engine";
 
 export type NavItem = {
@@ -29,6 +30,7 @@ export const NAV: NavItem[] = [
   { id: "bench", group: "实验室", icon: "◎", label: "拦截率测试" },
   { id: "metrics", group: "运维", icon: "◉", label: "可观测" },
   { id: "shadow", group: "运维", icon: "◌", label: "误报 / Shadow" },
+  { id: "vp", group: "运维", icon: "▣", label: "虚拟补丁" },
   { id: "engine", group: "运维", icon: "◇", label: "引擎状态" },
 ];
 
@@ -43,6 +45,7 @@ export const PAGE_META: Record<PageId, { title: string; subtitle: string }> = {
   bench: { title: "拦截率测试", subtitle: "" },
   metrics: { title: "可观测", subtitle: "runtime metrics" },
   shadow: { title: "误报 / Shadow", subtitle: "标注与 allow 草稿" },
+  vp: { title: "虚拟补丁", subtitle: "CVE 沙箱 → 晋升 live" },
   engine: { title: "引擎状态", subtitle: "" },
 };
 

@@ -1,0 +1,38 @@
+- id: sample-attack-signature-cluster-select-split
+  rule_id: attack-signature-cluster
+  name: SQLi select keyword split
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - gap
+  - sqli
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=1+sel'+ect+from+users
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-attack-signature-cluster-odata-select-pass
+  rule_id: attack-signature-cluster
+  name: OData $select/$filter (not select split)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - odata
+  request:
+    method: GET
+    host: example.com
+    uri: /api/dynamic/new_similarset
+    query: $select=new_robotid&$filter=new_type eq 1
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

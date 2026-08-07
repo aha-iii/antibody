@@ -1,0 +1,39 @@
+- id: sample-ssrf-odd-schemes-gen-block
+  rule_id: ssrf-odd-schemes
+  name: SSRF odd schemes and parser confusion (pos)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - ssrf
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=%253a%252f%252f
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-odd-schemes-gen-pass
+  rule_id: ssrf-odd-schemes
+  name: SSRF odd schemes and parser confusion (neg)
+  category: 05-rfi-ssrf
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - ssrf
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

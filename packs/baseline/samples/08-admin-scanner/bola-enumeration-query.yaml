@@ -1,0 +1,41 @@
+- id: sample-bola-enumeration-query-gen-block
+  rule_id: bola-enumeration-query
+  name: BOLA user enumeration via email phone batch (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: medium
+  severity: medium
+  tags:
+  - idor
+  - bola
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /admin/
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bola-enumeration-query-gen-pass
+  rule_id: bola-enumeration-query
+  name: BOLA user enumeration via email phone batch (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: medium
+  severity: info
+  tags:
+  - idor
+  - bola
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

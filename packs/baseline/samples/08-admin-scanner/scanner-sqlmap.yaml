@@ -1,0 +1,57 @@
+- id: sample-scanner-sqlmap
+  rule_id: scanner-sqlmap
+  name: Scanner sqlmap UA/payload
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - admin
+  - scanner
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=sqlmap/
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-scanner-sqlmap-alt
+  rule_id: scanner-sqlmap
+  name: Scanner sqlmap UA/payload (alt)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=sqlmap/
+- id: sample-scanner-sqlmap-gen-pass
+  rule_id: scanner-sqlmap
+  name: Scanner sqlmap UA/payload (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - admin
+  - scanner
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

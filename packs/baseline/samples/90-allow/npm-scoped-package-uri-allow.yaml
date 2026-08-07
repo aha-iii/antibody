@@ -1,0 +1,60 @@
+- id: sample-npm-scoped-package-uri-allow-matched-allow
+  rule_id: npm-scoped-package-uri-allow
+  name: Allow npm scoped package paths in URI (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - npm
+  - uri
+  request:
+    method: GET
+    host: example.com
+    uri: /favicon.ico
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''
+- id: sample-npm-scoped-package-uri-allow-matched-allow
+  rule_id: npm-scoped-package-uri-allow
+  name: Allow npm scoped package paths in URI (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - npm
+  - uri
+  request:
+    method: GET
+    host: example.com
+    uri: /health
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-npm-scoped-package-uri-allow-gen-pass
+  rule_id: npm-scoped-package-uri-allow
+  name: Allow npm scoped package paths in URI (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - npm
+  - uri
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -35,6 +35,10 @@ pub struct AdaptiveInput<'a> {
     pub level: NativeLevel,
     pub features: &'a FeatureSnapshot,
     pub contribute: bool,
+    /// 来自 `[policy.levels.*.adaptive_level_weight]`；`None` 时回退默认档权重。
+    pub level_weight: Option<f32>,
+    /// 来自 `[policy.levels.*.adaptive_score_cap]`；`None` 时回退默认档封顶。
+    pub score_cap: Option<u32>,
 }
 
 /// 自适应输出。

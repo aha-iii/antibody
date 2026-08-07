@@ -1,15 +1,20 @@
-//! Shadow deep：快路径无 block 时异步跑深路径，收集 FN 样本 + 人工标注闭环。
+//! Shadow / Sandbox 旁路观察：快路径无 block 时异步深扫，不改用户响应。
+//!
+//! - **shadow_deep**：live Program 再跑 Deep，挖 FN / FP 候选
+//! - **sandbox**：候选 Program（强制 observe），采样对比；见治理设计文档
 
 mod pool;
 
 use crate::shadow::pool::{ShadowJob, ShadowPool};
-use nerve_antibody_metrics::global as metrics_global;
+use nerve_antibody_metrics::{global as metrics_global, RisZone};
 use nerve_antibody_runtime::{Evaluator, NativeHit, NativeRequest};
 use parking_lot::Mutex;
 use std::collections::VecDeque;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, OnceLock};
 
 static SHADOW_POOL: OnceLock<ShadowPool> = OnceLock::new();
+static SANDBOX_SAMPLE_TICK: AtomicU64 = AtomicU64::new(0);
 
 fn shadow_pool() -> &'static ShadowPool {
     SHADOW_POOL.get_or_init(|| ShadowPool::new(ShadowPoolConfig::from_env()))
@@ -17,12 +22,24 @@ fn shadow_pool() -> &'static ShadowPool {
 
 pub use pool::ShadowPoolConfig;
 
+/// 观察来源。
+pub mod shadow_source {
+    pub const LIVE_DEEP: &str = "shadow_deep";
+    pub const SANDBOX: &str = "sandbox";
+}
+
 /// Shadow 配置。
 #[derive(Debug, Clone)]
 pub struct ShadowConfig {
     pub enabled: bool,
     pub max_pending: usize,
     pub ring_capacity: usize,
+    /// 沙箱采样率（万分比）。0=关闭采样；10000=每次都采。默认 200=2%。
+    pub sandbox_sample_bps: u32,
+    /// RIS clean 区 live shadow 采样率（万分比）。默认 200=2%。
+    pub clean_sample_bps: u32,
+    /// RIS gray 区是否始终提交 live shadow（产品化灰区深检闭环）。默认 true。
+    pub gray_always: bool,
 }
 
 impl Default for ShadowConfig {
@@ -31,6 +48,9 @@ impl Default for ShadowConfig {
             enabled: true,
             max_pending: 64,
             ring_capacity: 256,
+            sandbox_sample_bps: 200,
+            clean_sample_bps: 200,
+            gray_always: true,
         }
     }
 }
@@ -46,8 +66,33 @@ impl ShadowConfig {
                 c.max_pending = e.clamp(8, 512);
             }
         }
+        if let Ok(v) = std::env::var("NERVE_NATIVE_SANDBOX_SAMPLE_BPS") {
+            if let Ok(e) = v.parse::<u32>() {
+                c.sandbox_sample_bps = e.min(10_000);
+            }
+        }
+        if let Ok(v) = std::env::var("NERVE_NATIVE_SHADOW_CLEAN_BPS") {
+            if let Ok(e) = v.parse::<u32>() {
+                c.clean_sample_bps = e.min(10_000);
+            }
+        }
+        if let Ok(v) = std::env::var("NERVE_NATIVE_SHADOW_GRAY_ALWAYS") {
+            c.gray_always = v != "0" && !v.eq_ignore_ascii_case("false");
+        }
         c
     }
+}
+
+/// 是否命中沙箱采样（无锁计数器，避免引入 RNG 依赖）。
+pub fn sandbox_sample_hit(bps: u32) -> bool {
+    if bps == 0 {
+        return false;
+    }
+    if bps >= 10_000 {
+        return true;
+    }
+    let n = SANDBOX_SAMPLE_TICK.fetch_add(1, Ordering::Relaxed);
+    (n % 10_000) < u64::from(bps)
 }
 
 /// Shadow 采样记录（Console / FP 闭环入口）。
@@ -58,6 +103,8 @@ pub struct ShadowRecord {
     pub action: String,
     pub total_score: u32,
     pub rule_id: String,
+    /// `shadow_deep` | `sandbox`
+    pub source: String,
 }
 
 /// 人工标注（allow / veto → 自动生成规则草稿）。
@@ -76,7 +123,7 @@ struct ShadowState {
     feedback: VecDeque<ShadowFeedback>,
 }
 
-/// 异步 shadow deep 运行时。
+/// 异步 shadow / sandbox 运行时。
 #[derive(Clone)]
 pub struct ShadowRuntime {
     cfg: ShadowConfig,
@@ -99,12 +146,79 @@ impl ShadowRuntime {
         self.cfg.enabled
     }
 
-    /// 快路径无 block/challenge 时提交 shadow deep（有界池）。
+    pub fn sandbox_sample_bps(&self) -> u32 {
+        self.cfg.sandbox_sample_bps
+    }
+
+    /// 快路径无 block/challenge 时按 RIS zone 提交 live shadow deep。
+    /// - gray：默认始终提交（`NERVE_NATIVE_SHADOW_GRAY_ALWAYS`）
+    /// - clean：按 `NERVE_NATIVE_SHADOW_CLEAN_BPS` 采样
+    /// - hot：不应走 Fast，忽略
     pub fn submit_if_fast_clean(
         &self,
         evaluator: Arc<Evaluator>,
         req: NativeRequest,
         fast_hit: Option<&NativeHit>,
+    ) {
+        self.submit_for_ris_zone(RisZone::Clean, evaluator, req, fast_hit);
+    }
+
+    /// Nerve RIS：按分区策略提交 Shadow Deep。
+    pub fn submit_for_ris_zone(
+        &self,
+        zone: RisZone,
+        evaluator: Arc<Evaluator>,
+        req: NativeRequest,
+        fast_hit: Option<&NativeHit>,
+    ) {
+        let take = match zone {
+            RisZone::Hot => false,
+            RisZone::Gray => self.cfg.gray_always || sandbox_sample_hit(self.cfg.clean_sample_bps),
+            RisZone::Clean => sandbox_sample_hit(self.cfg.clean_sample_bps),
+        };
+        if !take {
+            return;
+        }
+        self.submit_observe(evaluator, req, fast_hit, shadow_source::LIVE_DEEP);
+    }
+
+    /// 快路径干净时提交沙箱 Program 观察（强制不拦的 Evaluator）。
+    pub fn submit_sandbox_if_fast_clean(
+        &self,
+        evaluator: Arc<Evaluator>,
+        req: NativeRequest,
+        fast_hit: Option<&NativeHit>,
+    ) {
+        self.submit_sandbox_for_ris_zone(RisZone::Clean, evaluator, req, fast_hit);
+    }
+
+    /// Nerve RIS：按分区策略提交沙箱观察。
+    pub fn submit_sandbox_for_ris_zone(
+        &self,
+        zone: RisZone,
+        evaluator: Arc<Evaluator>,
+        req: NativeRequest,
+        fast_hit: Option<&NativeHit>,
+    ) {
+        let take = match zone {
+            RisZone::Hot => false,
+            RisZone::Gray => {
+                self.cfg.gray_always || sandbox_sample_hit(self.cfg.sandbox_sample_bps)
+            }
+            RisZone::Clean => sandbox_sample_hit(self.cfg.sandbox_sample_bps),
+        };
+        if !take {
+            return;
+        }
+        self.submit_observe(evaluator, req, fast_hit, shadow_source::SANDBOX);
+    }
+
+    fn submit_observe(
+        &self,
+        evaluator: Arc<Evaluator>,
+        req: NativeRequest,
+        fast_hit: Option<&NativeHit>,
+        source: &'static str,
     ) {
         if !self.cfg.enabled {
             return;
@@ -123,6 +237,7 @@ impl ShadowRuntime {
         let state = self.state.clone();
         let ring_cap = self.cfg.ring_capacity;
         let uri = req.uri.clone();
+        let source = source.to_string();
         let job = ShadowJob {
             evaluator,
             req,
@@ -131,7 +246,7 @@ impl ShadowRuntime {
                 let (action, total, rule_id) = hit
                     .as_ref()
                     .map(|h| (h.action.clone(), h.total_score, h.rule_id.clone()))
-                    .unwrap_or_else(|| ("eoee".into(), 0, String::new()));
+                    .unwrap_or_else(|| ("none".into(), 0, String::new()));
                 metrics_global().record_shadow_done(would_hit);
                 let rec = ShadowRecord {
                     uri: uri.clone(),
@@ -139,6 +254,7 @@ impl ShadowRuntime {
                     action,
                     total_score: total,
                     rule_id,
+                    source: source.clone(),
                 };
                 let mut g = state.lock();
                 g.pending = g.pending.saturating_sub(1);
@@ -178,7 +294,7 @@ impl ShadowRuntime {
             uri,
             label: label.to_ascii_lowercase(),
             note,
-            created_ms: eow_ms(),
+            created_ms: now_ms(),
             matched_rule_id: resolved,
         };
         let mut g = self.state.lock();
@@ -274,7 +390,7 @@ fn format_fp_allow_draft(fb: &ShadowFeedback, uri_snip: &str, note: &str) -> Str
     )
 }
 
-fn eow_ms() -> u64 {
+fn now_ms() -> u64 {
     std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_millis() as u64)
@@ -300,5 +416,15 @@ mod tests {
         let yaml = rt.export_rule_drafts();
         assert!(yaml.contains("action: allow"));
         assert!(yaml.contains("matched_rule_id: jwt-oversized"));
+    }
+
+    #[test]
+    fn sandbox_sample_zero_never_hits() {
+        assert!(!sandbox_sample_hit(0));
+    }
+
+    #[test]
+    fn sandbox_sample_full_always_hits() {
+        assert!(sandbox_sample_hit(10_000));
     }
 }

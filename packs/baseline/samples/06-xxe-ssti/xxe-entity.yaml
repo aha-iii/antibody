@@ -1,0 +1,59 @@
+- id: sample-xxe-entity
+  rule_id: xxe-entity
+  name: XXE ENTITY
+  category: 06-xxe-ssti
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - xxe
+  - ssti
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=<!entity
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xxe-entity-alt
+  rule_id: xxe-entity
+  name: XXE ENTITY (alt)
+  category: 06-xxe-ssti
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=<!entity
+- id: sample-xxe-entity-gen-pass
+  rule_id: xxe-entity
+  name: XXE ENTITY (neg)
+  category: 06-xxe-ssti
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - xxe
+  - ssti
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

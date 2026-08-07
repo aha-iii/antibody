@@ -47,6 +47,18 @@ pub struct BenchMetrics {
     pub avg_ms: f64,
     pub pass_count: u64,
     pub fail_count: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fast_path_count: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deep_path_count: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fast_path_ratio: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub avg_fast_ms: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub avg_deep_ms: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub avg_ris_ms: Option<f64>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -63,6 +75,32 @@ pub struct CaseResult {
     pub elapsed_ms: u64,
     pub rule_id: String,
     pub detail: String,
+    /// 最终检测路径：`fast` | `deep`
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub inspect_path: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub inspect_mode: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub lane: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub ris_zone: String,
+    /// RIS 分流耗时（毫秒，一位小数序列化为 f64）
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ris_ms: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fast_ms: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deep_ms: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub route_score: Option<f32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub route_deep: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub budget_exhausted: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub semantic_score: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub model_score: Option<u32>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -70,6 +108,8 @@ pub struct BenchStatus {
     pub phase: BenchPhase,
     pub pack: String,
     pub level: String,
+    /// 本次任务的 inspect 模式：auto | deep | fast
+    pub inspect_mode: String,
     pub dataset: String,
     pub concurrency: u32,
     pub timeout_ms: u32,
@@ -95,6 +135,7 @@ impl Default for BenchStatus {
             phase: BenchPhase::Idle,
             pack: String::new(),
             level: "medium".into(),
+            inspect_mode: "auto".into(),
             dataset: "samples".into(),
             concurrency: 80,
             timeout_ms: 3000,
@@ -129,30 +170,84 @@ pub struct BenchRuntime {
 #[derive(Debug, Deserialize)]
 pub struct BenchStartBody {
     /// `samples`（当前规则包案例，推荐）| `blazehttp`（.black/.white 全量）
+    /// 亦接受 `samples-positive` / `samples-negative`（等价于 sample_expect）。
     #[serde(default = "default_dataset")]
     pub dataset: String,
     #[serde(default = "default_concurrency")]
     pub concurrency: u32,
     #[serde(default = "default_level_str")]
     pub level: String,
+    /// `auto`（默认，与生产一致）| `deep`（全量深检）| `fast`（仅快路径）
+    #[serde(default = "default_inspect_mode")]
+    pub inspect_mode: String,
     #[serde(default = "default_timeout")]
     pub timeout_ms: u32,
     /// 可选上限，便于冒烟（0=不限制）
     #[serde(default)]
     pub limit: u64,
+    /// samples 极性：`all` | `block`（正样本）| `pass`（负样本）。
+    /// 仅对规则包 samples 生效；也可通过 dataset=`samples-positive|samples-negative` 指定。
+    #[serde(default = "default_sample_expect")]
+    pub sample_expect: String,
 }
 
 fn default_dataset() -> String {
     "samples".into()
 }
 fn default_concurrency() -> u32 {
-    80
+    40
+}
+fn default_sample_expect() -> String {
+    "all".into()
+}
+
+/// 归一化 samples 极性过滤；返回 (展示用 dataset id, 加载用根 dataset, expect 过滤)。
+fn resolve_sample_dataset(raw_dataset: &str, raw_expect: &str) -> (&'static str, &'static str, Option<&'static str>) {
+    let ds = raw_dataset.trim().to_ascii_lowercase();
+    let exp = raw_expect.trim().to_ascii_lowercase();
+    match ds.as_str() {
+        "samples-positive" | "samples-block" => ("samples-positive", "samples", Some("block")),
+        "samples-negative" | "samples-pass" => ("samples-negative", "samples", Some("pass")),
+        "samples" => {
+            let filter = match exp.as_str() {
+                "block" | "positive" | "pos" | "attack" | "black" => Some("block"),
+                "pass" | "negative" | "neg" | "clean" | "white" => Some("pass"),
+                _ => None,
+            };
+            let label = match filter {
+                Some("block") => "samples-positive",
+                Some("pass") => "samples-negative",
+                _ => "samples",
+            };
+            (label, "samples", filter)
+        }
+        "blazehttp" => ("blazehttp", "blazehttp", None),
+        "gotestwaf" => ("gotestwaf", "gotestwaf", None),
+        "waftester" => ("waftester", "waftester", None),
+        "crs-ftw" => ("crs-ftw", "crs-ftw", None),
+        _ => ("samples", "samples", None),
+    }
 }
 fn default_level_str() -> String {
     "medium".into()
 }
+fn default_inspect_mode() -> String {
+    "auto".into()
+}
 fn default_timeout() -> u32 {
     3000
+}
+
+/// 归一化并校验 bench inspect 模式。
+fn normalize_inspect_mode(raw: &str) -> Result<&'static str, String> {
+    match raw.trim().to_ascii_lowercase().as_str() {
+        "" | "auto" => Ok("auto"),
+        "deep" => Ok("deep"),
+        "fast" => Ok("fast"),
+        other => Err(format!(
+            "invalid inspect_mode: {other}（允许 auto|deep|fast）"
+        )),
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -196,6 +291,8 @@ pub(crate) struct PreparedCase {
     pub kind: String,
     pub name: String,
     pub expect: String, // block | pass
+    /// 样本要求的检测档；samples 可能高于 bench 全局 level。
+    pub level: NativeLevel,
     pub req: NativeRequest,
 }
 
@@ -235,6 +332,16 @@ pub fn probe_ready(dataset: &str) -> (bool, String, String) {
             )
         }
         "gotestwaf" | "waftester" | "crs-ftw" => crate::datasets::dataset_ready(dataset),
+        "samples-positive" | "samples-block" => (
+            true,
+            "samples".into(),
+            "规则包 samples · 仅正样本（expect=block）".into(),
+        ),
+        "samples-negative" | "samples-pass" => (
+            true,
+            "samples".into(),
+            "规则包 samples · 仅负样本（expect=pass）".into(),
+        ),
         _ => (
             true,
             "samples".into(),
@@ -325,24 +432,20 @@ pub async fn start_job(
         }
     }
 
-    let dataset = match body.dataset.trim() {
-        "blazehttp" => "blazehttp",
-        "gotestwaf" => "gotestwaf",
-        "waftester" => "waftester",
-        "crs-ftw" => "crs-ftw",
-        _ => "samples",
-    };
-    let (ready, path_hint, ready_msg) = probe_ready(dataset);
+    let (dataset_label, dataset, expect_filter) =
+        resolve_sample_dataset(&body.dataset, &body.sample_expect);
+    let (ready, path_hint, ready_msg) = probe_ready(dataset_label);
     if !ready {
         return Err(ready_msg);
     }
 
     let level = NativeLevel::from_str_loose(&body.level)?;
+    let inspect_mode = normalize_inspect_mode(&body.inspect_mode)?;
     *rt.level.write().await = level;
     let concurrency = body.concurrency.clamp(1, 200);
     let limit = body.limit;
 
-    let cases = match dataset {
+    let mut cases = match dataset {
         "blazehttp" => {
             let root = resolve_blazehttp_root().ok_or("blazehttp root missing")?;
             load_blazehttp_cases(&root, limit)?
@@ -364,8 +467,16 @@ pub async fn start_job(
         }
         _ => load_sample_cases(&packs_root, &pack, limit)?,
     };
+    if let Some(exp) = expect_filter {
+        cases.retain(|c| c.expect == exp);
+    }
     if cases.is_empty() {
-        return Err(format!("数据源为空：{dataset} / pack={pack}"));
+        return Err(format!(
+            "数据源为空：{dataset_label} / pack={pack}{}",
+            expect_filter
+                .map(|e| format!(" / sample_expect={e}"))
+                .unwrap_or_default()
+        ));
     }
 
     rt.cancel.store(false, Ordering::SeqCst);
@@ -381,14 +492,20 @@ pub async fn start_job(
             phase: BenchPhase::Running,
             pack: pack.clone(),
             level: level.as_str().into(),
-            dataset: dataset.into(),
+            inspect_mode: inspect_mode.into(),
+            dataset: dataset_label.into(),
             concurrency,
             timeout_ms: body.timeout_ms,
-            target: "in-process (engine.inspect)".into(),
+            target: format!("in-process (engine.inspect · mode={inspect_mode})"),
             progress_pct: 0.0,
             done: 0,
             total,
-            message: format!("准备执行 {total} 条用例…"),
+            message: format!(
+                "准备执行 {total} 条用例{}…",
+                expect_filter
+                    .map(|e| format!(" · sample_expect={e}"))
+                    .unwrap_or_default()
+            ),
             started_at_ms: Some(now_ms()),
             finished_at_ms: None,
             elapsed_ms: None,
@@ -404,7 +521,7 @@ pub async fn start_job(
     let rt2 = rt.clone();
     tokio::spawn(async move {
         let t0 = Instant::now();
-        let outcome = run_cases(rt2.clone(), cases, level, concurrency).await;
+        let outcome = run_cases(rt2.clone(), cases, level, concurrency, inspect_mode).await;
         let elapsed = t0.elapsed().as_millis();
         let mut st = rt2.status.write().await;
         st.elapsed_ms = Some(elapsed);
@@ -460,9 +577,9 @@ async fn run_cases(
     cases: Vec<PreparedCase>,
     level: NativeLevel,
     concurrency: u32,
+    inspect_mode: &str,
 ) -> Result<BenchMetrics, String> {
-    let _bench_deep = BenchInspectModeGuard::deep_for_bench();
-    let evaluator = rt.engine.evaluator_for(level);
+    let _mode_guard = BenchInspectModeGuard::for_mode(inspect_mode);
     let workers = concurrency.clamp(1, 200) as usize;
     let total = cases.len() as u64;
     if total == 0 {
@@ -478,6 +595,7 @@ async fn run_cases(
     let sum_ms = Arc::new(std::sync::atomic::AtomicU64::new(0));
     let cancel = rt.cancel.clone();
     let status = rt.status.clone();
+    let engine = rt.engine.clone();
     let runtime_handle = tokio::runtime::Handle::current();
 
     let (work_tx, work_rx) = std::sync::mpsc::channel::<(usize, PreparedCase)>();
@@ -493,10 +611,11 @@ async fn run_cases(
     }
     drop(work_tx);
 
+    let mode_label = inspect_mode.to_string();
     let mut join_handles = Vec::with_capacity(workers);
     for _ in 0..workers {
         let rx = work_rx.clone();
-        let evaluator = evaluator.clone();
+        let engine = engine.clone();
         let slots = slots.clone();
         let done_counter = done_counter.clone();
         let pass_counter = pass_counter.clone();
@@ -505,6 +624,8 @@ async fn run_cases(
         let cancel = cancel.clone();
         let status = status.clone();
         let runtime_handle = runtime_handle.clone();
+        let bench_level = level;
+        let mode_label = mode_label.clone();
 
         join_handles.push(tokio::task::spawn_blocking(move || {
             loop {
@@ -522,18 +643,97 @@ async fn run_cases(
 
                 let t0 = Instant::now();
                 let expect_block = case.expect == "block" || case.kind == "black";
-                let (actual, rule_id, detail) = match evaluator.inspect(&case.req) {
-                    Some(hit) => {
-                        // challenge：黑样本计检出；白样本不计 FP（深检通道）
-                        let act = match hit.action.as_str() {
-                            "block" => "block",
-                            "challenge" if expect_block => "block",
-                            "challenge" => "challenge",
-                            _ => "pass",
-                        };
-                        (act.to_string(), hit.rule_id.clone(), hit.evidence.clone())
+                let case_level = if case.level.rank() > bench_level.rank() {
+                    case.level
+                } else {
+                    bench_level
+                };
+                let us_to_ms = |us: u64| -> f64 { (us as f64) / 1000.0 };
+                let (
+                    actual,
+                    rule_id,
+                    detail,
+                    inspect_path,
+                    lane,
+                    ris_zone,
+                    ris_ms,
+                    fast_ms,
+                    deep_ms,
+                    route_score,
+                    route_deep,
+                    budget_exhausted,
+                    semantic_score,
+                    model_score,
+                ) = match engine.inspect_exec(&case.req, case_level) {
+                    Ok(exec) => {
+                        let path = exec.path.as_str().to_string();
+                        let lane = exec.lane().to_string();
+                        let ris_zone = exec.ris_zone.as_str().to_string();
+                        let ris_ms = Some(us_to_ms(exec.ris_us));
+                        let fast_ms = Some(us_to_ms(exec.fast_us));
+                        let deep_ms = Some(us_to_ms(exec.deep_us));
+                        let route_score = Some(exec.route_score);
+                        let route_deep = Some(exec.route_deep);
+                        match exec.hit {
+                            Some(hit) => {
+                                // challenge：黑样本计检出；白样本不计 FP（深检通道）
+                                let act = match hit.action.as_str() {
+                                    "block" => "block",
+                                    "challenge" if expect_block => "block",
+                                    "challenge" => "challenge",
+                                    _ => "pass",
+                                };
+                                (
+                                    act.to_string(),
+                                    hit.rule_id.clone(),
+                                    hit.evidence.clone(),
+                                    path,
+                                    lane,
+                                    ris_zone,
+                                    ris_ms,
+                                    fast_ms,
+                                    deep_ms,
+                                    route_score,
+                                    route_deep,
+                                    hit.budget_exhausted.clone(),
+                                    Some(hit.semantic_score),
+                                    Some(hit.model_score),
+                                )
+                            }
+                            None => (
+                                "pass".into(),
+                                String::new(),
+                                String::new(),
+                                path,
+                                lane,
+                                ris_zone,
+                                ris_ms,
+                                fast_ms,
+                                deep_ms,
+                                route_score,
+                                route_deep,
+                                None,
+                                None,
+                                None,
+                            ),
+                        }
                     }
-                    None => ("pass".into(), String::new(), String::new()),
+                    Err(e) => (
+                        "error".into(),
+                        String::new(),
+                        e.to_string(),
+                        String::new(),
+                        String::new(),
+                        String::new(),
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                    ),
                 };
                 let elapsed_ms = t0.elapsed().as_millis() as u64;
                 // expect=block 必须拦截；白样本仅 hard block 算误报（challenge 放过）
@@ -565,6 +765,18 @@ async fn run_cases(
                     elapsed_ms,
                     rule_id,
                     detail: truncate(&detail, 200),
+                    inspect_path,
+                    inspect_mode: mode_label.clone(),
+                    lane,
+                    ris_zone,
+                    ris_ms,
+                    fast_ms,
+                    deep_ms,
+                    route_score,
+                    route_deep,
+                    budget_exhausted,
+                    semantic_score,
+                    model_score,
                 };
 
                 {
@@ -628,6 +840,14 @@ fn compute_metrics(rows: &[CaseResult], sum_ms: u64) -> BenchMetrics {
     let mut false_positive = 0u64;
     let mut pass_count = 0u64;
     let mut fail_count = 0u64;
+    let mut fast_path_count = 0u64;
+    let mut deep_path_count = 0u64;
+    let mut sum_fast_ms = 0.0f64;
+    let mut sum_deep_ms = 0.0f64;
+    let mut sum_ris_ms = 0.0f64;
+    let mut n_fast_ms = 0u64;
+    let mut n_deep_ms = 0u64;
+    let mut n_ris_ms = 0u64;
 
     for r in rows {
         if r.ok {
@@ -654,6 +874,27 @@ fn compute_metrics(rows: &[CaseResult], sum_ms: u64) -> BenchMetrics {
                 passed_ok += 1;
             }
         }
+        match r.inspect_path.as_str() {
+            "fast" => fast_path_count += 1,
+            "deep" => deep_path_count += 1,
+            _ => {}
+        }
+        if let Some(v) = r.fast_ms {
+            if v > 0.0 {
+                sum_fast_ms += v;
+                n_fast_ms += 1;
+            }
+        }
+        if let Some(v) = r.deep_ms {
+            if v > 0.0 {
+                sum_deep_ms += v;
+                n_deep_ms += 1;
+            }
+        }
+        if let Some(v) = r.ris_ms {
+            sum_ris_ms += v;
+            n_ris_ms += 1;
+        }
     }
 
     let detection_rate = if malicious_total > 0 {
@@ -676,6 +917,7 @@ fn compute_metrics(rows: &[CaseResult], sum_ms: u64) -> BenchMetrics {
     } else {
         0.0
     };
+    let path_n = fast_path_count + deep_path_count;
 
     BenchMetrics {
         total,
@@ -693,6 +935,28 @@ fn compute_metrics(rows: &[CaseResult], sum_ms: u64) -> BenchMetrics {
         avg_ms,
         pass_count,
         fail_count,
+        fast_path_count: Some(fast_path_count),
+        deep_path_count: Some(deep_path_count),
+        fast_path_ratio: if path_n > 0 {
+            Some(fast_path_count as f64 / path_n as f64)
+        } else {
+            None
+        },
+        avg_fast_ms: if n_fast_ms > 0 {
+            Some(sum_fast_ms / n_fast_ms as f64)
+        } else {
+            None
+        },
+        avg_deep_ms: if n_deep_ms > 0 {
+            Some(sum_deep_ms / n_deep_ms as f64)
+        } else {
+            None
+        },
+        avg_ris_ms: if n_ris_ms > 0 {
+            Some(sum_ris_ms / n_ris_ms as f64)
+        } else {
+            None
+        },
     }
 }
 
@@ -739,6 +1003,32 @@ pub async fn report_json(rt: &BenchRuntime) -> serde_json::Value {
     })
 }
 
+fn collect_sample_yaml_files(dir: &Path) -> Result<Vec<PathBuf>, String> {
+    let mut out = Vec::new();
+    fn walk(d: &Path, out: &mut Vec<PathBuf>) -> Result<(), String> {
+        for e in std::fs::read_dir(d).map_err(|e| e.to_string())? {
+            let e = e.map_err(|e| e.to_string())?;
+            let p = e.path();
+            if p.is_dir() {
+                walk(&p, out)?;
+                continue;
+            }
+            let ok = p
+                .extension()
+                .and_then(|x| x.to_str())
+                .map(|x| x == "yaml" || x == "yml")
+                .unwrap_or(false);
+            if ok {
+                out.push(p);
+            }
+        }
+        Ok(())
+    }
+    walk(dir, &mut out)?;
+    out.sort();
+    Ok(out)
+}
+
 fn load_sample_cases(
     packs_root: &Path,
     pack: &str,
@@ -748,18 +1038,7 @@ fn load_sample_cases(
     if !dir.is_dir() {
         return Err(format!("样本目录不存在: {}", dir.display()));
     }
-    let mut files: Vec<_> = std::fs::read_dir(&dir)
-        .map_err(|e| e.to_string())?
-        .filter_map(|e| e.ok())
-        .map(|e| e.path())
-        .filter(|p| {
-            p.extension()
-                .and_then(|x| x.to_str())
-                .map(|x| x == "yaml" || x == "yml")
-                .unwrap_or(false)
-        })
-        .collect();
-    files.sort();
+    let files = collect_sample_yaml_files(&dir)?;
 
     #[derive(Deserialize)]
     struct SampleFile {
@@ -770,6 +1049,8 @@ fn load_sample_cases(
         name: String,
         #[serde(default)]
         expect_action: String,
+        #[serde(default)]
+        min_level: String,
         request: SampleReqYaml,
     }
     #[derive(Deserialize)]
@@ -798,16 +1079,28 @@ fn load_sample_cases(
                 "block" => "block",
                 _ => "pass", // observe / pass → 不期望拦截
             };
+            let sample_level = NativeLevel::from_str_loose(if s.min_level.is_empty() {
+                "low"
+            } else {
+                &s.min_level
+            })
+            .unwrap_or(NativeLevel::Low);
             out.push(PreparedCase {
                 id: s.id.clone(),
                 suite: "samples".into(),
-                kind: "sample".into(),
+                // 与 blazehttp 对齐：正=black / 负=white，便于结果筛选与极性子集
+                kind: if expect == "block" {
+                    "black".into()
+                } else {
+                    "white".into()
+                },
                 name: if s.name.is_empty() {
                     s.rule_id.clone()
                 } else {
                     s.name
                 },
                 expect: expect.into(),
+                level: sample_level,
                 req: NativeRequest {
                     method: s.request.method,
                     host: s.request.host,
@@ -876,6 +1169,7 @@ fn load_blazehttp_cases(root: &Path, limit: u64) -> Result<Vec<PreparedCase>, St
             } else {
                 "pass".into()
             },
+            level: NativeLevel::Medium,
             req,
         });
         if limit > 0 && out.len() as u64 >= limit {
@@ -971,8 +1265,28 @@ fn parse_raw_http(raw: &str) -> Result<NativeRequest, String> {
             }
             if key.eq_ignore_ascii_case("transfer-encoding") {
                 let vl = val.to_ascii_lowercase();
-                if vl == "cow" || vl.len() <= 2 || vl.contains(',') {
+                let vl = vl.replace(' ', "");
+                // 非法 / 过短 / 空 / CL.TE 经典混淆；勿标合法 `gzip,deflate` / `gzip,chunked`
+                if vl.is_empty()
+                    || vl == "cow"
+                    || vl == "chunk"
+                    || vl.len() <= 2
+                    || vl == "identity,chunked"
+                    || vl == "chunked,identity"
+                    || vl.starts_with("identity,chunked")
+                    || vl.starts_with("chunked,identity")
+                {
                     anomalies.push("te-anomaly");
+                }
+            }
+            if key.eq_ignore_ascii_case("content-length") {
+                let vl = val.trim();
+                if vl.is_empty()
+                    || !vl.bytes().all(|b| b.is_ascii_digit())
+                    || vl.starts_with('0') && vl.len() > 1
+                    || vl.len() >= 10
+                {
+                    anomalies.push("cl-anomaly");
                 }
             }
             match headers.entry(key) {
@@ -981,6 +1295,18 @@ fn parse_raw_http(raw: &str) -> Result<NativeRequest, String> {
                     e.push('\n');
                     e.push_str(&val);
                     anomalies.push("dup-header");
+                    let k = o.key();
+                    if k.eq_ignore_ascii_case("transfer-encoding") {
+                        anomalies.push("dup-te");
+                    } else if k.eq_ignore_ascii_case("content-length") {
+                        anomalies.push("dup-cl");
+                    } else if k.eq_ignore_ascii_case("host") {
+                        anomalies.push("dup-host");
+                    } else if k.eq_ignore_ascii_case("x-forwarded-proto")
+                        || k.eq_ignore_ascii_case("x-forwarded-scheme")
+                    {
+                        anomalies.push("dup-xff-proto");
+                    }
                 }
                 std::collections::hash_map::Entry::Vacant(v) => {
                     v.insert(val);
@@ -1116,7 +1442,19 @@ pub async fn refresh_ready(status: &Arc<tokio::sync::RwLock<BenchStatus>>, datas
 /// 页面可选数据源清单（含就绪状态）。
 pub fn list_datasets() -> serde_json::Value {
     let items = [
-        ("samples", "规则包 samples", "packs/<pack>/samples · 有 expect", true),
+        ("samples", "规则包 samples · 全部", "packs/<pack>/samples · 正+负", true),
+        (
+            "samples-positive",
+            "规则包 samples · 正样本",
+            "expect=block · 测检出/漏报",
+            true,
+        ),
+        (
+            "samples-negative",
+            "规则包 samples · 负样本",
+            "expect=pass · 测误报",
+            true,
+        ),
         (
             "blazehttp",
             "blazehttp（长亭）",
@@ -1189,15 +1527,15 @@ fn truncate(s: &str, n: usize) -> String {
     }
 }
 
-/// Bench 准确率测试强制 deep 路径（与生产 auto 分离）；进程内恢复 env。
+/// Bench 按页面选项设置 inspect 模式（覆盖 pack；任务结束恢复原 env）。
 struct BenchInspectModeGuard {
     prev: Option<String>,
 }
 
 impl BenchInspectModeGuard {
-    fn deep_for_bench() -> Self {
+    fn for_mode(mode: &str) -> Self {
         let prev = std::env::var("NERVE_NATIVE_INSPECT_MODE").ok();
-        std::env::set_var("NERVE_NATIVE_INSPECT_MODE", "deep");
+        std::env::set_var("NERVE_NATIVE_INSPECT_MODE", mode);
         Self { prev }
     }
 }

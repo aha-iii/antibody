@@ -1,0 +1,59 @@
+- id: sample-rce-windows-lolbin
+  rule_id: rce-windows-lolbin
+  name: RCE Windows LOLBin
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id001
+  - rce
+  - cmdi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=certutil -urlcache
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rce-windows-lolbin-alt
+  rule_id: rce-windows-lolbin
+  name: RCE Windows LOLBin (alt)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=certutil -urlcache
+- id: sample-rce-windows-lolbin-gen-pass
+  rule_id: rce-windows-lolbin
+  name: RCE Windows LOLBin (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - cmdi
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

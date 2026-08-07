@@ -1,0 +1,40 @@
+- id: sample-xray-poc-create-allow-matched-allow
+  rule_id: xray-poc-create-allow
+  name: Allow XRay POC create API with CVE metadata JSON (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - path
+  - api
+  request:
+    method: GET
+    host: example.com
+    uri: /api/v2/xray/poc/create/
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-xray-poc-create-allow-gen-pass
+  rule_id: xray-poc-create-allow
+  name: Allow XRay POC create API with CVE metadata JSON (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - path
+  - api
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

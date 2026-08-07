@@ -1,0 +1,78 @@
+- id: sample-sensitive-api-recon-gen-pass
+  rule_id: sensitive-api-recon
+  name: Sensitive API / secrets / swagger recon (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - recon
+  - admin
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sensitive-api-recon-oauth-path-pass
+  rule_id: sensitive-api-recon
+  name: OAuth authorize path alone must not trip recon (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - recon
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /application/o/authorize
+    query: client_id=app&redirect_uri=https://app.example/cb
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sensitive-api-recon-rest-workflows-pass
+  rule_id: sensitive-api-recon
+  name: Bare /rest/workflows must not trip recon (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - recon
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /rest/workflows
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-n8n-workflow-expr-abuse-pass
+  rule_id: n8n-workflow-expr-abuse
+  name: n8n workflow list without abuse params (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: high
+  severity: info
+  tags:
+  - recon
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /rest/workflows
+    query: limit=10
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

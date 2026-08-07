@@ -1,0 +1,39 @@
+- id: sample-scanner-nmap
+  rule_id: scanner-nmap
+  name: Scanner nmap scripting
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - admin
+  - scanner
+  request:
+    method: GET
+    host: example.com
+    uri: /sample
+    query: ''
+    headers:
+      User-Agent: nmap scripting
+      Accept: '*/*'
+    body: ''
+- id: sample-scanner-nmap-gen-pass
+  rule_id: scanner-nmap
+  name: Scanner nmap scripting (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - admin
+  - scanner
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

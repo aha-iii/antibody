@@ -1,5 +1,86 @@
 # baseline changelog
 
+## 1.5.59
+- **Aho overlapping**：短 contains 针不再挡住长针（修复 `busybox wget` / `${jndi:ldap` 等系统性漏检）
+- Nerve RIS：未知流量默认 Deep；灰区走 Deep；L1 Bloom 不再压 clean（防白样本污染）
+- Fusion：单条 block 达阈即硬拦，不被高分 allow（score=200）冲成 observe
+- samples：按样本 `min_level` 升档检测；清理无法对齐的 gen-block；正/负极性下拉
+- `lfi-null-byte`：去掉 url_decode（避免 `%00` 被解码后无法 contains）
+
+## 1.5.58
+- Nerve RIS 分流修复：`score ≥ gray/deep` **优先于** L1 Bloom / 负缓存 / L2 结构「干净」捷径（避免攻击被压成 clean 且不 escalate）
+- gray 未硬拦 → **一律 escalate** Deep；`deep_threshold=0.28` / `gray_threshold=0.18`（合成 0.40 过宽）
+
+## 1.5.57
+- Nerve RIS **P2**：route_gate 特征 20→**28** 维；可选轻量 stump 增强（`logistic+stumps`）
+- 校准：`scan_threshold_curve` + Dashboard `POST /api/ris/calibrate` / `GET /api/ris/curve`；Bench 页曲线图
+- 落盘：`config/route_threshold_curve.json`；权重 JSON 含 `model` / `stumps`
+
+## 1.5.56
+- Nerve RIS **P1**：L2 结构锚定（方法+路径模板+CT+参数键）→ clean / anomaly→gray
+- L2 结构指纹学习（clean Fast 回写）；`structure_known` 命中走 clean
+- Shadow：gray 默认始终异步深检；clean 按 `NERVE_NATIVE_SHADOW_CLEAN_BPS` 采样
+
+## 1.5.55
+- **Nerve RIS**（Risk-stratified Inspection Staging）：`ris_zone=clean|gray|hot`；`gray_threshold=0.20` / `deep_threshold=0.35`
+- L1：Bloom / 负缓存挂入 `plan_inspect`；高置信 clean Fast 放行回写
+- L4：仅 gray 区 escalate；clean 不升检；hot 直 Deep
+- 指标：`nerve_native_ris_zone_{clean,gray,hot}_total`
+
+## 1.5.54
+- route_gate：特征优先浅解码预览 haystack；`%HH` 线性计数；`sql_comment` 收紧（勿裸 `#`）
+- auto 决策收敛为「硬规则 / route_deep → deep，否则 fast」；保留 Fast→Deep escalate 兜底
+- 校准：`scripts/calibrate_route_gate.py` + `nerve-antibody-calibrate-route`；更新 `config/route_weights.json`（逻辑回归）；`deep_threshold=0.35`
+
+## 1.5.53
+- auto 分流曾默认 deep（检出补丁）；1.5.54 起改回分数门闩 + 硬规则（见上）
+
+## 1.5.52
+- auto 路由：百分号编码攻击标记强制 deep；`deep_threshold` 0.38→0.28；`fast_max_inspect_ms` 80→120
+- 引擎：auto 下 Fast 未硬拦且可疑/编码/近阈 → 升 deep，避免无解码漏检（WAFTester auto 检出崩）
+
+## 1.5.51
+- FP（GoTestWAF `false-pos/texts`）：`union was a great select` 语义 seq 分归零 + prose veto；`D'or 1st` / `JavaScript: Basics` / CRLF 文案 `subject`/`set` / `DELETE 75oBC$` / `_SELECT … fromDate` 对应规则收紧
+- FP：`legit-api-search-get-allow` 不再放行整段 base64 形 `q=`（曾把 Base64Flat LDAP 净分压到 0）
+- 引擎：`decode_attack_hint` 的 `javascript:` 仅认载荷形（alert/eval/…），勿拦书名
+- 漏报：新增 `gotestwaf-base64-flat`（LDAP/Mail/NoSQL/Path/Shell/SQLi/XSS 的 Base64Flat 前缀）
+
+## 1.5.50
+- FP：`idor-numeric-api` 去掉裸 `/rest/workflows|executions`（AI-WORKFLOW / RATE-ZONE / LEGIT-N8N 白样本）
+- FP：JWT 负 iat 不再单独定罪（AUTH-JWT-011 白样本）；TE `gzip,deflate` 等合法逗号列表不标 `te-anomaly`
+- 漏报：OAuth `q=` 内 form_post 用 `.+` 跨 `&`；JWT nbf/exp/name/kid 多段标记加宽
+
+## 1.5.49
+- JWT：修正 claim abuse 的 lowercase base64 标记（负 iat / nbf0 / 字符串 exp / null sub / name SQLi）；`jwt-struct-anomaly` 去掉五段 JWE 误杀
+- 协议：`parse_raw_http` 细分 `dup-te`/`dup-cl`/`dup-host`/`dup-xff-proto`/`cl-anomaly`；`proto-anomaly-marker` 消费这些标记
+- IDOR：`idor-numeric-api` `min_level` high→**medium**（medium 评测此前整类未启用）
+- FP：`sqli-auth-bypass-tail-comment` body 不再用裸 `#`（markdown 白样本）；`proto-pollution` 覆盖 `[__proto__]` / `constructor][prototype`
+- 其它：OAuth `q=` 内 form_post+attacker；双编码控制符 `%250d/%257f`；超长 method 名
+
+## 1.5.48
+- 预算：`levels.medium/high.max_inspect_ms` 2500→**5000**，`max_regex_evals`→160000（降高并发空明细假漏报）
+- 分流清单：`WAFTTEST-FAIL-TRIAGE.md`（超时 / allow 扣分 / 真漏报）
+- allow：去掉 JWT 负 iat 宽放行；`api-self-me-allow` 仅 GET 只读；`oauth-authorize-flow-allow` 去掉无路径 `response_type=code`，score 80；override 250
+- FP：`query-injection-crlf-command` 不拦 WebDAV 方法白样本；`jwt-access-token-anomaly` 去掉五段 JWE 误杀；`proto-pollution` query 收紧键形态
+- 漏报：`open-redirect-param` 补反斜杠 `\/` / `\/\/` 外站
+
+## 1.5.47
+- 分档配置统一到 `[policy.levels.{low,medium,high}]`：阈值、预算、解码 blobs/depth、base64、自适应权重/封顶均可在 pack.toml 修改
+- 全局补充 `[policy.pipeline.route_preview]` / `fast_path` / `edge`；引擎去掉分档硬编码启发式
+- 兼容旧 `[policy.threshold_by_level]` 与 `[policy.pipeline.by_level]`（`levels` 优先）
+
+## 1.5.46
+- 预算边界全部可配：`[policy.pipeline.by_level.*]` + `abs_max_*`；移除引擎 for_level / env 写死的 1200/2500 clamp
+- 运维：`NERVE_NATIVE_MAX_INSPECT_MS`、`NERVE_NATIVE_ABS_MAX_INSPECT_MS`、`NERVE_NATIVE_EDGE_MAX_INSPECT_MS`
+
+## 1.5.45
+- 预算：`max_inspect_ms` 1200→2500（medium 高并发 waftester 下原熔断导致假漏报；失败用例 p50≈1.27s）
+- 引擎：high 档 / `NERVE_NATIVE_MAX_INSPECT_MS` clamp 上限同步到 2500
+
+## 1.5.44
+- WAFTester 分类治理 B1–B5：收紧 JWT/recon/走私误报；补 open-redirect / 双编码 / Windows RCE / Redis·LDAP 规则与正负样本
+- 详见 `FALSE_POSITIVES.md`「WAFTester medium」节
+
 ## 1.5.43
 - 引擎：Shadow FP 导出增强 — `fp`/`false_positive` 生成 `action: allow` YAML 草稿，含 feature/fingerprint 占位与 matched `rule_id`
 - 规则：`90-allow` OAuth token/redirect_uri、OIDC UUID 路径、proxy `X-Original-URL` allow

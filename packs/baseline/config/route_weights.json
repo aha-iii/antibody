@@ -1,25 +1,92 @@
 {
-  "bias": 0.0,
+  "bias": -0.4370286166667938,
+  "model": "logistic+stumps",
+  "stumps": [
+    {
+      "alpha": 0.3499999940395355,
+      "feature": 0,
+      "left": 1.0,
+      "right": -1.0,
+      "threshold": 0.15000000596046448
+    },
+    {
+      "alpha": 0.3499999940395355,
+      "feature": 27,
+      "left": -0.7238491177558899,
+      "right": 1.0,
+      "threshold": 0.15000000596046448
+    },
+    {
+      "alpha": 0.3499999940395355,
+      "feature": 27,
+      "left": -0.47050198912620544,
+      "right": 1.0,
+      "threshold": 0.15000000596046448
+    },
+    {
+      "alpha": 0.3499999940395355,
+      "feature": 0,
+      "left": 1.0,
+      "right": -0.4979046881198883,
+      "threshold": 0.15000000596046448
+    },
+    {
+      "alpha": 0.3499999940395355,
+      "feature": 27,
+      "left": -0.3063151240348816,
+      "right": 1.0,
+      "threshold": 0.15000000596046448
+    },
+    {
+      "alpha": 0.3499999940395355,
+      "feature": 16,
+      "left": 0.74286949634552,
+      "right": -0.6164049506187439,
+      "threshold": 0.15000000596046448
+    },
+    {
+      "alpha": 0.3499999940395355,
+      "feature": 27,
+      "left": -0.3005271255970001,
+      "right": 0.9717481732368469,
+      "threshold": 0.15000000596046448
+    },
+    {
+      "alpha": 0.3499999940395355,
+      "feature": 27,
+      "left": -0.19534261524677277,
+      "right": 0.6316361427307129,
+      "threshold": 0.15000000596046448
+    }
+  ],
   "weights": {
-    "attack_shape": 0.42,
-    "operator_hits_norm": 0.32,
-    "quote_ratio": 0.48,
-    "special_ratio": 0.30,
-    "url_encoded_ratio": 0.08,
-    "entropy_norm": 0.015,
-    "large_body_soft": 1.0,
-    "proto_anomaly": 0.5,
-    "method_post": 0.04,
-    "has_query": 0.02,
-    "body_kb_log": 0.03,
-    "header_count_norm": 0.02,
-    "cookie_present": 0.02,
-    "json_ct": 0.03,
-    "multipart_ct": 0.02,
-    "double_encode": 0.06,
-    "sql_comment": 0.08,
-    "xss_angle": 0.10,
-    "path_traversal": 0.12,
-    "sample_len_norm": 0.01
+    "api_path": -1.1409423351287842,
+    "attack_shape": 1.8455449342727661,
+    "base64ish": 0.0,
+    "body_kb_log": 0.000253629608778283,
+    "cookie_present": 0.0,
+    "dangerous_key": 0.0,
+    "double_encode": 0.0,
+    "entropy_norm": -0.07243197411298752,
+    "has_query": 0.14866185188293457,
+    "header_count_norm": 0.0,
+    "json_ct": 0.2666688859462738,
+    "key_count_norm": -0.022675372660160065,
+    "large_body_soft": 0.0,
+    "method_post": 0.2666688859462738,
+    "multipart_ct": 0.0,
+    "null_byte": 0.0,
+    "operator_hits_norm": 0.2784692049026489,
+    "path_traversal": 0.48892471194267273,
+    "pct_hex_dense": 0.21209020912647247,
+    "proto_anomaly": 0.0,
+    "query_len_norm": 0.06311780214309692,
+    "quote_ratio": 0.1158827543258667,
+    "sample_len_norm": 0.0005576040130108595,
+    "special_ratio": 0.1138717383146286,
+    "sql_comment": 1.1973304748535156,
+    "structure_clean": -1.9933017492294312,
+    "url_encoded_ratio": 0.4847775101661682,
+    "xss_angle": 0.49378159642219543
   }
 }

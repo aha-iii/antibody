@@ -1,0 +1,57 @@
+- id: sample-nosql-operator-extended-or
+  rule_id: nosql-operator-extended
+  name: NoSQL $or operator in query
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - nosql
+  - injection
+  request:
+    method: GET
+    host: example.com
+    uri: /api/login
+    query: user=admin&pass[$or]=1
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-nosql-operator-extended-odata-filter-pass
+  rule_id: nosql-operator-extended
+  name: OData $select/$orderby/$filter
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - odata
+  request:
+    method: GET
+    host: example.com
+    uri: /api/dynamic/timezonedefinition
+    query: $select=timezonecode,timezonename&$orderby=timezonename&$filter=retiredorder eq 0
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-nosql-operator-extended-odata-orderby-pass
+  rule_id: nosql-operator-extended
+  name: OData $orderby (not NoSQL $or)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - odata
+  request:
+    method: GET
+    host: example.com
+    uri: /api/dynamic/new_userlogo
+    query: $orderby=createdon desc
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -1,0 +1,92 @@
+# JWT header/claim abuse（压过 allow；score≥250）
+# 负 iat 单独出现亦见于白样本 AUTH-JWT-011 → 不单独定罪。
+id: jwt-claim-abuse
+name: JWT header/claim abuse patterns
+severity: critical
+score: 250
+action: block
+min_level: low
+tags: [auth, jwt]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      contains: 'eyjhbGcioijub25l'
+    - field: query
+      contains: 'imfszyi6im5vbmui'
+    - field: query
+      contains: 'imn0esi6inrlehq'
+    - field: query
+      contains: 'ing1yyi6'
+    - field: query
+      contains: 'ing1dci6'
+    - field: query
+      contains: 'imprdsi6'
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          contains: 'fake-signature'
+    # AUTH-JWT-044 nbf=0（多种 JSON 空白形态）
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          regex: 'im5izii?6m'
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          contains: 'im5izii6mh'
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          contains: 'im5izii6ma'
+    # AUTH-JWT-045 字符串 exp
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          contains: 'imv4cci6ig'
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          contains: 'imv4cci6ij'
+    # AUTH-JWT-028 sub 内 \u0000
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          contains: 'blx1mdaw'
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          contains: 'xhuwmdaw'
+    # AUTH-JWT-060 name 内 SQLi（多种）
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          regex: 'im5hbwuioi[^&]{0,40}(?:ie9s|or%20|or\\+|or )'
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          contains: 'im5hbwuioiinie9s'
+    # AUTH-JWT-065 带 kid 的多余段（非 JWE：无 enc）
+    - all:
+        - field: query
+          regex: 'access_token=eyj[a-z0-9_-]{8,}(?:\\.[a-z0-9_-]+){3,}'
+        - field: query
+          contains: 'imtpzci6'
+    # 深层嵌套
+    - all:
+        - field: query
+          contains: 'access_token=eyj'
+        - field: query
+          contains: 'imrhdgeions'
+        - field: query
+          regex: 'access_token=eyj[^&]{200,}'

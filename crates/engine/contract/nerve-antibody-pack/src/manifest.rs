@@ -109,8 +109,12 @@ pub struct InspectPolicy {
 pub struct RouteGatePolicy {
     #[serde(default = "default_true")]
     pub enabled: bool,
+    /// Nerve RIS：score ≥ deep_threshold → hot → Deep。
     #[serde(default = "default_deep_threshold")]
     pub deep_threshold: f32,
+    /// Nerve RIS：gray_threshold ≤ score < deep_threshold → gray → Fast(+escalate)。
+    #[serde(default = "default_gray_threshold")]
+    pub gray_threshold: f32,
     #[serde(default = "default_true")]
     pub hard_decode_hint: bool,
     /// 可选 JSON 权重（相对 pack 根），bench 校准输出。
@@ -124,7 +128,11 @@ pub struct RouteGatePolicy {
 }
 
 fn default_deep_threshold() -> f32 {
-    0.38
+    0.35
+}
+
+fn default_gray_threshold() -> f32 {
+    0.20
 }
 
 impl Default for RouteGatePolicy {
@@ -132,6 +140,7 @@ impl Default for RouteGatePolicy {
         Self {
             enabled: true,
             deep_threshold: default_deep_threshold(),
+            gray_threshold: default_gray_threshold(),
             hard_decode_hint: true,
             weights_path: None,
             weights: HashMap::new(),
@@ -178,6 +187,175 @@ impl Default for AdaptivePolicy {
     }
 }
 
+/// 单档完整配置（挂在 `[policy.levels.{low,medium,high}]`；字段缺省 = 继承全局 `[policy.pipeline]`）。
+#[derive(Debug, Clone, Deserialize, Default)]
+pub struct LevelProfile {
+    #[serde(default)]
+    pub block_threshold: Option<u32>,
+    #[serde(default)]
+    pub max_inspect_ms: Option<u64>,
+    #[serde(default)]
+    pub max_regex_evals: Option<u32>,
+    #[serde(default)]
+    pub max_decode_blobs: Option<usize>,
+    #[serde(default)]
+    pub max_decode_depth: Option<u8>,
+    #[serde(default)]
+    pub max_blob_chars: Option<usize>,
+    #[serde(default)]
+    pub max_field_chars: Option<usize>,
+    #[serde(default)]
+    pub max_params: Option<usize>,
+    #[serde(default)]
+    pub base64_expand: Option<bool>,
+    #[serde(default)]
+    pub decode_enabled: Option<bool>,
+    #[serde(default)]
+    pub structural_enabled: Option<bool>,
+    /// 自适应模型档权重（原硬编码 0 / 0.7 / 1.0）。
+    #[serde(default)]
+    pub adaptive_level_weight: Option<f32>,
+    /// 自适应模型分贡献上限（原硬编码 0 / 25 / 35）。
+    #[serde(default)]
+    pub adaptive_score_cap: Option<u32>,
+}
+
+/// 三档策略（与全局 `[policy.pipeline]` 分离）。
+#[derive(Debug, Clone, Deserialize, Default)]
+pub struct LevelsPolicy {
+    #[serde(default)]
+    pub low: LevelProfile,
+    #[serde(default)]
+    pub medium: LevelProfile,
+    #[serde(default)]
+    pub high: LevelProfile,
+}
+
+impl LevelsPolicy {
+    pub fn get(&self, level: &str) -> &LevelProfile {
+        match level {
+            "low" => &self.low,
+            "high" => &self.high,
+            _ => &self.medium,
+        }
+    }
+}
+
+/// 兼容旧字段：仅预算两项（若同时配置 `levels`，以 `levels` 为准）。
+#[derive(Debug, Clone, Deserialize, Default)]
+pub struct PipelineLevelBudget {
+    #[serde(default)]
+    pub max_inspect_ms: Option<u64>,
+    #[serde(default)]
+    pub max_regex_evals: Option<u32>,
+}
+
+/// 兼容旧 `[policy.pipeline.by_level]`。
+#[derive(Debug, Clone, Deserialize, Default)]
+pub struct PipelineByLevel {
+    #[serde(default)]
+    pub low: PipelineLevelBudget,
+    #[serde(default)]
+    pub medium: PipelineLevelBudget,
+    #[serde(default)]
+    pub high: PipelineLevelBudget,
+}
+
+/// 路由预览浅解码上限（`[policy.pipeline.route_preview]`）。
+#[derive(Debug, Clone, Deserialize)]
+pub struct RoutePreviewPolicy {
+    #[serde(default = "default_rp_blobs")]
+    pub max_decode_blobs: usize,
+    #[serde(default = "default_rp_blob_chars")]
+    pub max_blob_chars: usize,
+    #[serde(default = "default_rp_field_chars")]
+    pub max_field_chars: usize,
+    #[serde(default = "default_rp_depth")]
+    pub max_decode_depth: u8,
+    #[serde(default = "default_rp_params")]
+    pub max_params: usize,
+}
+
+fn default_rp_blobs() -> usize {
+    8
+}
+fn default_rp_blob_chars() -> usize {
+    4096
+}
+fn default_rp_field_chars() -> usize {
+    8192
+}
+fn default_rp_depth() -> u8 {
+    2
+}
+fn default_rp_params() -> usize {
+    64
+}
+
+impl Default for RoutePreviewPolicy {
+    fn default() -> Self {
+        Self {
+            max_decode_blobs: default_rp_blobs(),
+            max_blob_chars: default_rp_blob_chars(),
+            max_field_chars: default_rp_field_chars(),
+            max_decode_depth: default_rp_depth(),
+            max_params: default_rp_params(),
+        }
+    }
+}
+
+/// 快路径开关（`[policy.pipeline.fast_path]`）。
+#[derive(Debug, Clone, Deserialize)]
+pub struct FastPathPolicy {
+    #[serde(default)]
+    pub decode_enabled: bool,
+    #[serde(default)]
+    pub base64_expand: bool,
+    #[serde(default)]
+    pub structural_enabled: bool,
+    #[serde(default)]
+    pub max_decode_blobs: usize,
+    #[serde(default)]
+    pub max_decode_depth: u8,
+}
+
+impl Default for FastPathPolicy {
+    fn default() -> Self {
+        Self {
+            decode_enabled: false,
+            base64_expand: false,
+            structural_enabled: false,
+            max_decode_blobs: 0,
+            max_decode_depth: 0,
+        }
+    }
+}
+
+/// 边缘内联收紧默认（`[policy.pipeline.edge]`；可被 env 覆盖）。
+#[derive(Debug, Clone, Deserialize)]
+pub struct EdgePipelinePolicy {
+    #[serde(default = "default_edge_ms")]
+    pub max_inspect_ms: u64,
+    #[serde(default = "default_edge_regex")]
+    pub max_regex_evals: u32,
+}
+
+fn default_edge_ms() -> u64 {
+    300
+}
+fn default_edge_regex() -> u32 {
+    20_000
+}
+
+impl Default for EdgePipelinePolicy {
+    fn default() -> Self {
+        Self {
+            max_inspect_ms: default_edge_ms(),
+            max_regex_evals: default_edge_regex(),
+        }
+    }
+}
+
 /// 引擎级 Decode / Structural / Budget 策略。
 #[derive(Debug, Clone, Deserialize)]
 pub struct PipelinePolicy {
@@ -198,7 +376,7 @@ pub struct PipelinePolicy {
     pub max_params: usize,
     #[serde(default = "default_max_decode_depth")]
     pub max_decode_depth: u8,
-    /// 0 = 不限制。
+    /// 基值（档未覆盖时使用）；`0` = 不限制。
     #[serde(default = "default_max_inspect_ms")]
     pub max_inspect_ms: u64,
     #[serde(default = "default_max_regex")]
@@ -206,6 +384,21 @@ pub struct PipelinePolicy {
     /// 深路径两阶段解码（浅层优先，可疑再全量）。
     #[serde(default = "default_true")]
     pub lazy_decode: bool,
+    /// 旧分档预算（兼容）；优先使用 `[policy.levels]`。
+    #[serde(default)]
+    pub by_level: PipelineByLevel,
+    /// 安全硬顶（防误配）；`0` = 不设硬顶。默认 60s。
+    #[serde(default = "default_abs_max_inspect_ms")]
+    pub abs_max_inspect_ms: u64,
+    /// 正则求值次数硬顶；`0` = 不设硬顶。默认 500_000。
+    #[serde(default = "default_abs_max_regex_evals")]
+    pub abs_max_regex_evals: u32,
+    #[serde(default)]
+    pub route_preview: RoutePreviewPolicy,
+    #[serde(default)]
+    pub fast_path: FastPathPolicy,
+    #[serde(default)]
+    pub edge: EdgePipelinePolicy,
 }
 
 impl Default for PipelinePolicy {
@@ -222,6 +415,12 @@ impl Default for PipelinePolicy {
             max_inspect_ms: default_max_inspect_ms(),
             max_regex_evals: default_max_regex(),
             lazy_decode: true,
+            by_level: PipelineByLevel::default(),
+            abs_max_inspect_ms: default_abs_max_inspect_ms(),
+            abs_max_regex_evals: default_abs_max_regex_evals(),
+            route_preview: RoutePreviewPolicy::default(),
+            fast_path: FastPathPolicy::default(),
+            edge: EdgePipelinePolicy::default(),
         }
     }
 }
@@ -247,6 +446,12 @@ fn default_max_inspect_ms() -> u64 {
 fn default_max_regex() -> u32 {
     4000
 }
+fn default_abs_max_inspect_ms() -> u64 {
+    60_000
+}
+fn default_abs_max_regex_evals() -> u32 {
+    500_000
+}
 
 fn default_true() -> bool {
     true
@@ -261,9 +466,12 @@ pub struct PackPolicy {
     /// 为 true 时整包强制观察（只记不拦，用于灰度）。
     #[serde(default)]
     pub observe_only: bool,
-    /// 按档阈值（拉开烈度）。
+    /// 按档阈值（兼容旧包；优先 `[policy.levels.*.block_threshold]`）。
     #[serde(default)]
     pub threshold_by_level: ThresholdByLevel,
+    /// 分档完整配置（阈值 / 预算 / 解码 / 自适应）。
+    #[serde(default)]
+    pub levels: LevelsPolicy,
     /// 语义层。
     #[serde(default)]
     pub semantic: SemanticPolicy,
@@ -310,6 +518,7 @@ impl Default for PackPolicy {
             block_threshold: default_threshold(),
             observe_only: false,
             threshold_by_level: ThresholdByLevel::default(),
+            levels: LevelsPolicy::default(),
             semantic: SemanticPolicy::default(),
             signals: SignalsPolicy::default(),
             adaptive: AdaptivePolicy::default(),
@@ -321,8 +530,11 @@ impl Default for PackPolicy {
 }
 
 impl PackPolicy {
-    /// 取某一强度档的拦截阈值。
+    /// 取某一强度档的拦截阈值（`levels` 优先于 `threshold_by_level`）。
     pub fn threshold_for(&self, level: &str) -> u32 {
+        if let Some(t) = self.levels.get(level).block_threshold {
+            return t;
+        }
         match level {
             "low" => self.threshold_by_level.low,
             "high" => self.threshold_by_level.high,

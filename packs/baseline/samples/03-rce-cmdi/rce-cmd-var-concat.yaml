@@ -1,0 +1,126 @@
+- id: sample-rce-cmd-var-concat-block
+  rule_id: rce-cmd-var-concat
+  name: Windows set/call variable concat (pos)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - rce
+  - windows
+  request:
+    method: GET
+    host: example.com
+    uri: /
+    query: q=cmd /c "set a=who&set b=ami&call %a%%b%"
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-rce-cmd-var-concat-pass
+  rule_id: rce-cmd-var-concat
+  name: Benign set description (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=headset-settings
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-rce-cmd-for-loop-block
+  rule_id: rce-cmd-for-loop
+  name: Windows FOR /F loop (pos)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - rce
+  - windows
+  request:
+    method: GET
+    host: example.com
+    uri: /
+    query: q=cmd /c "for /f %i in ('whoami') do @echo %i"
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-rce-cmd-for-loop-pass
+  rule_id: rce-cmd-for-loop
+  name: Benign for-loop mention (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=for-each-item-guide
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-sqli-null-byte-keyword-pass
+  rule_id: sqli-null-byte-keyword
+  name: Normal select word in prose (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=please-select-a-plan
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-redis-cmd-pass
+  rule_id: redis-cmd-injection
+  name: Benign queue mention (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - redis
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=message-queue-guide
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-ldap-pass
+  rule_id: ldap-injection-filter
+  name: Benign dn query (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - ldap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/user
+    query: dn=cn=alice,ou=people,dc=example,dc=com
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''

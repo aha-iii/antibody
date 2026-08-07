@@ -1,0 +1,59 @@
+- id: sample-rce-cmd-exe
+  rule_id: rce-cmd-exe
+  name: RCE cmd.exe
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - rce
+  - cmdi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=cmd.exe
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rce-cmd-exe-alt
+  rule_id: rce-cmd-exe
+  name: RCE cmd.exe (alt)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=cmd.exe
+- id: sample-rce-cmd-exe-gen-pass
+  rule_id: rce-cmd-exe
+  name: RCE cmd.exe (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - cmdi
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

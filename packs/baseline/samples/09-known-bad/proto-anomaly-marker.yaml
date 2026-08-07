@@ -1,0 +1,42 @@
+- id: sample-proto-anomaly-marker-gen-block
+  rule_id: proto-anomaly-marker
+  name: Parsed HTTP protocol anomaly markers (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - protocol
+  - smuggle
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=ok
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      _proto_anomaly: http09
+    body: ''
+- id: sample-proto-anomaly-marker-gen-pass
+  rule_id: proto-anomaly-marker
+  name: Parsed HTTP protocol anomaly markers (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - protocol
+  - smuggle
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

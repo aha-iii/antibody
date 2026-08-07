@@ -1,0 +1,233 @@
+{
+  "recommended_deep_threshold": 0.28,
+  "recommended_gray_threshold": 0.18,
+  "attack_fast_miss": 0.0,
+  "clean_fast_ratio": 1.0,
+  "attack_count": 5,
+  "clean_count": 7,
+  "max_miss": 0.01,
+  "curve": [
+    {
+      "threshold": 0.12,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.13,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.14,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.15,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.16,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.17,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.18,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.19,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.2,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.21,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.22,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.23,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.24,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.25,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.26,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.27,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.28,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.29,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.3,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.31,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.32,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.33,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.34,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.35,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.36,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.37,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.38,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.39,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.4,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.41,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.42,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.43,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.44,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.45,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.46,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.47,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.48,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.49,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.5,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.51,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.52,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.53,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.54,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    },
+    {
+      "threshold": 0.55,
+      "attack_fast_miss": 0.0,
+      "clean_fast_ratio": 1.0
+    }
+  ],
+  "model": "logistic+stumps",
+  "note": "aligned to pack.toml 1.5.58; re-calibrate with real bench"
+}

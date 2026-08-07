@@ -1,0 +1,42 @@
+- id: sample-xss-referer-onerror-gen-block
+  rule_id: xss-referer-onerror
+  name: XSS event sink in Referer (pos)
+  category: 12-xss-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - xss
+  - referer
+  - blazehttp_gap
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=ok
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Referer: 'javascript:'
+    body: ''
+- id: sample-xss-referer-onerror-gen-pass
+  rule_id: xss-referer-onerror
+  name: XSS event sink in Referer (neg)
+  category: 12-xss-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - xss
+  - referer
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

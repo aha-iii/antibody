@@ -1,0 +1,41 @@
+- id: sample-proto-crlf-uri-gen-block
+  rule_id: proto-crlf-uri
+  name: CRLF injection in URI path (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: medium
+  tags:
+  - proto
+  - crlf
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /%0d
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-proto-crlf-uri-gen-pass
+  rule_id: proto-crlf-uri
+  name: CRLF injection in URI path (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - proto
+  - crlf
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

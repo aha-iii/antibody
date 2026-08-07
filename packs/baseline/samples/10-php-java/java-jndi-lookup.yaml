@@ -1,0 +1,59 @@
+- id: sample-java-jndi-lookup
+  rule_id: java-jndi-lookup
+  name: Java InitialContext lookup
+  category: 10-php-java
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id001
+  - php
+  - java
+  - app
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=initialcontext
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-java-jndi-lookup-alt
+  rule_id: java-jndi-lookup
+  name: Java InitialContext lookup (alt)
+  category: 10-php-java
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=initialcontext
+- id: sample-java-jndi-lookup-gen-pass
+  rule_id: java-jndi-lookup
+  name: Java InitialContext lookup (neg)
+  category: 10-php-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - php
+  - java
+  - app
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

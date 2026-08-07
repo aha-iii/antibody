@@ -26,8 +26,11 @@ when:
       regex: "(?i)\\(\\|\\(\\s*uid\\s*=\\*"
     - field: body
       contains: 'objectclass=*'
+    # 仅拦混淆拆分或带攻击载荷的 javascript:；勿拦书名「JavaScript: Basics…」
     - field: query
-      regex: "(?i)java\\s*sc\\s*ript\\s*:"
+      regex: "(?i)java\\s+sc\\s*ript\\s*:"
+    - field: query
+      regex: "(?i)javascript\\s*:\\s*(?:alert|eval|prompt|document\\.|window\\.|fetch\\s*\\()"
     - field: query
       regex: "(?i)<iframe[^>]+src\\s*="
     - field: query

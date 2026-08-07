@@ -1,0 +1,61 @@
+- id: sample-telemetry-sensor-allow-matched-allow
+  rule_id: telemetry-sensor-allow
+  name: Allow telemetry and anti-fraud sensor payloads (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - rce
+  - telemetry
+  request:
+    method: GET
+    host: example.com
+    uri: /event
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-telemetry-sensor-allow-gen-pass
+  rule_id: telemetry-sensor-allow
+  name: Allow telemetry and anti-fraud sensor payloads (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - rce
+  - telemetry
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-telemetry-sensor-allow-matched-pass
+  rule_id: telemetry-sensor-allow
+  name: Allow telemetry and anti-fraud sensor payloads (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - rce
+  - telemetry
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /static/app.js
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''

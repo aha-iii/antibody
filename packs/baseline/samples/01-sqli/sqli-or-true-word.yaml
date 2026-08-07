@@ -1,0 +1,39 @@
+- id: sample-sqli-or-true-word
+  rule_id: sqli-or-true-word
+  name: SQL OR TRUE
+  category: 01-sqli
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=or true
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-or-true-word-gen-pass
+  rule_id: sqli-or-true-word
+  name: SQL OR TRUE (neg)
+  category: 01-sqli
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

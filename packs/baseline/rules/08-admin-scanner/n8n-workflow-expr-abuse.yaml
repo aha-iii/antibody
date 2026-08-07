@@ -1,0 +1,21 @@
+id: n8n-workflow-expr-abuse
+name: n8n / workflow expression and code abuse
+severity: high
+score: 42
+action: block
+# medium 下 WAFTester 将部分 workflow 探测标为白样本；high 档启用
+min_level: high
+tags: [recon, rce, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: uri
+          regex: "(?i)^/rest/workflows"
+        - field: query
+          regex: "(?i)(?:^|[&])(?:code|expression|credentials|settings)="
+    - all:
+        - field: uri
+          regex: "(?i)^/rest/workflows"
+        - field: query
+          regex: "(?i)__proto__|process\\.env|\\$json\\.|\\$execution"

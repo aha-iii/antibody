@@ -62,4 +62,4 @@ python3 ../Nerve-waf-expert/scripts/crs_to_expert_pack.py
 | `baseline/samples` | 每规则 ≥1 试打案例（Dashboard 案例库） | ~300+（含 alt / gap） |
 | `demo` | 单测 | ~4 |
 
-再生 baseline 案例：`python3 scripts/gen_baseline_samples.py`
+再生 / 拆分 baseline 案例（按规则文件）：`python3 packs/baseline/tools/split_samples_by_rule.py`

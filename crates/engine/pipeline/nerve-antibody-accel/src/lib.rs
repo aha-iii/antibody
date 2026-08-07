@@ -27,4 +27,24 @@ mod tests {
         let all = m.find_all("union select <script>");
         assert!(all.contains(&0) && all.contains(&1));
     }
+
+    #[test]
+    fn overlapping_reports_long_needles_shadowed_by_short() {
+        let patterns = vec![
+            "busy".into(),
+            "busybox wget".into(),
+            "jndi".into(),
+            "${jndi:ldap".into(),
+        ];
+        let m = MultiMatcher::build(&patterns);
+        let hits = m.find_all("q=busybox wget ${jndi:ldap");
+        assert!(
+            hits.iter().any(|&i| patterns[i] == "busybox wget"),
+            "long needle busybox wget must survive short prefix busy; hits={hits:?}"
+        );
+        assert!(
+            hits.iter().any(|&i| patterns[i] == "${jndi:ldap"),
+            "long needle ${{jndi:ldap must survive short jndi; hits={hits:?}"
+        );
+    }
 }

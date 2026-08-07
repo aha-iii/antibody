@@ -1,0 +1,36 @@
+- id: sample-sqli-case-when-matched-block
+  rule_id: sqli-case-when
+  name: SQL CASE WHEN
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: []
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=1 case when 1=1 then sleep(1) else 0 end
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-sqli-case-when-gen-pass
+  rule_id: sqli-case-when
+  name: SQL CASE WHEN injection (context) (neg)
+  category: 01-sqli
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

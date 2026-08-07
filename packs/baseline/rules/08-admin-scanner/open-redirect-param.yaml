@@ -8,17 +8,23 @@ tags: [redirect, self]
 transforms: [url_decode_uni, lowercase]
 when:
   any:
-    - field: query
-      regex: "(?i)(?:^|[&])(?:url|next|return|returnurl|return_url|redirect|redirect_uri|redirect_url|continue|destination|goto|redir|callback|dest|relaystate|service|target)=(?:\\s|%20|%09|%0a|%0d)*(?:https?:|//)[^&]*"
-    - field: body
-      regex: "(?i)(?:relaystate|redirect_uri|service|return_url)\\s*[:=]\\s*[\"']?https?:"
+    # uri 全串 + [?&]：避免 query.q 值内嵌 redirect_uri=https://legitimate 误报
     - field: uri
-      regex: "(?i)[?&](?:url|next|return|returnurl|redirect_uri|continue|goto|relaystate|service)=(?:\\s)*(?:https?:|//)"
+      regex: "(?i)[?&](?:url|next|return|returnurl|redirect_uri|continue|goto|relaystate|service)=(?:\\s|%20|%09)*https?://"
     - field: query
-      regex: "(?i)(?:^|[&])(?:url|next|return|redirect|redirect_uri|goto|relaystate|service)=\\\\+/"
+      regex: "(?i)(?:^|&)(?:url|next|return|redirect|goto|destination)=(?:\\s|%20|%09|%0a)*https?://(?:evil|attacker)\\."
+    - field: query
+      contains: 'url=https:/evil'
+    # 反斜杠协议相对 / 单反斜杠外站（WAFTester REDIRECT-BYPASS / BACKSLASH）
+    - field: query
+      contains: 'url=\\/\\/evil'
+    - field: query
+      contains: 'url=\\/\\/example'
+    - field: query
+      contains: 'url=\\/evil'
+    - field: query
+      regex: "(?i)(?:^|[&])url=\\\\/\\\\/[a-z0-9.-]+"
+    - field: query
+      regex: "(?i)(?:^|[&])url=\\\\/(?:evil|attacker|example)\\."
     - field: body
-      regex: "(?i)(?:^|[&])(?:url|next|return|redirect|redirect_uri|goto)=\\\\+/"
-    - field: query
-      regex: "(?i)(?:^|[&])url\\[\\]=https?://"
-    - field: query
-      regex: "(?i)(?:^|[&])(?:url|next|redirect)=[^&]*(?:〱|〵|ゝ|ー)[a-z0-9.-]+"
+      regex: "(?i)(?:relaystate|redirect_uri)\\s*[:=]\\s*[\"']?https?://(?:evil|attacker)"

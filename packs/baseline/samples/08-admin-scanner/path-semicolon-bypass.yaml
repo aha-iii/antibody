@@ -1,0 +1,39 @@
+- id: sample-path-semicolon-bypass-gen-block
+  rule_id: path-semicolon-bypass
+  name: Semicolon path / Spring matrix parameter bypass (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - bypass
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /admin;
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-path-semicolon-bypass-gen-pass
+  rule_id: path-semicolon-bypass
+  name: Semicolon path / Spring matrix parameter bypass (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - bypass
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

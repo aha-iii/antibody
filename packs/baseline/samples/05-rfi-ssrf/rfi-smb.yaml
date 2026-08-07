@@ -1,0 +1,41 @@
+- id: sample-rfi-smb-matched-block
+  rule_id: rfi-smb
+  name: RFI SMB UNC (pos)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /p/file:\\
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rfi-smb-gen-pass
+  rule_id: rfi-smb
+  name: RFI SMB UNC (neg)
+  category: 05-rfi-ssrf
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - ssrf
+  - rfi
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

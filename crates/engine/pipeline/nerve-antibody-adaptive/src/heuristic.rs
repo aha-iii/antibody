@@ -3,7 +3,7 @@
 //! 贡献门闩：仅当存在可疑佐证时才 `contributed=true`，避免「多 view 静态资源」刷出模型分。
 
 use crate::scorer::{AdaptiveInput, AdaptiveOutput};
-use crate::{is_suspicious, level_weight, score_cap, RiskModel};
+use crate::{effective_level_weight, effective_score_cap, is_suspicious, RiskModel};
 
 /// 浅特征启发式。
 pub struct HeuristicModel;
@@ -60,8 +60,8 @@ impl RiskModel for HeuristicModel {
         }
 
         let p = 1.0 / (1.0 + (-logit).exp());
-        let w = level_weight(input.level);
-        let cap = score_cap(input.level);
+        let w = effective_level_weight(input);
+        let cap = effective_score_cap(input);
         let raw = (p * w * cap as f32).round() as u32;
         let mut model_score = raw.min(cap);
         let suspicious = is_suspicious(f);

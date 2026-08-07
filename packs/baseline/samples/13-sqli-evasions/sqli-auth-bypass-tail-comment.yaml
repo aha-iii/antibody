@@ -1,0 +1,41 @@
+- id: sample-sqli-auth-bypass-tail-comment-gen-block
+  rule_id: sqli-auth-bypass-tail-comment
+  name: SQLi auth bypass trailing comment (pos)
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - auth
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q='--
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-auth-bypass-tail-comment-gen-pass
+  rule_id: sqli-auth-bypass-tail-comment
+  name: SQLi auth bypass trailing comment (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - auth
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -13,18 +13,20 @@
 version: "1.0.0"
 
 signatures:
+  # 远距 token 子序列易撞散文；分值 0，仅作观测，不参与融合加分
   - id: sqli.union-select-seq
     kind: sqli
     match: token_seq
     tokens: ["union", "select"]
-    score_delta: 12
-    confidence: 0.86
-    block_eligible: true
+    score_delta: 0
+    confidence: 0.55
+    block_eligible: false
     min_level: medium
 
   - id: sqli.union-select
     kind: sqli
-    pattern: '(?i)\bunion\b.{0,48}\bselect\b'
+    # 要求 select 后更像 SQL，避免「union … select」自然语言
+    pattern: '(?i)(?:\bunion\b.{0,48}\bselect\b\s*(?:null|distinct|\*|top\b|@@|from\b|concat\s*\(|char\s*\(|0x|\d+\b)|[''"]\s*union\b.{0,32}\bselect\b)'
     score_delta: 14
     confidence: 0.88
     block_eligible: true
@@ -104,7 +106,8 @@ signatures:
 
   - id: prose.union-veto
     kind: sqli
-    pattern: '(?i)\b(?:the|a|labor|trade|credit)\s+union\b|\bunion\s+(?:leaders?|members?|officials?|workers?|bank)\b'
+    # GoTestWAF texts：「union was a great select」等散文
+    pattern: '(?i)\b(?:the|a|labor|trade|credit)\s+union\b|\bunion\s+(?:leaders?|members?|officials?|workers?|bank|was|is)\b|\bunion\b.{0,40}\b(?:great|good|best)\b.{0,24}\bselect\b'
     score_delta: 0
     confidence: 0.75
     veto: true

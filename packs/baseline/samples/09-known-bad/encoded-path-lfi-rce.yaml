@@ -1,0 +1,36 @@
+- id: sample-encoded-path-lfi-rce-gen-block
+  rule_id: encoded-path-lfi-rce
+  name: Double-encoded path traversal and RCE path probes (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: []
+  request:
+    method: POST
+    host: example.com
+    uri: /api/search
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=schemalocation
+- id: sample-encoded-path-lfi-rce-gen-pass
+  rule_id: encoded-path-lfi-rce
+  name: Double-encoded path traversal and RCE path probes (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -1,0 +1,42 @@
+- id: sample-exec-dvwa-ip-gen-block
+  rule_id: exec-dvwa-ip
+  name: DVWA exec ping injection markers (pos)
+  category: 14-upload-rce-java
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - rce
+  - cmdi
+  - blazehttp_gap
+  request:
+    method: POST
+    host: example.com
+    uri: /api/search
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=127.0.0.1;
+- id: sample-exec-dvwa-ip-gen-pass
+  rule_id: exec-dvwa-ip
+  name: DVWA exec ping injection markers (neg)
+  category: 14-upload-rce-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - cmdi
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

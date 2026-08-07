@@ -1,0 +1,41 @@
+- id: sample-oauth-evil-redirect-fast-gen-block
+  rule_id: oauth-evil-redirect-fast
+  name: Fast block OAuth redirect_uri to evil.com (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: critical
+  tags:
+  - redirect
+  - oauth
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: redirect_uri=http://evil.com
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-oauth-evil-redirect-fast-gen-pass
+  rule_id: oauth-evil-redirect-fast
+  name: Fast block OAuth redirect_uri to evil.com (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - redirect
+  - oauth
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

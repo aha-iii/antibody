@@ -1,0 +1,104 @@
+- id: sample-legit-api-dup-header-allow-matched-allow
+  rule_id: legit-api-dup-header-allow
+  name: Allow legitimate API duplicate-header regression samples (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - api
+  - protocol
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+      _proto_anomaly: dup-header
+    body: ''
+- id: sample-legit-api-dup-header-allow-gen-pass
+  rule_id: legit-api-dup-header-allow
+  name: Allow legitimate API duplicate-header regression samples (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - api
+  - protocol
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-http-smuggle-cl-te-identity-pass
+  rule_id: http-smuggle-cl-te
+  name: Legitimate TE identity alone must not trip CL.TE rule (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - protocol
+  - fp
+  request:
+    method: POST
+    host: example.com
+    uri: /api/data
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Type: application/json
+      Transfer-Encoding: identity
+    body: '{"ok":true}'
+- id: sample-http-smuggle-dup-cl-not-allowed
+  rule_id: http-smuggle-cl-te
+  name: Duplicate Content-Length must block even on API paths (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - protocol
+  - smuggle
+  request:
+    method: POST
+    host: example.com
+    uri: /api/data
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Type: application/json
+      Content-Length: '5'
+      _raw_headers: "Content-Length: 5\r\nContent-Length: 6\r\n"
+      _proto_anomaly: dup-cl
+    body: hello
+- id: sample-proto-crlf-ws-legit-pass
+  rule_id: proto-crlf-protocol-inject
+  name: Legitimate websocket upgrade headers must pass (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - proto
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /chat
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Upgrade: websocket
+      Connection: Upgrade
+      Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+      Sec-WebSocket-Version: '13'
+    body: ''

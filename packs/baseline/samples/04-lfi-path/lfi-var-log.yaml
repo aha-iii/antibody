@@ -1,0 +1,59 @@
+- id: sample-lfi-var-log
+  rule_id: lfi-var-log
+  name: LFI /var/log
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id001
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=/var/log/
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-var-log-alt
+  rule_id: lfi-var-log
+  name: LFI /var/log (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=/var/log/
+- id: sample-lfi-var-log-gen-pass
+  rule_id: lfi-var-log
+  name: LFI /var/log (neg)
+  category: 04-lfi-path
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - lfi
+  - path
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -1,0 +1,39 @@
+- id: sample-admin-composer
+  rule_id: admin-composer
+  name: Admin composer exposed
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - admin
+  - scanner
+  request:
+    method: GET
+    host: example.com
+    uri: /composer.json
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-admin-composer-gen-pass
+  rule_id: admin-composer
+  name: Admin composer exposed (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - admin
+  - scanner
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

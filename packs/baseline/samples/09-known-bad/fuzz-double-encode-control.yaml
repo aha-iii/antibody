@@ -1,0 +1,71 @@
+- id: sample-fuzz-double-encode-control-null-block
+  rule_id: fuzz-double-encode-control
+  name: Double-encoded null in q (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - fuzz
+  request:
+    method: GET
+    host: example.com
+    uri: /
+    query: q=admin%2500
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-fuzz-double-encode-control-crlf-block
+  rule_id: fuzz-double-encode-control
+  name: Double-encoded CRLF + id (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - fuzz
+  request:
+    method: GET
+    host: example.com
+    uri: /
+    query: q=%250d%250aid
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-fuzz-double-encode-control-pass
+  rule_id: fuzz-double-encode-control
+  name: Normal query (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fuzz
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-cache-poison-pass
+  rule_id: cache-poison-unkeyed-header
+  name: Normal API GET (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - cache
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/data
+    query: id=1
+    headers:
+      User-Agent: nerve-sample/1.0
+      X-Forwarded-Proto: https
+    body: ''

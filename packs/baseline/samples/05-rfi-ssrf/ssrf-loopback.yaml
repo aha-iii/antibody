@@ -1,0 +1,60 @@
+- id: sample-ssrf-loopback
+  rule_id: ssrf-loopback
+  name: SSRF loopback URL
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id001
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=http://127.0.0.1
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-loopback-alt
+  rule_id: ssrf-loopback
+  name: SSRF loopback URL (alt)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=http://127.0.0.1
+- id: sample-ssrf-loopback-gen-pass
+  rule_id: ssrf-loopback
+  name: SSRF loopback URL (neg)
+  category: 05-rfi-ssrf
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - ssrf
+  - rfi
+  - owasp
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

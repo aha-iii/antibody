@@ -2,21 +2,21 @@ id: rce-python-c
 name: 'RCE python -c'
 severity: high
 tags: [rce, cmdi, owasp]
-score: 40
+score: 42
 min_level: low
 action: block
-transforms: [url_decode, lowercase, html_entity_decode]
+transforms: [url_decode_uni, lowercase, html_entity_decode]
 when:
   any:
     - field: uri
-      contains: 'python -c'
-    - field: uri
-      contains: 'python3 -c'
+      regex: "(?i)python(?:3)?(?:\\s|%20|\\+)+-c"
     - field: uri
       contains: 'perl -e'
     - field: uri
       contains: 'ruby -e'
     - field: query
+      regex: "(?i)python(?:3)?(?:\\s|%20|\\+)+-c"
+    - field: query
       contains: 'python -c'
     - field: query
       contains: 'python3 -c'
@@ -24,6 +24,10 @@ when:
       contains: 'perl -e'
     - field: query
       contains: 'ruby -e'
+    - field: query
+      regex: "(?i)subprocess\\.(?:call|popen|run)\\s*\\("
+    - field: body
+      regex: "(?i)python(?:3)?(?:\\s|%20|\\+)+-c"
     - field: body
       contains: 'python -c'
     - field: body
@@ -32,3 +36,5 @@ when:
       contains: 'perl -e'
     - field: body
       contains: 'ruby -e'
+    - field: body
+      regex: "(?i)subprocess\\.(?:call|popen|run)\\s*\\("

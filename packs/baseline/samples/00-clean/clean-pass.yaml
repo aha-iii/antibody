@@ -1,0 +1,17 @@
+- id: sample-clean-hello
+  rule_id: clean-pass
+  name: 干净请求
+  category: 00-clean
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - clean
+  request:
+    method: GET
+    host: example.com
+    uri: /search
+    query: q=hello-world
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''

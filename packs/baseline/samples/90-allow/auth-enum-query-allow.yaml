@@ -1,0 +1,60 @@
+- id: sample-auth-enum-query-allow-matched-allow
+  rule_id: auth-enum-query-allow
+  name: Allow benign auth enumeration query samples (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - auth
+  - ldap
+  request:
+    method: GET
+    host: example.com
+    uri: /favicon.ico
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''
+- id: sample-auth-enum-query-allow-matched-allow
+  rule_id: auth-enum-query-allow
+  name: Allow benign auth enumeration query samples (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - auth
+  - ldap
+  request:
+    method: GET
+    host: example.com
+    uri: /health
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-auth-enum-query-allow-gen-pass
+  rule_id: auth-enum-query-allow
+  name: Allow benign auth enumeration query samples (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - auth
+  - ldap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

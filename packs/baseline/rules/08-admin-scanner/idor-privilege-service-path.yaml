@@ -17,8 +17,12 @@ when:
       contains: '/api/webhooks/admin'
     - field: uri
       contains: '/rest/credentials'
-    - field: uri
-      contains: '/rest/executions'
+    # /rest/executions 裸路径为 n8n 业务列举；升到需异常 query/body
+    - all:
+        - field: uri
+          contains: '/rest/executions'
+        - field: query
+          regex: "(?i)(?:id=|filter=).{0,40}(?:\\*|1=1|admin)"
     - field: uri
       contains: '/webhook/ai-chat'
     - field: uri

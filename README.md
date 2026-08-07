@@ -77,7 +77,7 @@ cd apps/dashboard && npm run dev   # http://127.0.0.1:5178 ，/api 代理到 879
 | `DEFAULT_PACK` | `baseline` | 启动包（页面可切 `demo` / `community-crs`） |
 | `UI_DIST` | `apps/dashboard/dist` | React 构建产物目录 |
 
-案例库：`packs/baseline/samples/`（由 `scripts/gen_baseline_samples.py` 从 rules 生成）。Dashboard 菜单「案例库」可筛选、一键检测、加载到试打。
+案例库：`packs/baseline/samples/<category>/<rule_id>.yaml`（与规则文件一一对应）。Dashboard 菜单「案例库」可筛选、一键检测、加载到试打。扁平样本可拆分：`python3 packs/baseline/tools/split_samples_by_rule.py`。
 
 UI 使用仓库根目录 `@nerve/ui`（与 WAF Console 同款侧栏 / ant-* 样式）。
 

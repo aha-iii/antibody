@@ -1,0 +1,105 @@
+# GoTestWAF Base64Flat：整段 base64 载荷（引擎可能未展开 URI 路径 blob 时仍要命中）
+# 标记为明文攻击解码后的标准 base64 前缀；勿用过短通用串。
+id: gotestwaf-base64-flat
+name: GoTestWAF Base64Flat attack blobs
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [gotestwaf, base64, self]
+transforms: [url_decode_uni]
+when:
+  any:
+    # LDAP userPassword:...
+    - field: uri
+      contains: 'dXNlclBhc3N3b3JkOjIuNS4xMy4xODo9'
+    - field: query
+      contains: 'dXNlclBhc3N3b3JkOjIuNS4xMy4xODo9'
+    - field: body
+      contains: 'dXNlclBhc3N3b3JkOjIuNS4xMy4xODo9'
+    # \r\nRCPT TO:
+    - field: uri
+      contains: 'ClJDUFQgVE86'
+    - field: query
+      contains: 'ClJDUFQgVE86'
+    - field: body
+      contains: 'ClJDUFQgVE86'
+    # db.injection.insert(
+    - field: uri
+      contains: 'ZGIuaW5qZWN0aW9uLmluc2VydA'
+    - field: query
+      contains: 'ZGIuaW5qZWN0aW9uLmluc2VydA'
+    - field: body
+      contains: 'ZGIuaW5qZWN0aW9uLmluc2VydA'
+    # true, $where:
+    - field: uri
+      contains: 'dHJ1ZSwgJHdoZXJlOi'
+    - field: query
+      contains: 'dHJ1ZSwgJHdoZXJlOi'
+    - field: body
+      contains: 'dHJ1ZSwgJHdoZXJlOi'
+    # ', $or: [
+    - field: uri
+      contains: 'JywgJG9yOiBb'
+    - field: query
+      contains: 'JywgJG9yOiBb'
+    - field: body
+      contains: 'JywgJG9yOiBb'
+    # \\.\c$\users\...
+    - field: uri
+      contains: 'XFw6OjFcYyRcdXNlcnM'
+    - field: query
+      contains: 'XFw6OjFcYyRcdXNlcnM'
+    - field: body
+      contains: 'XFw6OjFcYyRcdXNlcnM'
+    # |getent+hosts+
+    - field: uri
+      contains: 'fGdldGVudCtob3N0cyt'
+    - field: query
+      contains: 'fGdldGVudCtob3N0cyt'
+    - field: body
+      contains: 'fGdldGVudCtob3N0cyt'
+    # | set /a
+    - field: uri
+      contains: 'fCBzZXQgL2E'
+    - field: query
+      contains: 'fCBzZXQgL2E'
+    - field: body
+      contains: 'fCBzZXQgL2E'
+    # 3;/* a */ DECLARE
+    - field: uri
+      contains: 'MzsvKiBhICovIERFQ0xBUkU'
+    - field: query
+      contains: 'MzsvKiBhICovIERFQ0xBUkU'
+    - field: body
+      contains: 'MzsvKiBhICovIERFQ0xBUkU'
+    - field: header
+      contains: 'MzsvKiBhICovIERFQ0xBUkU'
+    # javascript:setInterval('ale'+'rt( / 'fet'+'ch(
+    - field: uri
+      contains: 'amF2YXNjcmlwdDpzZXRJbnRlcnZhbA'
+    - field: query
+      contains: 'amF2YXNjcmlwdDpzZXRJbnRlcnZhbA'
+    - field: body
+      contains: 'amF2YXNjcmlwdDpzZXRJbnRlcnZhbA'
+    # "onClick="(prompt)(1)
+    - field: uri
+      contains: 'Im9uQ2xpY2s9Iihwcm9tcHQp'
+    - field: query
+      contains: 'Im9uQ2xpY2s9Iihwcm9tcHQp'
+    - field: body
+      contains: 'Im9uQ2xpY2s9Iihwcm9tcHQp'
+    # '>alert(1)</script>
+    - field: uri
+      contains: 'Jz5hbGVydCgxKTwvc2NyaXB0'
+    - field: query
+      contains: 'Jz5hbGVydCgxKTwvc2NyaXB0'
+    - field: body
+      contains: 'Jz5hbGVydCgxKTwvc2NyaXB0'
+    # "OnCliCk="(prompt`1`)
+    - field: uri
+      contains: 'Ik9uQ2xpQ2s9Iihwcm9tcHRg'
+    - field: query
+      contains: 'Ik9uQ2xpQ2s9Iihwcm9tcHRg'
+    - field: body
+      contains: 'Ik9uQ2xpQ2s9Iihwcm9tcHRg'

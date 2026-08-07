@@ -1,0 +1,42 @@
+- id: sample-bad-fastjson-matched-block
+  rule_id: bad-fastjson
+  name: Fastjson autoType (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - known_bad
+  - cve
+  - fp_reviewed
+  request:
+    method: POST
+    host: example.com
+    uri: /api/item
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: q="@type":"
+- id: sample-bad-fastjson-gen-pass
+  rule_id: bad-fastjson
+  name: Fastjson autoType (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - known_bad
+  - cve
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

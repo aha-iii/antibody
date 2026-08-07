@@ -24,6 +24,7 @@ import {
   type NativeLevel,
   type MetricsSnapshot,
   type Health,
+  type RisCalibrateReport,
 } from "../api";
 
 type Props = {
@@ -40,6 +41,14 @@ function fmtPct(n: number | undefined): string {
 function fmtNum(n: number | undefined): string {
   if (n == null || Number.isNaN(n)) return "—";
   return n.toLocaleString("zh-CN");
+}
+
+/** 分段耗时：未跑该路径显示 —；≥10ms 一位小数，否则保留更多精度。 */
+function fmtMs(n: number | undefined): string {
+  if (n == null || Number.isNaN(n) || n <= 0) return "—";
+  if (n >= 10) return `${n.toFixed(1)} ms`;
+  if (n >= 1) return `${n.toFixed(2)} ms`;
+  return `${n.toFixed(3)} ms`;
 }
 
 function phaseTone(phase: BenchStatus["phase"]): NerveTagTone {
@@ -72,6 +81,51 @@ function phaseLabel(phase: BenchStatus["phase"]): string {
     default:
       return phase;
   }
+}
+
+function RisCurveSvg({ report }: { report: RisCalibrateReport }) {
+  const w = 420;
+  const h = 140;
+  const pad = 28;
+  const pts = report.curve;
+  if (!pts.length) return null;
+  const x0 = pts[0].threshold;
+  const x1 = pts[pts.length - 1].threshold;
+  const toX = (t: number) =>
+    pad + ((t - x0) / Math.max(1e-6, x1 - x0)) * (w - pad * 2);
+  const toY = (v: number) => h - pad - v * (h - pad * 2);
+  const missLine = pts
+    .map((p, i) => `${i === 0 ? "M" : "L"}${toX(p.threshold)},${toY(p.attack_fast_miss)}`)
+    .join(" ");
+  const fastLine = pts
+    .map((p, i) => `${i === 0 ? "M" : "L"}${toX(p.threshold)},${toY(p.clean_fast_ratio)}`)
+    .join(" ");
+  const deepX = toX(report.recommended_deep_threshold);
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} width="100%" height={h} className="bench-ris-curve">
+      <line x1={pad} y1={h - pad} x2={w - pad} y2={h - pad} stroke="#d0d5dd" />
+      <line x1={pad} y1={pad} x2={pad} y2={h - pad} stroke="#d0d5dd" />
+      <path d={missLine} fill="none" stroke="#c7000b" strokeWidth="2" />
+      <path d={fastLine} fill="none" stroke="#1677ff" strokeWidth="2" />
+      <line
+        x1={deepX}
+        y1={pad}
+        x2={deepX}
+        y2={h - pad}
+        stroke="#52c41a"
+        strokeDasharray="4 3"
+      />
+      <text x={pad} y={16} fill="#c7000b" fontSize="11">
+        attack miss
+      </text>
+      <text x={pad + 80} y={16} fill="#1677ff" fontSize="11">
+        clean fast
+      </text>
+      <text x={deepX + 4} y={pad + 12} fill="#52c41a" fontSize="11">
+        deep={report.recommended_deep_threshold.toFixed(2)}
+      </text>
+    </svg>
+  );
 }
 
 function Donut({
@@ -192,11 +246,15 @@ export function BenchPage({ health }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [datasets, setDatasets] = useState<BenchDatasetInfo[]>([]);
   const [dataset, setDataset] = useState<BenchDatasetId>("samples");
+  const [sampleExpect, setSampleExpect] = useState<"all" | "block" | "pass">("all");
   const [level, setLevel] = useState<NativeLevel>("medium");
-  const [concurrency, setConcurrency] = useState("80");
+  const [inspectMode, setInspectMode] = useState<"auto" | "deep" | "fast">("auto");
+  const [concurrency, setConcurrency] = useState("40");
   const [verdict, setVerdict] = useState("all");
   const [kind, setKind] = useState("all");
   const [busy, setBusy] = useState(false);
+  const [risBusy, setRisBusy] = useState(false);
+  const [risReport, setRisReport] = useState<RisCalibrateReport | null>(null);
   const [pagination, setPagination] = useState<NervePaginationState>(
     defaultPaginationState(),
   );
@@ -238,7 +296,28 @@ export function BenchPage({ health }: Props) {
       setError(e instanceof Error ? e.message : String(e));
     });
     refreshDatasets().catch(() => {});
+    api.risCurve()
+      .then((o) => setRisReport(o.report))
+      .catch(() => {});
   }, [refreshStatus, refreshDatasets]);
+
+  const onRisCalibrate = async (writeWeights: boolean) => {
+    setRisBusy(true);
+    setError(null);
+    try {
+      const out = await api.risCalibrate({
+        use_last_report: true,
+        use_stumps: true,
+        max_miss: 0.01,
+        write_weights: writeWeights,
+      });
+      setRisReport(out.report);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setRisBusy(false);
+    }
+  };
 
   useEffect(() => {
     refreshResults().catch(() => {});
@@ -269,7 +348,11 @@ export function BenchPage({ health }: Props) {
     setError(null);
     setPagination((p) => ({ ...p, page: 1 }));
     try {
-      if (selectedDs && !selectedDs.ready && dataset !== "samples") {
+      const isSamples =
+        dataset === "samples" ||
+        dataset === "samples-positive" ||
+        dataset === "samples-negative";
+      if (selectedDs && !selectedDs.ready && !isSamples) {
         throw new Error(
           selectedDs.fetch_hint
             ? `数据源未就绪，请先执行：${selectedDs.fetch_hint}`
@@ -279,7 +362,9 @@ export function BenchPage({ health }: Props) {
       const s = await api.benchStart({
         dataset,
         level,
-        concurrency: Number(concurrency) || 20,
+        inspect_mode: inspectMode,
+        concurrency: Number(concurrency) || 40,
+        sample_expect: isSamples ? sampleExpect : "all",
       });
       setStatus(s);
       await refreshResults();
@@ -394,22 +479,33 @@ export function BenchPage({ health }: Props) {
       title: "检测路径",
       render: (row) => (
         <div>
-          <NerveTag tone={pathTone(row.inspect_path)}>{row.inspect_path || "—"}</NerveTag>
+          <NerveTag tone={pathTone(row.inspect_path)}>
+            {(row.inspect_path || "—").toUpperCase()}
+          </NerveTag>
           <div className="muted small" style={{ marginTop: 4 }}>
-            {laneLabel(row.lane)}
+            {row.ris_zone ? `RIS ${row.ris_zone}` : laneLabel(row.lane)}
             {row.inspect_mode ? ` · ${row.inspect_mode}` : ""}
           </div>
-          {row.route_deep ? (
-            <div className="muted small">route_deep · score {(row.route_score ?? 0).toFixed(2)}</div>
-          ) : row.route_score != null ? (
+          {row.route_score != null ? (
             <div className="muted small">score {row.route_score.toFixed(2)}</div>
           ) : null}
         </div>
       ),
     },
     {
+      key: "timing",
+      title: "RIS / Fast / Deep",
+      render: (row) => (
+        <div className="mono small">
+          <div>RIS {fmtMs(row.ris_ms)}</div>
+          <div className="muted">Fast {fmtMs(row.fast_ms)}</div>
+          <div className="muted">Deep {fmtMs(row.deep_ms)}</div>
+        </div>
+      ),
+    },
+    {
       key: "ms",
-      title: "耗时",
+      title: "总耗时",
       render: (row) => (
         <div>
           <span className="mono small">{row.elapsed_ms} ms</span>
@@ -497,7 +593,12 @@ export function BenchPage({ health }: Props) {
               <div className="muted small">数据源</div>
               <div className="bench-meta-val">
                 {status?.dataset || dataset}
-                <span className="muted small"> · {status?.target || "in-process"}</span>
+                <span className="muted small">
+                  {" "}
+                  · {status?.inspect_mode || inspectMode}
+                  {" · "}
+                  {status?.target || "in-process"}
+                </span>
               </div>
             </div>
             <div>
@@ -538,13 +639,29 @@ export function BenchPage({ health }: Props) {
               <NerveSelect
                 value={dataset}
                 disabled={running}
-                onChange={(e) => setDataset(e.target.value as BenchDatasetId)}
+                onChange={(e) => {
+                  const next = e.target.value as BenchDatasetId;
+                  setDataset(next);
+                  if (next === "samples-positive") setSampleExpect("block");
+                  else if (next === "samples-negative") setSampleExpect("pass");
+                  else if (next === "samples") setSampleExpect("all");
+                }}
                 options={(datasets.length
                   ? datasets
                   : [
                       {
                         id: "samples" as BenchDatasetId,
-                        label: "规则包 samples",
+                        label: "规则包 samples · 全部",
+                        ready: true,
+                      },
+                      {
+                        id: "samples-positive" as BenchDatasetId,
+                        label: "规则包 samples · 正样本",
+                        ready: true,
+                      },
+                      {
+                        id: "samples-negative" as BenchDatasetId,
+                        label: "规则包 samples · 负样本",
                         ready: true,
                       },
                       {
@@ -575,6 +692,32 @@ export function BenchPage({ health }: Props) {
               />
             </label>
             <label>
+              <span>样本极性</span>
+              <NerveSelect
+                value={sampleExpect}
+                disabled={
+                  running ||
+                  !(
+                    dataset === "samples" ||
+                    dataset === "samples-positive" ||
+                    dataset === "samples-negative"
+                  )
+                }
+                onChange={(e) => {
+                  const next = e.target.value as "all" | "block" | "pass";
+                  setSampleExpect(next);
+                  if (next === "block") setDataset("samples-positive");
+                  else if (next === "pass") setDataset("samples-negative");
+                  else setDataset("samples");
+                }}
+                options={[
+                  { value: "all", label: "全部（正 + 负）" },
+                  { value: "block", label: "仅正样本 · expect=block" },
+                  { value: "pass", label: "仅负样本 · expect=pass" },
+                ]}
+              />
+            </label>
+            <label>
               <span>防护级别</span>
               <NerveSelect
                 value={level}
@@ -588,6 +731,21 @@ export function BenchPage({ health }: Props) {
               />
             </label>
             <label>
+              <span>Inspect 模式</span>
+              <NerveSelect
+                value={inspectMode}
+                disabled={running}
+                onChange={(e) =>
+                  setInspectMode(e.target.value as "auto" | "deep" | "fast")
+                }
+                options={[
+                  { value: "auto", label: "auto · 与生产一致（默认）" },
+                  { value: "deep", label: "deep · 全量深检" },
+                  { value: "fast", label: "fast · 仅快路径" },
+                ]}
+              />
+            </label>
+            <label>
               <span>并发</span>
               <NerveSelect
                 value={concurrency}
@@ -595,8 +753,9 @@ export function BenchPage({ health }: Props) {
                 onChange={(e) => setConcurrency(e.target.value)}
                 options={[
                   { value: "10", label: "10" },
-                  { value: "40", label: "40" },
-                  { value: "80", label: "80（推荐）" },
+                  { value: "24", label: "24" },
+                  { value: "40", label: "40（推荐）" },
+                  { value: "80", label: "80（易顶预算）" },
                   { value: "120", label: "120" },
                 ]}
               />
@@ -657,7 +816,8 @@ export function BenchPage({ health }: Props) {
                 <span className="bench-kpi-unit">ms</span>
               </div>
               <div className="muted small">
-                Fast {metrics.avg_fast_ms != null ? metrics.avg_fast_ms.toFixed(1) : "—"} ms · Deep{" "}
+                RIS {metrics.avg_ris_ms != null ? metrics.avg_ris_ms.toFixed(2) : "—"} ms · Fast{" "}
+                {metrics.avg_fast_ms != null ? metrics.avg_fast_ms.toFixed(1) : "—"} ms · Deep{" "}
                 {metrics.avg_deep_ms != null ? metrics.avg_deep_ms.toFixed(1) : "—"} ms
                 {metrics.max_ms != null ? ` · max ${metrics.max_ms} ms` : ""}
               </div>
@@ -680,6 +840,58 @@ export function BenchPage({ health }: Props) {
               </div>
             </div>
           </div>
+
+          <NerveCard
+            title="Nerve RIS 校准曲线"
+            tip="攻击 Fast 漏检约束下扫描 deep_threshold；可写回 route_weights.json"
+          >
+            <div className="bench-actions" style={{ marginBottom: 12 }}>
+              <NerveButton
+                disabled={risBusy || running}
+                onClick={() => void onRisCalibrate(false)}
+              >
+                {risBusy ? "校准中…" : "用最近 bench 校准"}
+              </NerveButton>
+              <NerveButton
+                disabled={risBusy || running}
+                variant="primary"
+                onClick={() => void onRisCalibrate(true)}
+              >
+                校准并写回权重
+              </NerveButton>
+            </div>
+            {risReport ? (
+              <>
+                <div className="bench-mini-stats">
+                  <div>
+                    <strong>{risReport.recommended_deep_threshold.toFixed(2)}</strong>
+                    <span>deep_threshold</span>
+                  </div>
+                  <div>
+                    <strong>{risReport.recommended_gray_threshold.toFixed(2)}</strong>
+                    <span>gray_threshold</span>
+                  </div>
+                  <div>
+                    <strong>{(risReport.attack_fast_miss * 100).toFixed(1)}%</strong>
+                    <span>attack_fast_miss</span>
+                  </div>
+                  <div>
+                    <strong>{(risReport.clean_fast_ratio * 100).toFixed(1)}%</strong>
+                    <span>clean_fast</span>
+                  </div>
+                  <div>
+                    <strong>{risReport.model}</strong>
+                    <span>model · n={risReport.attack_count + risReport.clean_count}</span>
+                  </div>
+                </div>
+                <RisCurveSvg report={risReport} />
+              </>
+            ) : (
+              <p className="muted small">
+                尚无曲线。先跑一轮 bench，再点「用最近 bench 校准」。
+              </p>
+            )}
+          </NerveCard>
 
           {engineMetrics ? (
             <NerveCard title="引擎运行时指标" tip="GET /api/metrics · 判断路由 vs 池/算力">

@@ -1,0 +1,42 @@
+- id: sample-priv-escalation-mass-assign-gen-block
+  rule_id: priv-escalation-mass-assign
+  name: Privilege escalation via mass assignment (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - auth
+  - logic
+  - self
+  request:
+    method: POST
+    host: example.com
+    uri: /api/search
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload="role":"admin"
+- id: sample-priv-escalation-mass-assign-gen-pass
+  rule_id: priv-escalation-mass-assign
+  name: Privilege escalation via mass assignment (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - auth
+  - logic
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

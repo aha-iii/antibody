@@ -1,0 +1,41 @@
+- id: sample-java-struts-redirect-ognl-gen-block
+  rule_id: java-struts-redirect-ognl
+  name: Struts redirect/OGNL markers (pos)
+  category: 14-upload-rce-java
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - java
+  - cve
+  - blazehttp_gap
+  request:
+    method: GET
+    host: example.com
+    uri: /index.action
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-java-struts-redirect-ognl-gen-pass
+  rule_id: java-struts-redirect-ognl
+  name: Struts redirect/OGNL markers (neg)
+  category: 14-upload-rce-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - java
+  - cve
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

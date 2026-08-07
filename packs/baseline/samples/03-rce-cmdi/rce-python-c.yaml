@@ -1,0 +1,59 @@
+- id: sample-rce-python-c
+  rule_id: rce-python-c
+  name: RCE python -c
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id001
+  - rce
+  - cmdi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=python -c
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rce-python-c-alt
+  rule_id: rce-python-c
+  name: RCE python -c (alt)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=python -c
+- id: sample-rce-python-c-gen-pass
+  rule_id: rce-python-c
+  name: RCE python -c (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - cmdi
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

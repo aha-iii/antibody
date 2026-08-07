@@ -1,0 +1,60 @@
+- id: sample-api-self-me-allow-matched-allow
+  rule_id: api-self-me-allow
+  name: Allow current-user read-only /me API paths (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - idor
+  - api
+  request:
+    method: GET
+    host: example.com
+    uri: /favicon.ico
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''
+- id: sample-api-self-me-allow-matched-allow
+  rule_id: api-self-me-allow
+  name: Allow current-user API paths (/me, ucenter/me) (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - idor
+  - api
+  request:
+    method: GET
+    host: example.com
+    uri: /api/
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-api-self-me-allow-gen-pass
+  rule_id: api-self-me-allow
+  name: Allow current-user API paths (/me, ucenter/me) (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - idor
+  - api
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

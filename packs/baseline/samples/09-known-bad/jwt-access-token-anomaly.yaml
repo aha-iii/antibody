@@ -1,0 +1,79 @@
+- id: sample-jwt-access-token-anomaly-empty-segment-block
+  rule_id: jwt-access-token-anomaly
+  name: JWT access_token empty segment (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - auth
+  - jwt
+  request:
+    method: GET
+    host: example.com
+    uri: /api
+    query: access_token=eyJhbGciOiJub25lIn0..sig
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-jwt-access-token-anomaly-gen-pass
+  rule_id: jwt-access-token-anomaly
+  name: JWT access_token structural and signature anomalies (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - auth
+  - jwt
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-jwt-access-token-anomaly-valid-jwt-pass
+  rule_id: jwt-access-token-anomaly
+  name: Valid HS256 JWT in access_token must not match anomaly rule (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - auth
+  - jwt
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api
+    query: access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImFkbWluIjp0cnVlfQ.signature
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-jwt-access-token-anomaly-jwe-pass
+  rule_id: jwt-access-token-anomaly
+  name: JWE five-segment access_token must not match anomaly (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - auth
+  - jwt
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api
+    query: access_token=eyJhbGciOiJBMTI4S1ciLCJ0eXAiOiJKV1QiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.a.b.c.d
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

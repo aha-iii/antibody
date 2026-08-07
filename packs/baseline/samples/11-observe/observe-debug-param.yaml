@@ -1,0 +1,54 @@
+- id: sample-observe-debug-param
+  rule_id: observe-debug-param
+  name: Observe debug params
+  category: 11-observe
+  expect_action: observe
+  min_level: high
+  severity: low
+  tags: &id001
+  - observe
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: debug=true
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-observe-debug-param-alt
+  rule_id: observe-debug-param
+  name: Observe debug params (alt)
+  category: 11-observe
+  expect_action: observe
+  min_level: high
+  severity: low
+  tags: *id001
+  request:
+    method: GET
+    host: example.com
+    uri: /debug=true
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-observe-debug-param-gen-pass
+  rule_id: observe-debug-param
+  name: Observe debug params (neg)
+  category: 11-observe
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - observe
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

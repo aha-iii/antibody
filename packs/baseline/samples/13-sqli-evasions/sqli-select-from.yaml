@@ -1,0 +1,41 @@
+- id: sample-sqli-select-from-matched-block
+  rule_id: sqli-select-from
+  name: SQL SELECT FROM probe (pos)
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - sqli
+  - blazehttp_gap
+  - fp_reviewed
+  request:
+    method: GET
+    host: example.com
+    uri: /api/vuln/1' select user from information_schema.tables--
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-select-from-gen-pass
+  rule_id: sqli-select-from
+  name: SQL SELECT FROM probe (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: high
+  severity: info
+  tags:
+  - sqli
+  - blazehttp_gap
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

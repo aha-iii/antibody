@@ -1,0 +1,42 @@
+- id: sample-xss-unicode-js-escape-gen-block
+  rule_id: xss-unicode-js-escape
+  name: Unicode-escaped JS XSS (alert/onclick/onmouse) (pos)
+  category: 12-xss-evasions
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - xss
+  - evasion
+  - self
+  request:
+    method: POST
+    host: example.com
+    uri: /api/search
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=\u0061\u006c\u0065\u0072\u0074
+- id: sample-xss-unicode-js-escape-gen-pass
+  rule_id: xss-unicode-js-escape
+  name: Unicode-escaped JS XSS (alert/onclick/onmouse) (neg)
+  category: 12-xss-evasions
+  expect_action: pass
+  min_level: high
+  severity: info
+  tags:
+  - xss
+  - evasion
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

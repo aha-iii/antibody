@@ -102,18 +102,19 @@
 ## 验证命令
 
 ```bash
-cd Nerve-waf-native
-cargo test -p nerve-antibody-engine
+cd Nerve-waf/Nerve-antibody   # WSL: /mnt/d/workspace/waf/Nerve-waf/Nerve-antibody
+cargo test -p nerve-antibody-runtime route_gate
+# 校准 route_gate（合成样本；有 bench 报告时加 --input）
+python3 scripts/calibrate_route_gate.py \
+  --out-weights packs/baseline/config/route_weights.json
+# 可选：用 Dashboard 导出的 bench JSON
+# python3 scripts/calibrate_route_gate.py -i /tmp/bench-report.json -o packs/baseline/config/route_weights.json
+# 将打印的 deep_threshold 写回 pack.toml [policy.inspect.route_gate]
 cargo run -p nerve-antibody-dashboard
-# P0 封板（WSL）
-bash scripts/run-baseline-conc80.sh 80
-python3 scripts/analyze_stage_metrics.py http://127.0.0.1:8792
-python3 scripts/calibrate_route_gate.py http://127.0.0.1:8792 /tmp/native_baseline_conc80.json
-# 另开终端
-curl -s http://127.0.0.1:8790/metrics | head
 curl -s http://127.0.0.1:8790/api/health | jq .inspect_mode
-curl -s http://127.0.0.1:8790/api/shadow/export-rules
 ```
+
+**Nerve RIS / route_gate 边界**：只决定 Arc(fast)/Cortex(deep) 与 `ris_zone`，**不参与 block 定罪**。验收：攻击集 auto 检出 ≥95%；干净流量 fast_ratio ≥85%。
 
 ## 相关文档
 

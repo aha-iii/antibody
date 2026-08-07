@@ -1,0 +1,43 @@
+- id: sample-java-jenkins-checkscript-gen-block
+  rule_id: java-jenkins-checkscript
+  name: Jenkins script security checkScript (pos)
+  category: 10-php-java
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - rce
+  - java
+  - jenkins
+  - blazehttp_gap
+  request:
+    method: GET
+    host: example.com
+    uri: /scriptsecurity
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-java-jenkins-checkscript-gen-pass
+  rule_id: java-jenkins-checkscript
+  name: Jenkins script security checkScript (neg)
+  category: 10-php-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - java
+  - jenkins
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

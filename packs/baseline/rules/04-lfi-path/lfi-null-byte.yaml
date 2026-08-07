@@ -5,7 +5,7 @@ tags: [lfi, path, owasp]
 score: 40
 min_level: low
 action: block
-transforms: [url_decode, lowercase, html_entity_decode]
+transforms: [lowercase, html_entity_decode]
 when:
   any:
     - field: uri

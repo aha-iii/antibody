@@ -5,7 +5,7 @@ tags: [rce, cmdi, owasp]
 score: 45
 min_level: low
 action: block
-transforms: [url_decode, lowercase, html_entity_decode]
+transforms: [url_decode_uni, lowercase, html_entity_decode]
 when:
   any:
     - field: uri
@@ -13,16 +13,16 @@ when:
     - field: uri
       contains: 'cmd /c'
     - field: uri
-      contains: 'cmd.exe /c'
+      regex: "(?i)cmd(?:\\.exe)?(?:\\s|%20|\\+)+/c"
     - field: query
       contains: 'cmd.exe'
     - field: query
       contains: 'cmd /c'
     - field: query
-      contains: 'cmd.exe /c'
+      regex: "(?i)cmd(?:\\.exe)?(?:\\s|%20|\\+)+/c"
     - field: body
       contains: 'cmd.exe'
     - field: body
       contains: 'cmd /c'
     - field: body
-      contains: 'cmd.exe /c'
+      regex: "(?i)cmd(?:\\.exe)?(?:\\s|%20|\\+)+/c"

@@ -1,0 +1,57 @@
+- id: sample-webshell-upload-ext
+  rule_id: webshell-upload-ext
+  name: Webshell double extension
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id001
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=.php.jpg
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-upload-ext-alt
+  rule_id: webshell-upload-ext
+  name: Webshell double extension (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=.php.jpg
+- id: sample-webshell-upload-ext-gen-pass
+  rule_id: webshell-upload-ext
+  name: Webshell double extension (neg)
+  category: 07-webshell
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - webshell
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

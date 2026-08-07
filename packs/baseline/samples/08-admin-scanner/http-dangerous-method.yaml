@@ -1,0 +1,41 @@
+- id: sample-http-dangerous-method-gen-block
+  rule_id: http-dangerous-method
+  name: Dangerous HTTP method on sensitive paths (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - proto
+  - method
+  - blazehttp_gap
+  request:
+    method: GET
+    host: example.com
+    uri: /capture/ageostic
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-http-dangerous-method-gen-pass
+  rule_id: http-dangerous-method
+  name: Dangerous HTTP method on sensitive paths (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - proto
+  - method
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

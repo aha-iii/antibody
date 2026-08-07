@@ -2,14 +2,14 @@ id: rce-windows-lolbin
 name: 'RCE Windows LOLBin'
 severity: high
 tags: [rce, cmdi, owasp]
-score: 40
+score: 42
 min_level: low
 action: block
-transforms: [url_decode, lowercase, html_entity_decode]
+transforms: [url_decode_uni, lowercase, html_entity_decode]
 when:
   any:
     - field: uri
-      contains: 'certutil -urlcache'
+      regex: "(?i)certutil(?:\\s|%20|\\+)+-urlcache"
     - field: uri
       contains: 'mshta '
     - field: uri
@@ -17,6 +17,8 @@ when:
     - field: uri
       contains: 'rundll32 '
     - field: query
+      regex: "(?i)certutil(?:\\s|%20|\\+)+-urlcache"
+    - field: query
       contains: 'certutil -urlcache'
     - field: query
       contains: 'mshta '
@@ -24,6 +26,8 @@ when:
       contains: 'regsvr32 '
     - field: query
       contains: 'rundll32 '
+    - field: body
+      regex: "(?i)certutil(?:\\s|%20|\\+)+-urlcache"
     - field: body
       contains: 'certutil -urlcache'
     - field: body

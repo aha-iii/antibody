@@ -1,0 +1,60 @@
+- id: sample-search-complete-url-allow-matched-allow
+  rule_id: search-complete-url-allow
+  name: Allow search autocomplete URL parameters (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - redirect
+  - search
+  request:
+    method: GET
+    host: example.com
+    uri: /p/complete/search/
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-search-complete-url-allow-matched-allow
+  rule_id: search-complete-url-allow
+  name: Allow search autocomplete URL parameters (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - redirect
+  - search
+  request:
+    method: GET
+    host: example.com
+    uri: /search
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-search-complete-url-allow-gen-pass
+  rule_id: search-complete-url-allow
+  name: Allow search autocomplete URL parameters (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - redirect
+  - search
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

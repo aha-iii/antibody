@@ -1,0 +1,37 @@
+- id: sample-xss-event-handler-sink-gen-block
+  rule_id: xss-event-handler-sink
+  name: XSS via generic event handler sinks (pos)
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - xss
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=__proto__[v-if]
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-event-handler-sink-gen-pass
+  rule_id: xss-event-handler-sink
+  name: XSS via generic event handler sinks (neg)
+  category: 02-xss
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - xss
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

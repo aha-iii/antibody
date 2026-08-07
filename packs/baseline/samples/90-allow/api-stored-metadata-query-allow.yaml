@@ -1,0 +1,62 @@
+- id: sample-api-stored-metadata-query-allow-matched-allow
+  rule_id: api-stored-metadata-query-allow
+  name: Allow API stored metadata / workflow query fields (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - api
+  - metadata
+  request:
+    method: POST
+    host: example.com
+    uri: /api/assets/upload
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Type: application/json
+    body: '{}'
+- id: sample-api-stored-metadata-query-allow-gen-pass
+  rule_id: api-stored-metadata-query-allow
+  name: Allow API stored metadata / workflow query fields (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - api
+  - metadata
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-api-stored-metadata-query-allow-matched-pass
+  rule_id: api-stored-metadata-query-allow
+  name: Allow API stored metadata / workflow query fields (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - api
+  - metadata
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /static/app.js
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''

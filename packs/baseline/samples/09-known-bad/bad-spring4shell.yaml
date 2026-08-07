@@ -1,0 +1,57 @@
+- id: sample-bad-spring4shell
+  rule_id: bad-spring4shell
+  name: Spring4Shell class.module
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=class.module.classloader
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-spring4shell-alt
+  rule_id: bad-spring4shell
+  name: Spring4Shell class.module (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=class.module.classloader
+- id: sample-bad-spring4shell-gen-pass
+  rule_id: bad-spring4shell
+  name: Spring4Shell class.module (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - known_bad
+  - cve
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

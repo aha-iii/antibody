@@ -1,0 +1,60 @@
+- id: sample-auth-jwe-token-allow-matched-allow
+  rule_id: auth-jwe-token-allow
+  name: Allow JWE access_token query samples (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - auth
+  - jwt
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: access_token=eyjjbmtigk1wci
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-auth-jwe-token-allow-matched-allow
+  rule_id: auth-jwe-token-allow
+  name: Allow JWE access_token query samples (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - auth
+  - jwt
+  request:
+    method: GET
+    host: example.com
+    uri: /health
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-auth-jwe-token-allow-gen-pass
+  rule_id: auth-jwe-token-allow
+  name: Allow JWE access_token query samples (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - auth
+  - jwt
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

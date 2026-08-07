@@ -1,0 +1,36 @@
+- id: sample-sqli-and-empty-quote
+  rule_id: sqli-and-empty-quote
+  name: SQL AND empty quote
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: medium
+  tags:
+  - sqli
+  request:
+    method: GET
+    host: example.com
+    uri: /item
+    query: id=1' and ''='&Submit=Submit
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-sqli-and-empty-quote-gen-pass
+  rule_id: sqli-and-empty-quote
+  name: SQL AND empty-quote tautology (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

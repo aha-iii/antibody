@@ -1,7 +1,7 @@
 //! 外部评测集加载：GoTestWAF / WAFtester / CRS-FTW → PreparedCase。
 
 use crate::bench::PreparedCase;
-use nerve_antibody_engine::NativeRequest;
+use nerve_antibody_engine::{NativeLevel, NativeRequest};
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -167,6 +167,7 @@ pub fn load_gotestwaf_cases(root: &Path, limit: u64) -> Result<Vec<PreparedCase>
                             truncate(&encoded, 48)
                         ),
                         expect: if is_fp { "pass".into() } else { "block".into() },
+                        level: NativeLevel::Medium,
                         req,
                     });
                     if limit > 0 && out.len() as u64 >= limit {
@@ -583,6 +584,7 @@ pub fn load_waftester_cases(root: &Path, limit: u64) -> Result<Vec<PreparedCase>
                 } else {
                     "pass".into()
                 },
+                level: NativeLevel::Medium,
                 req,
             });
             if limit > 0 && out.len() as u64 >= limit {
@@ -1125,6 +1127,7 @@ pub fn load_crs_ftw_cases(root: &Path, limit: u64) -> Result<Vec<PreparedCase>, 
                 } else {
                     "pass".into()
                 },
+                level: NativeLevel::Medium,
                 req: NativeRequest {
                     method,
                     host: headers

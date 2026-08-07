@@ -54,7 +54,7 @@ pub fn load_model(path: Option<&Path>) -> Arc<dyn RiskModel> {
     Arc::new(HeuristicModel)
 }
 
-/// 模型权重：low 不贡献；medium/high 递增。
+/// 模型权重：优先读请求携带的配置；未配时用档默认（仅兜底，生产应写在 pack.toml）。
 pub fn level_weight(level: NativeLevel) -> f32 {
     match level {
         NativeLevel::Low => 0.0,
@@ -63,13 +63,23 @@ pub fn level_weight(level: NativeLevel) -> f32 {
     }
 }
 
-/// medium 封顶 25，high 封顶 35（仍不可裸模型硬拦）。
+/// medium 封顶 25，high 封顶 35（仍不可裸模型硬拦）；生产应写在 pack.toml。
 pub fn score_cap(level: NativeLevel) -> u32 {
     match level {
         NativeLevel::Low => 0,
         NativeLevel::Medium => 25,
         NativeLevel::High => 35,
     }
+}
+
+/// 解析有效档权重（配置优先）。
+pub fn effective_level_weight(input: &AdaptiveInput<'_>) -> f32 {
+    input.level_weight.unwrap_or_else(|| level_weight(input.level))
+}
+
+/// 解析有效分贡献上限（配置优先）。
+pub fn effective_score_cap(input: &AdaptiveInput<'_>) -> u32 {
+    input.score_cap.unwrap_or_else(|| score_cap(input.level))
 }
 
 /// 模型贡献门闩：必须有可解释的攻击佐证，否则不贡献（静态 JS/API 噪声不得刷 challenge）。

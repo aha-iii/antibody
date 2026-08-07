@@ -1,0 +1,78 @@
+- id: sample-ws-path-smuggle-combo-query
+  rule_id: websocket-path-smuggle-combo
+  name: /chat path segment with TE smuggle in query
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - websocket
+  - smuggle
+  request:
+    method: GET
+    host: example.com
+    uri: /api/chat
+    query: x=transfer-encoding:%20chunked
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ws-path-smuggle-combo-chatroom-pass
+  rule_id: websocket-path-smuggle-combo
+  name: /chatroom is not path-segment chat
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - api
+  request:
+    method: GET
+    host: example.com
+    uri: /api/rooms/lobby
+    query: q=hello
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ws-path-smuggle-combo-path-only-pass
+  rule_id: websocket-path-smuggle-combo
+  name: Bare /chat path without smuggle markers
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - websocket
+  request:
+    method: GET
+    host: example.com
+    uri: /chat
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-websocket-path-smuggle-combo-matched-pass
+  rule_id: websocket-path-smuggle-combo
+  name: WebSocket path with protocol-smuggle or upgrade anomalies (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - websocket
+  - smuggle
+  - proto
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/v1/items
+    query: q=hello-world&page=1&sort=name
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

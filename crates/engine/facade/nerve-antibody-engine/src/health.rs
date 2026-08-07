@@ -41,4 +41,10 @@ pub struct NativeHealth {
     pub signals_pack_version: Option<String>,
     pub signals_feature_count: usize,
     pub signals_fingerprint_count: usize,
+    /// 是否挂载了候选沙箱 Program。
+    pub sandbox_mounted: bool,
+    pub sandbox_pack_id: Option<String>,
+    pub sandbox_pack_version: Option<String>,
+    /// 沙箱采样万分比（来自 Shadow 配置）。
+    pub sandbox_sample_bps: u32,
 }

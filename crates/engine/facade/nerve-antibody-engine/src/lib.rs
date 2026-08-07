@@ -16,16 +16,22 @@
 mod engine;
 mod error;
 mod health;
+mod inspect_cache;
 mod pool;
 mod shadow;
 
 pub use engine::Engine;
 pub use error::NativeError;
 pub use health::NativeHealth;
-pub use shadow::{ShadowConfig, ShadowFeedback, ShadowRecord, ShadowRuntime};
+pub use shadow::{
+    sandbox_sample_hit, shadow_source, ShadowConfig, ShadowFeedback, ShadowRecord, ShadowRuntime,
+};
 pub use nerve_antibody_dsl::NativeLevel;
 pub use nerve_antibody_metrics::{self, EngineMetrics, MetricsSnapshot};
-pub use nerve_antibody_runtime::{NativeHit, NativeRequest, MatchedRule};
+pub use nerve_antibody_runtime::{
+    intercept, InterceptDecision, InterceptPermit, InspectExec, MatchedRule, NativeHit,
+    NativeRequest,
+};
 
 #[cfg(test)]
 mod tests {
@@ -333,10 +339,14 @@ mod tests {
         }
     }
 
+    fn baseline_pack() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../../packs/baseline")
+    }
+
     #[test]
     fn openapi_sms_json_routes_fast_not_deep() {
-        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../packs/baseline");
-        let eng = Engine::load_pack(&root).expect("baseline");
+        std::env::set_var("NERVE_NATIVE_INSPECT_MODE", "auto");
+        let eng = Engine::load_pack(&baseline_pack()).expect("baseline");
         let body = r#"{"tenantCode":"test","tenantName":"平台测试","templateCode":"TCY_CODE_000001","phoneNumber":"13800138000"}"#;
         let req = NativeRequest {
             method: "POST".into(),
@@ -347,14 +357,63 @@ mod tests {
             ..Default::default()
         };
         let ev = eng.evaluator_for(NativeLevel::Medium);
-        let plan = ev.plan_inspect(&req);
+        let plan = ev.plan_inspect(&req, nerve_antibody_runtime::PlanCacheHints::default());
         assert_eq!(
             plan.path,
             nerve_antibody_metrics::InspectPath::Fast,
-            "clean JSON API should use fast path"
+            "clean JSON API should use fast path score={} deep={}",
+            plan.route_score,
+            plan.route_deep
         );
         assert!(plan.inline_fast_lane);
         assert!(plan.api_positive_lane);
+    }
+
+    #[test]
+    fn clean_favicon_and_api_search_route_fast() {
+        std::env::set_var("NERVE_NATIVE_INSPECT_MODE", "auto");
+        let eng = Engine::load_pack(&baseline_pack()).expect("baseline");
+        let ev = eng.evaluator_for(NativeLevel::Medium);
+        for (uri, query) in [
+            ("/favicon.ico", ""),
+            ("/health", ""),
+            ("/api/search", "q=hello-world&page=1"),
+            ("/api/search", "q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000"),
+            ("/api/", "tags=a&name=b&nodes=1"),
+        ] {
+            let req = NativeRequest {
+                method: "GET".into(),
+                uri: uri.into(),
+                query: query.into(),
+                ..Default::default()
+            };
+            let plan = ev.plan_inspect(&req, nerve_antibody_runtime::PlanCacheHints::default());
+            assert_eq!(
+                plan.path,
+                nerve_antibody_metrics::InspectPath::Fast,
+                "uri={uri} q={query} score={} route_deep={} decode={} evasion={}",
+                plan.route_score,
+                plan.route_deep,
+                plan.decode_hint,
+                plan.evasion_hint
+            );
+        }
+    }
+
+    #[test]
+    fn mount_sandbox_observe_only_slot() {
+        std::env::set_var("NERVE_NATIVE_DEV_PACK", "1");
+        let live = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../../packs/baseline");
+        let candidate = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../../packs/demo");
+        let eng = Engine::load_pack(&live).expect("baseline");
+        assert!(!eng.sandbox_mounted());
+        eng.mount_sandbox(&candidate).expect("mount sandbox");
+        assert!(eng.sandbox_mounted());
+        let h = eng.health();
+        assert!(h.sandbox_mounted);
+        assert_eq!(h.sandbox_pack_id.as_deref(), Some("demo"));
+        eng.unmount_sandbox();
+        assert!(!eng.sandbox_mounted());
     }
 
     #[test]
@@ -372,7 +431,6 @@ mod tests {
             content_type: Some("application/json".into()),
             ..Default::default()
         };
-        // 预热 Pack / 线程池
         for _ in 0..3 {
             let _ = eng.inspect(&req, NativeLevel::Medium);
         }
@@ -390,5 +448,50 @@ mod tests {
             p50,
             samples
         );
+    }
+
+    #[test]
+    fn vp_live_promote_blocks_probe_token() {
+        use std::fs;
+        use std::process::Command;
+
+        std::env::set_var("NERVE_NATIVE_DEV_PACK", "1");
+        let src = baseline_pack();
+        if !src.join("virtual-patches/CVE-2024-DEMO01/meta.toml").is_file() {
+            return;
+        }
+        let tmp = tempfile::tempdir().expect("tmp");
+        let dst = tmp.path().join("baseline");
+        // 2.9M pack — cp -a is enough for smoke
+        let status = Command::new("cp")
+            .args(["-a", src.to_str().unwrap(), dst.to_str().unwrap()])
+            .status()
+            .expect("cp");
+        assert!(status.success(), "copy baseline pack");
+
+        let cve = dst.join("virtual-patches/CVE-2024-DEMO01");
+        let mut meta = nerve_antibody_pack::read_meta(&cve).expect("meta");
+        meta.status = "live".into();
+        nerve_antibody_pack::write_meta(&cve, &meta).expect("write live");
+
+        let eng = Engine::load_pack(&dst).expect("load promoted pack");
+        let req = NativeRequest {
+            method: "GET".into(),
+            host: "example.com".into(),
+            uri: "/api/vp-demo".into(),
+            query: "q=nerve-vp-probe-demo01".into(),
+            ..Default::default()
+        };
+        let hit = eng
+            .inspect(&req, NativeLevel::Medium)
+            .expect("inspect")
+            .expect("expected hit");
+        assert_eq!(hit.action, "block", "rule={} evidence={}", hit.rule_id, hit.evidence);
+        assert!(
+            hit.rule_id.starts_with("vp-"),
+            "expected vp- rule, got {}",
+            hit.rule_id
+        );
+        let _ = fs::remove_dir_all(&dst);
     }
 }

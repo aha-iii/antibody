@@ -1,0 +1,39 @@
+- id: sample-rce-ansic-escape-gen-block
+  rule_id: rce-ansic-escape
+  name: ANSI-C / variable-splice command execution (pos)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - rce
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=$'\x00\x00
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rce-ansic-escape-gen-pass
+  rule_id: rce-ansic-escape
+  name: ANSI-C / variable-splice command execution (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

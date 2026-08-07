@@ -1,0 +1,23 @@
+id: rce-cmd-for-loop
+name: Windows cmd FOR /F loop execution
+severity: high
+score: 45
+action: block
+min_level: low
+tags: [rce, cmdi, windows]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)for\\s+/f\\s+%"
+    - field: query
+      regex: "(?i)for(?:\\s|%20|\\+)+/f(?:\\s|%20|\\+)+%25"
+    - field: body
+      regex: "(?i)for\\s+/f\\s+%"
+    - field: uri
+      regex: "(?i)for\\s+/f\\s+%"
+    - all:
+        - field: query
+          regex: "(?i)cmd(?:\\.exe)?(?:\\s|%20|\\+)+/c"
+        - field: query
+          regex: "(?i)for\\s+/f"

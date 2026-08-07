@@ -49,15 +49,19 @@ flowchart TB
   Bench --> C4
 ```
 
-| 路径 | 职责 |
-|------|------|
-| `packs/baseline/` | 自研规则 YAML + semantic + signals |
-| `crates/engine/contract/` | 规则 DSL、pack 契约（无在线算法） |
-| `crates/engine/compile/` | 离线编译 YAML → Program / Artifact |
-| `crates/engine/pipeline/` | 在线 decode、匹配、L2/L3、Fusion |
-| `crates/engine/facade/` | `Engine::inspect` 对外稳定 API |
-| `crates/integration/nerve-waf-expert/` | WAF 同进程调用入口 |
-| `apps/dashboard/` | 独立 Console（试打、bench、发版） |
+
+
+
+| 路径                                     | 职责                             |
+| -------------------------------------- | ------------------------------ |
+| `packs/baseline/`                      | 自研规则 YAML + semantic + signals |
+| `crates/engine/contract/`              | 规则 DSL、pack 契约（无在线算法）          |
+| `crates/engine/compile/`               | 离线编译 YAML → Program / Artifact |
+| `crates/engine/pipeline/`              | 在线 decode、匹配、L2/L3、Fusion      |
+| `crates/engine/facade/`                | `Engine::inspect` 对外稳定 API     |
+| `crates/integration/nerve-waf-expert/` | WAF 同进程调用入口                    |
+| `apps/dashboard/`                      | 独立 Console（试打、bench、发版）        |
+
 
 ---
 
@@ -142,23 +146,27 @@ flowchart LR
   Fusion --> Out[block / challenge / observe]
 ```
 
-| 层 | 能否单独拦截 | 说明 |
-|----|-------------|------|
-| L0 | 能 | CC / Bot / Geo 等准入 |
-| L1 | 能（过阈值） | 规则分 + allow 负分 |
-| L2 | **不能** | 只加分或 veto |
-| L3 | **不能** | 模型加分，须经 Fusion |
-| Fusion | 最终动作 | block / challenge / observe |
 
-**三档烈度：** 同一 pack 编译 low / medium / high 三份 Program；默认阈值示例：low=40、medium=36、high=32（见 `pack.toml` → `[policy.threshold_by_level]`）。
+
+
+| 层      | 能否单独拦截 | 说明                          |
+| ------ | ------ | --------------------------- |
+| L0     | 能      | CC / Bot / Geo 等准入          |
+| L1     | 能（过阈值） | 规则分 + allow 负分              |
+| L2     | **不能** | 只加分或 veto                   |
+| L3     | **不能** | 模型加分，须经 Fusion              |
+| Fusion | 最终动作   | block / challenge / observe |
+
+
+**三档烈度：** 同一 pack 编译 low / medium / high 三份 Program；默认阈值示例：low=40、medium=36、high=32（见 `pack.toml` → `[policy.levels.*]`）。
 
 Fusion 决策优先级（摘要，详见 `crates/engine/pipeline/nerve-antibody-runtime/src/fusion.rs`）：
 
-1. `observe_only` → observe  
-2. 强 L1 过阈 → block（medium 纯 L1 无佐证可降为 challenge）  
-3. 强 L2 可定罪语义 → block  
-4. 弱 L1 ∧ 模型 / 解码佐证 → block 或 challenge  
-5. 可解释可疑、不够硬拦 → **challenge**  
+1. `observe_only` → observe
+2. 强 L1 过阈 → block（medium 纯 L1 无佐证可降为 challenge）
+3. 强 L2 可定罪语义 → block
+4. 弱 L1 ∧ 模型 / 解码佐证 → block 或 challenge
+5. 可解释可疑、不够硬拦 → **challenge**
 6. 静态资源无佐证 → observe（pass）
 
 ---
@@ -198,13 +206,18 @@ flowchart TB
   Hit --> End([NativeHit + evidence])
 ```
 
-| 模式 | 触发 | 行为 |
-|------|------|------|
-| **Fast（Arc）** | route_gate 低风险 | 轻 decode，跳过深 L2/L3 |
-| **Deep（Cortex）** | 可疑 / bench / `mode=deep` | 全量 decode + 侧信道 + L2 + L3 |
-| **Shadow** | Fast 未命中 | 后台 Deep，不挡响应；FP 标注 → allow 草稿 |
 
-环境变量：`NERVE_NATIVE_INSPECT_MODE`（auto/fast/deep）、`NERVE_NATIVE_SHADOW_DEEP`、`NERVE_NATIVE_INSPECT_POOL`。
+
+
+| 模式               | 触发                       | 行为                            |
+| ---------------- | ------------------------ | ----------------------------- |
+| **Fast（Arc）**    | route_gate 低风险           | 轻 decode，跳过深 L2/L3            |
+| **Deep（Cortex）** | 可疑 / bench / `mode=deep` | 全量 decode + 侧信道 + L2 + L3     |
+| **Shadow**       | Fast 未命中                 | 后台 Deep，不挡响应；FP 标注 → allow 草稿 |
+
+
+环境变量：`NERVE_NATIVE_INSPECT_MODE`（auto/fast/deep）、`NERVE_NATIVE_SHADOW_DEEP`、`NERVE_NATIVE_INSPECT_POOL`、`NERVE_NATIVE_SANDBOX_PACK`、`NERVE_NATIVE_SANDBOX_SAMPLE_BPS`。
+治理架构（沙箱 / 正负检测 / 信号量）：[GOVERNANCE-ARCHITECTURE-zh.md](./GOVERNANCE-ARCHITECTURE-zh.md)。
 
 ---
 
@@ -227,14 +240,18 @@ flowchart LR
   Views --> Raw["scope: raw\n仅原始 uri/query/body"]
 ```
 
+
+
 实现：`crates/engine/pipeline/nerve-antibody-pipeline/src/sidechannel.rs`  
 字段匹配：`crates/engine/pipeline/nerve-antibody-runtime/src/eval/fields.rs`（`is_header_sidechannel_path`）
 
-| 规则写法 | 匹配范围 |
-|----------|----------|
-| `field: uri`（无 scope） | 真实 URI **+** `header.Authorization#b64[1]` 等侧信道 |
-| `field: uri` + **`scope: raw`** | **仅**真实请求路径 |
-| `field: header` | 原始头行（CL/TE 走私等） |
+
+| 规则写法                            | 匹配范围                                            |
+| ------------------------------- | ----------------------------------------------- |
+| `field: uri`（无 scope）           | 真实 URI **+** `header.Authorization#b64[1]` 等侧信道 |
+| `field: uri` + `**scope: raw`** | **仅**真实请求路径                                     |
+| `field: header`                 | 原始头行（CL/TE 走私等）                                 |
+
 
 **实践：** 协议走私用 `field: header`；URI `@` 混淆用 `field: uri` + `scope: raw`，避免 JWT claim 误报。
 
@@ -272,6 +289,8 @@ sequenceDiagram
   end
 ```
 
+
+
 默认流水线顺序（`InspectPipeline`，可被 semantic 配置覆盖）：
 
 ```text
@@ -281,14 +300,16 @@ pre_access → expert → core → custom → ai
 WAF 接入代码：
 
 - `Nerve-defender/crates/engine/nerve-waf-inspect/src/pipeline.rs` — 总编排  
-- `Nerve-defender/crates/engine/nerve-waf-inspect/src/expert_bridge.rs` — Expert 桥接、challenge 映射  
+- `Nerve-defender/crates/engine/nerve-waf-inspect/src/expert_bridge.rs` — Expert 桥接、challenge 映射
 
-| 环境变量 | 作用 |
-|----------|------|
-| `NERVE_EXPERT_PACK` / `NERVE_NATIVE_DEV_PACK` | 规则包目录 |
-| `NERVE_EXPERT_ENGINE=off` | 关闭 Arc-Cortex，回退 WASM/Coraza |
-| `NERVE_EXPERT_CHALLENGE_AS` | challenge → block / log |
-| `NERVE_NATIVE_INSPECT_MODE` | auto / fast / deep |
+
+| 环境变量                                          | 作用                           |
+| --------------------------------------------- | ---------------------------- |
+| `NERVE_EXPERT_PACK` / `NERVE_NATIVE_DEV_PACK` | 规则包目录                        |
+| `NERVE_EXPERT_ENGINE=off`                     | 关闭 Arc-Cortex，回退 WASM/Coraza |
+| `NERVE_EXPERT_CHALLENGE_AS`                   | challenge → block / log      |
+| `NERVE_NATIVE_INSPECT_MODE`                   | auto / fast / deep           |
+
 
 ---
 
@@ -315,6 +336,8 @@ flowchart TB
   Seal --> Load
 ```
 
+
+
 加载期：`NativePack::load` → signals → RiskModel → compile ×3 levels → Evaluator。  
 热路径：仅 `inspect`，预算内 regex / 熔断见 `[policy.pipeline]`。
 
@@ -337,22 +360,42 @@ flowchart TB
 
 ---
 
-## 9. 相关文档索引
+## 9. 治理层（沙箱 · 正负检测 · 信号量）
 
-| 主题 | 文档 |
-|------|------|
-| 分层架构（英文简版） | [arc-cortex/architecture.md](./arc-cortex/architecture.md) |
-| 引擎能力全文 | [ENGINE.md](./ENGINE.md) |
-| 术语 Arc/Cortex/L0–L3 | [arc-cortex/terminology.md](./arc-cortex/terminology.md) |
-| Pipeline / decode | [arc-cortex/03-pipeline/pipeline.md](./arc-cortex/03-pipeline/pipeline.md) |
-| Runtime / Fusion | [arc-cortex/03-pipeline/runtime.md](./arc-cortex/03-pipeline/runtime.md) |
-| WAF Expert 接入 | [arc-cortex/05-integration/expert.md](./arc-cortex/05-integration/expert.md) |
-| 规则编写 | [RULE-AUTHORING.md](./RULE-AUTHORING.md) |
-| 引擎 crate 树 | [crates/engine/README.md](../crates/engine/README.md) |
-| 误报处理 | [packs/baseline/FALSE_POSITIVES.md](../packs/baseline/FALSE_POSITIVES.md) |
+在 L0–L3 + Fusion 之上的运维治理模型（不替换热路径匹配算法）：
+
+
+| 概念   | 作用                             |
+| ---- | ------------------------------ |
+| 沙箱   | 候选 Program 旁路观察，不改响应；手动挂载、自动采样 |
+| 正负检测 | 攻击加分 − allow 豁免；负选择在 bench/晋升  |
+| 信号量  | 资源槽 / 危险升深 / Fusion 拦截许可       |
+
+
+详见 [GOVERNANCE-ARCHITECTURE-zh.md](./GOVERNANCE-ARCHITECTURE-zh.md) 与 monorepo 设计稿  
+[docs/superpowers/specs/2026-08-05-antibody-governance-architecture-design.md](../../../docs/superpowers/specs/2026-08-05-antibody-governance-architecture-design.md)。
 
 ---
 
-## 10. 版本
+## 10. 相关文档索引
+
+
+| 主题                  | 文档                                                                           |
+| ------------------- | ---------------------------------------------------------------------------- |
+| 治理架构（沙箱/正负/信号量）     | [GOVERNANCE-ARCHITECTURE-zh.md](./GOVERNANCE-ARCHITECTURE-zh.md)             |
+| 分层架构（英文简版）          | [arc-cortex/architecture.md](./arc-cortex/architecture.md)                   |
+| 引擎能力全文              | [ENGINE.md](./ENGINE.md)                                                     |
+| 术语 Arc/Cortex/L0–L3 | [arc-cortex/terminology.md](./arc-cortex/terminology.md)                     |
+| Pipeline / decode   | [arc-cortex/03-pipeline/pipeline.md](./arc-cortex/03-pipeline/pipeline.md)   |
+| Runtime / Fusion    | [arc-cortex/03-pipeline/runtime.md](./arc-cortex/03-pipeline/runtime.md)     |
+| WAF Expert 接入       | [arc-cortex/05-integration/expert.md](./arc-cortex/05-integration/expert.md) |
+| 规则编写                | [RULE-AUTHORING.md](./RULE-AUTHORING.md)                                     |
+| 引擎 crate 树          | [crates/engine/README.md](../crates/engine/README.md)                        |
+| 误报处理                | [packs/baseline/FALSE_POSITIVES.md](../packs/baseline/FALSE_POSITIVES.md)    |
+
+
+---
+
+## 11. 版本
 
 文档与引擎同步维护；pack 版本见 `packs/baseline/pack.toml`。架构变更请同时更新本文与 [arc-cortex/architecture.md](./arc-cortex/architecture.md)。

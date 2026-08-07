@@ -1,0 +1,60 @@
+- id: sample-telemetry-fd-ls-allow-matched-allow
+  rule_id: telemetry-fd-ls-allow
+  name: Allow Bing telemetry fd/ls endpoints (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - telemetry
+  - rce
+  request:
+    method: GET
+    host: example.com
+    uri: /p/fd/ls/l
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-telemetry-fd-ls-allow-matched-allow
+  rule_id: telemetry-fd-ls-allow
+  name: Allow Bing telemetry fd/ls endpoints (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - telemetry
+  - rce
+  request:
+    method: GET
+    host: example.com
+    uri: /ls/
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-telemetry-fd-ls-allow-gen-pass
+  rule_id: telemetry-fd-ls-allow
+  name: Allow Bing telemetry fd/ls endpoints (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - telemetry
+  - rce
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -1,0 +1,36 @@
+- id: sample-sqli-hex-0x-matched-block
+  rule_id: sqli-hex-0x
+  name: SQL hex 0x
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: []
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=select 0x616263646566
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-sqli-hex-0x-gen-pass
+  rule_id: sqli-hex-0x
+  name: SQL hex 0x blob (context) (neg)
+  category: 01-sqli
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

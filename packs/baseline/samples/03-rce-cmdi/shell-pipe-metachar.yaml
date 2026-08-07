@@ -1,0 +1,41 @@
+- id: sample-shell-pipe-metachar-gen-block
+  rule_id: shell-pipe-metachar
+  name: Shell pipe and OR metacharacter probes (pos)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: medium
+  tags:
+  - rce
+  - shell
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=%7c%7c
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-shell-pipe-metachar-gen-pass
+  rule_id: shell-pipe-metachar
+  name: Shell pipe and OR metacharacter probes (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - shell
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

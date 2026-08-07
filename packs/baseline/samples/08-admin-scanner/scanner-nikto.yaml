@@ -1,0 +1,56 @@
+- id: sample-scanner-nikto
+  rule_id: scanner-nikto
+  name: Scanner nikto
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - admin
+  - scanner
+  request:
+    method: GET
+    host: example.com
+    uri: /nikto
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-scanner-nikto-alt
+  rule_id: scanner-nikto
+  name: Scanner nikto (alt)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: GET
+    host: example.com
+    uri: /sample
+    query: ''
+    headers:
+      User-Agent: nikto
+      Accept: '*/*'
+    body: ''
+- id: sample-scanner-nikto-gen-pass
+  rule_id: scanner-nikto
+  name: Scanner nikto (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - admin
+  - scanner
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

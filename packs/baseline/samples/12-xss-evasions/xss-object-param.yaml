@@ -1,0 +1,41 @@
+- id: sample-xss-object-param-gen-block
+  rule_id: xss-object-param
+  name: XSS object/embed/param payloads (pos)
+  category: 12-xss-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - xss
+  - evasion
+  - blazehttp_gap
+  request:
+    method: GET
+    host: example.com
+    uri: /<param
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-object-param-gen-pass
+  rule_id: xss-object-param
+  name: XSS object/embed/param payloads (neg)
+  category: 12-xss-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - xss
+  - evasion
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

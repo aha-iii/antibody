@@ -1,20 +1,24 @@
 use super::candidates::{collect_contains_groups, is_cheap_regex_rule, rule_ready_at_layer};
 use super::fields::{field_texts, FieldCache};
 use super::hints::{
-    adaptive_contribute_effective, build_features, decode_attack_hint, is_cache_deception_probe_uri,
-    is_static_asset_uri, payload_evasion_hint, resolve_inspect_path, suspicious_for_deep_scan,
+    adaptive_contribute_effective, build_features, decode_attack_hint, is_benign_simple_request,
+    is_cache_deception_probe_uri, is_static_asset_uri, payload_evasion_hint,
+    raw_encoded_attack_markers, resolve_ris, suspicious_for_deep_scan,
 };
-use super::policy::{EvalPolicy, InspectMode, InspectPlan, PlanCacheHints};
+use super::policy::{EvalPolicy, InspectExec, InspectMode, InspectPlan, PlanCacheHints};
 use super::rules::eval_when;
 use super::tail::{apply_rule_match, eval_tail_rules, should_stop_rules, try_parallel_tail_eval};
 use crate::decode_cache::{payload_hash, DeepViewCacheKey};
 use crate::fusion::{fuse, FusionEvidence};
 use crate::route_gate;
+use crate::structure_anchor::{classify_structure, StructureClass};
 use crate::types::{MatchedRule, ModelHitDto, NativeHit, NativeRequest, SemanticSignalDto};
 use nerve_antibody_adaptive::{self as adaptive, AdaptiveInput, FeatureSnapshot};
 use nerve_antibody_compiler::{active_fields, cluster_candidate_seed, Program};
 use nerve_antibody_dsl::{FieldScope, MatchField, RuleAction, Transform};
-use nerve_antibody_metrics::{global as metrics_global, InspectPath, InspectStages, InspectTimer};
+use nerve_antibody_metrics::{
+    global as metrics_global, InspectPath, InspectStages, InspectTimer, RisZone,
+};
 use nerve_antibody_pipeline::{
     build_views, build_views_shallow, build_views_unbudgeted, expand_all_fields_one_layer,
     InspectBudget, PipelineConfig, RequestViews,
@@ -60,7 +64,8 @@ impl Evaluator {
     }
 
     /// 规划 inspect 路径与预览视图（供双 worker 池与单次执行共用）。
-    pub fn plan_inspect(&self, req: &NativeRequest, _hints: PlanCacheHints) -> InspectPlan {
+    pub fn plan_inspect(&self, req: &NativeRequest, hints: PlanCacheHints) -> InspectPlan {
+        let t_ris = Instant::now();
         let mode = InspectMode::resolve(&self.policy.inspect_mode);
         let pipe_base = self.policy.pipeline.for_level(self.program.level);
         let static_asset = is_static_asset_uri(&req.uri);
@@ -100,17 +105,17 @@ impl Evaluator {
             &headers_map,
             self.policy.signal_pack.as_deref(),
         );
-        let _route_policy = self
-            .policy
-            .signal_pack
-            .as_ref()
-            .map(|p| p.route.clone())
-            .unwrap_or_default();
         let has_response = req
             .response_body
             .as_ref()
             .map(|b| !b.is_empty())
             .unwrap_or(false);
+        let encoded_hard = raw_encoded_attack_markers(req);
+        let hard_deep = cache_deception_probe
+            || has_response
+            || (self.policy.route_gate.hard_decode_hint
+                && (decode_hint_preview || evasion_hint_preview))
+            || encoded_hard;
         let route_decision = route_gate::decide_deep(
             &self.policy.route_gate,
             req,
@@ -120,26 +125,70 @@ impl Evaluator {
             cache_deception_probe,
             has_response,
         );
-        let path = resolve_inspect_path(
+        let l1 = self
+            .policy
+            .ris_l1
+            .as_ref()
+            .map(|p| p.probe(req, &route_signals))
+            .unwrap_or_default();
+        let bloom_clear = hints.bloom_clear || l1.bloom_clear;
+        let negative_hit = hints.negative_hit || l1.negative_hit;
+        let structure_known = hints.structure_known || l1.structure_known;
+        let struct_class = classify_structure(req);
+        let structure_clean = matches!(struct_class, StructureClass::Clean)
+            && !hard_deep
+            && !encoded_hard
+            && !decode_hint_preview
+            && !evasion_hint_preview
+            && !route_decision.features.attack_shape;
+        let structure_anomaly = matches!(struct_class, StructureClass::Anomaly);
+        // 硬触发时不得用 Bloom/负缓存/结构记忆压成 clean
+        let bloom_clear = bloom_clear && !hard_deep && !encoded_hard;
+        let negative_hit = negative_hit && !hard_deep && !encoded_hard;
+        let structure_known = structure_known && !hard_deep && !encoded_hard && !structure_anomaly;
+        let suspicious = suspicious_for_deep_scan(req, &views_preview) || encoded_hard;
+        let (path, ris_zone) = resolve_ris(
             mode,
             static_asset,
             cache_deception_probe,
-            route_decision.route_deep,
+            hard_deep,
             has_response,
             decode_hint_preview,
             evasion_hint_preview,
+            suspicious,
+            route_decision.clean_json_api,
+            route_decision.api_positive_lane,
+            is_benign_simple_request(req),
+            bloom_clear,
+            negative_hit,
+            structure_clean,
+            structure_known,
+            structure_anomaly,
+            route_decision.score,
+            self.policy.route_gate.gray_threshold,
+            self.policy.route_gate.deep_threshold,
         );
         let prefilter_hay = views_preview.haystack_for_prefilter(64 * 1024);
-        let inline_fast_lane = (route_decision.clean_json_api || route_decision.api_positive_lane)
-            && path == InspectPath::Fast;
-        let api_positive_lane =
-            route_decision.api_positive_lane && path == InspectPath::Fast;
+        // Fast 仅绑在明确干净通道；可疑流量即使 lane 标记也不得缩规则集
+        let structure_lane = structure_clean || structure_known;
+        let inline_fast_lane = (route_decision.clean_json_api
+            || route_decision.api_positive_lane
+            || structure_lane)
+            && path == InspectPath::Fast
+            && !suspicious
+            && ris_zone == RisZone::Clean;
+        let api_positive_lane = (route_decision.api_positive_lane || structure_lane)
+            && path == InspectPath::Fast
+            && !suspicious
+            && ris_zone == RisZone::Clean;
         InspectPlan {
             path,
+            ris_zone,
+            ris_us: t_ris.elapsed().as_micros().min(u128::from(u64::MAX)) as u64,
             views_preview,
             decode_hint: decode_hint_preview,
             evasion_hint: evasion_hint_preview,
-            route_deep: route_decision.route_deep,
+            route_deep: route_decision.route_deep || path == InspectPath::Deep,
             route_score: route_decision.score,
             inline_fast_lane,
             api_positive_lane,
@@ -155,33 +204,44 @@ impl Evaluator {
 
     /// 扫描候选规则 + 语义 + 自适应，融合后决定 block / observe。
     pub fn inspect(&self, req: &NativeRequest) -> Option<NativeHit> {
+        self.inspect_exec(req).hit
+    }
+
+    /// 同 [`inspect`]，额外返回 RIS / Fast / Deep 路径耗时。
+    pub fn inspect_exec(&self, req: &NativeRequest) -> InspectExec {
         let plan = self.plan_inspect(req, PlanCacheHints::default());
-        self.inspect_plan(req, plan)
+        self.inspect_plan_exec(req, plan)
     }
 
     /// 按已规划路径执行 inspect（不再重复 route preview）。
     pub fn inspect_plan(&self, req: &NativeRequest, plan: InspectPlan) -> Option<NativeHit> {
+        self.inspect_plan_exec(req, plan).hit
+    }
+
+    /// 同 [`inspect_plan`]，额外返回路径与分段耗时（无命中时也有）。
+    pub fn inspect_plan_exec(&self, req: &NativeRequest, plan: InspectPlan) -> InspectExec {
         let mode = InspectMode::resolve(&self.policy.inspect_mode);
         let pipe_base = self.policy.pipeline.for_level(self.program.level);
         metrics_global().record_route_gate(plan.route_deep, plan.route_score);
+        metrics_global().record_ris_zone(plan.ris_zone);
         let inspect_path = plan.path;
-        let _decode_hint_preview = plan.decode_hint;
-        let _evasion_hint_preview = plan.evasion_hint;
-        let views_preview = plan.views_preview;
+        let views_preview = &plan.views_preview;
+        let ris_us = plan.ris_us;
+        let route_score = plan.route_score;
+        let route_deep = plan.route_deep;
+        let inline_fast_lane = plan.inline_fast_lane;
+        let api_positive_lane = plan.api_positive_lane;
+        let ris_zone = plan.ris_zone;
 
-        let mut pipe = pipe_base;
+        let mut pipe = pipe_base.clone();
         if inspect_path == InspectPath::Fast {
             pipe = pipe.for_fast_path();
-            let cap = self
-                .policy
-                .fast_max_inspect_ms
-                .unwrap_or(25)
-                .min(if pipe.max_inspect_ms > 0 {
-                    pipe.max_inspect_ms
+            if let Some(fast_ms) = self.policy.fast_max_inspect_ms {
+                let cap = if pipe.max_inspect_ms > 0 {
+                    fast_ms.min(pipe.max_inspect_ms)
                 } else {
-                    25
-                });
-            if pipe.max_inspect_ms > 0 {
+                    fast_ms
+                };
                 pipe.max_inspect_ms = cap;
             }
         }
@@ -193,7 +253,7 @@ impl Evaluator {
             && mode != InspectMode::Deep
             && inspect_path == InspectPath::Deep
             && pipe.decode_enabled;
-        let hit = if use_lazy {
+        let mut hit = if use_lazy {
             self.inspect_lazy_incremental(
                 req,
                 &pipe,
@@ -209,7 +269,7 @@ impl Evaluator {
                 mode,
                 u8::MAX,
                 if inspect_path == InspectPath::Fast {
-                    Some(&views_preview)
+                    Some(views_preview)
                 } else {
                     None
                 },
@@ -219,16 +279,114 @@ impl Evaluator {
                 Some(&plan.prefilter_hay),
             )
         };
-        let blocked = hit
+        let mut blocked = hit
             .as_ref()
             .map(|h| h.action == "block" || h.action == "challenge")
             .unwrap_or(false);
-        let budget_ex = hit
+        let mut budget_ex = hit
             .as_ref()
             .and_then(|h| h.budget_exhausted.as_ref())
             .is_some();
-        timer.finish(metrics_global(), budget_ex, blocked);
-        hit
+        let first_us = timer.finish(metrics_global(), budget_ex, blocked);
+
+        let mut fast_us = 0u64;
+        let mut deep_us = 0u64;
+        let mut final_path = inspect_path;
+        match inspect_path {
+            InspectPath::Fast => fast_us = first_us,
+            InspectPath::Deep => deep_us = first_us,
+        }
+
+        // auto + Fast 未硬拦：可疑/编码/近阈路由分 → 升 deep（避免无解码漏检）
+        if mode == InspectMode::Auto
+            && inspect_path == InspectPath::Fast
+            && !blocked
+            && Self::should_escalate_fast_to_deep(req, &plan, views_preview)
+        {
+            metrics_global().record_fast_pool_escalate();
+            let deep_timer = InspectTimer::start(InspectPath::Deep);
+            let deep_pipe = pipe_base;
+            let use_lazy_deep = self.policy.lazy_decode
+                && !force_full
+                && deep_pipe.decode_enabled;
+            hit = if use_lazy_deep {
+                self.inspect_lazy_incremental(
+                    req,
+                    &deep_pipe,
+                    InspectPath::Deep,
+                    mode,
+                    false,
+                )
+            } else {
+                self.inspect_with_path(
+                    req,
+                    &deep_pipe,
+                    InspectPath::Deep,
+                    mode,
+                    u8::MAX,
+                    None,
+                    false,
+                    None,
+                    Some(&plan.route_signals),
+                    Some(&plan.prefilter_hay),
+                )
+            };
+            blocked = hit
+                .as_ref()
+                .map(|h| h.action == "block" || h.action == "challenge")
+                .unwrap_or(false);
+            budget_ex = hit
+                .as_ref()
+                .and_then(|h| h.budget_exhausted.as_ref())
+                .is_some();
+            deep_us = deep_timer.finish(metrics_global(), budget_ex, blocked);
+            final_path = InspectPath::Deep;
+        }
+
+        // RIS L5：高置信 clean Fast 放行 → 回写 Bloom / 负缓存
+        if !blocked
+            && plan.path == InspectPath::Fast
+            && plan.ris_zone == RisZone::Clean
+            && (plan.inline_fast_lane
+                || plan.api_positive_lane
+                || is_benign_simple_request(req))
+        {
+            if let Some(l1) = self.policy.ris_l1.as_ref() {
+                l1.remember_clear(req, &plan.route_signals);
+            }
+        }
+
+        InspectExec {
+            hit,
+            path: final_path,
+            ris_zone,
+            ris_us,
+            fast_us,
+            deep_us,
+            route_score,
+            route_deep: route_deep || final_path == InspectPath::Deep,
+            inline_fast_lane,
+            api_positive_lane,
+        }
+    }
+
+    fn should_escalate_fast_to_deep(
+        req: &NativeRequest,
+        plan: &InspectPlan,
+        _views: &RequestViews,
+    ) -> bool {
+        // Nerve RIS：仅 gray 区 escalate；clean 不升检；hot 已走 Deep。
+        // gray 未硬拦 → 一律升 Deep（分数已过灰阈，不能再靠启发式二次筛掉）。
+        if plan.ris_zone != RisZone::Gray {
+            return false;
+        }
+        if plan.api_positive_lane || plan.inline_fast_lane {
+            return false;
+        }
+        if is_static_asset_uri(&req.uri) && !is_cache_deception_probe_uri(&req.uri) {
+            return false;
+        }
+        true
     }
 
     /// 按需 lazy decode：浅层 → 匹配 → 增量展开 → 再匹配，decode 与 regex 共用 budget。
@@ -502,9 +660,13 @@ impl Evaluator {
         stages.regex_us = t_regex.elapsed().as_micros().min(u128::from(u64::MAX)) as u64;
 
         let l1_eet = rule_score.saturating_sub(allow_score);
-        let hard_block = wants_block && l1_eet >= threshold;
+        // 单条 block 规则自身已达阈 → 硬拦，不被高分 allow（如 score=200）冲掉。
+        let solo_block = matched
+            .iter()
+            .any(|m| m.action == "block" && m.score >= threshold);
+        let hard_block = solo_block || (wants_block && l1_eet >= threshold);
         // allow 已把 L1 净分压到阈下：跳过语义/自适应，避免 stored metadata 等白样本被 L2/L3 误拦
-        let allow_immueity = allow_score > 0 && (!wants_block || l1_eet < threshold);
+        let allow_immueity = allow_score > 0 && !hard_block;
 
         let t_sem = Instant::now();
         let sem_hay = views.haystack_for_soft_signals(12 * 1024);
@@ -545,6 +707,8 @@ impl Evaluator {
                 level: self.program.level,
                 features: &features,
                 contribute: adaptive_contribute,
+                level_weight: pipe.adaptive_level_weight,
+                score_cap: pipe.adaptive_score_cap,
             }))
         } else {
             None

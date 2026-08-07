@@ -23,11 +23,12 @@ when:
       regex: "(?i)^/api/api-keys/?$"
     - field: uri
       regex: "(?i)^/api/workflows/\\d+/(?:activate|execute)/?$"
+    # /me 突变：api-self-me-allow 仅 GET，此处定罪 PATCH/PUT
     - all:
         - field: uri
           regex: "(?i)^/api/users/me/?$"
         - field: method
-          regex: "(?i)^put$"
+          regex: "(?i)^(?:put|patch)$"
     - all:
         - field: uri
           regex: "(?i)^/api/settings/?$"

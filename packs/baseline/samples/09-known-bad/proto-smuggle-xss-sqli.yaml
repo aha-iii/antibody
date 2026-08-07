@@ -1,0 +1,58 @@
+- id: sample-proto-smuggle-sql-comment
+  rule_id: proto-smuggle-xss-sqli
+  name: SQLi comment after quote/digit
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - gap
+  - sqli
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: id=1'--
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-proto-smuggle-chat-service-pass
+  rule_id: proto-smuggle-xss-sqli
+  name: Business chat-service path must not block
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - api
+  request:
+    method: GET
+    host: example.com
+    uri: /api/webresource/chat-service-status
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-proto-smuggle-jwt-double-dash-pass
+  rule_id: proto-smuggle-xss-sqli
+  name: JWT base64url with -- must not block
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - jwt
+  request:
+    method: GET
+    host: example.com
+    uri: /api/systemparameter/getfrontendparameters
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Authorization: Bearer aaa.bbb.OynyIECy4g9u--a9tiw_XBtpge
+    body: ''

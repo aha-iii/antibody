@@ -1,0 +1,38 @@
+- id: sample-java-ofbiz-webtools
+  rule_id: java-ofbiz-webtools
+  name: OFBiz webtools
+  category: 14-upload-rce-java
+  expect_action: block
+  min_level: low
+  tags:
+  - java
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /webtools/control/main
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-java-ofbiz-webtools-gen-pass
+  rule_id: java-ofbiz-webtools
+  name: Apache OFBiz webtools/extdirect (neg)
+  category: 14-upload-rce-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - java
+  - cve
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

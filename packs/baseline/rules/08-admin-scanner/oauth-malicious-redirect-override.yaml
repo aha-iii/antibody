@@ -1,8 +1,9 @@
 # 开放重定向：OAuth/SAML authorize 端点上的恶意 redirect_uri（压过 oauth-authorize-flow-allow）
+# allow 分约 80；本规则 score=250，净分仍过 medium 阈值。
 id: oauth-malicious-redirect-override
 name: Malicious redirect_uri on OAuth authorize endpoints
 severity: critical
-score: 200
+score: 250
 action: block
 min_level: low
 tags: [redirect, oauth, self]
@@ -34,3 +35,13 @@ when:
           regex: "(?i)(?:^|/)(?:sso/login|sso/logout|saml/login)(?:/|$|\\?)"
         - field: query
           regex: "(?i)(?:^|[&])(?:service|redirect|relaystate)=https?://[^&]*evil\\.com"
+    # WAFTester AUTH-OAUTH-069：嵌在 q= 内（%26 解码后中间是 &，勿用 [^&]*）
+    - field: query
+      regex: "(?i)response_mode=form_post.+redirect_uri=https?://(?:attacker|evil)\\."
+    - field: query
+      regex: "(?i)redirect_uri=https?://(?:attacker|evil)\\..+response_mode=form_post"
+    - all:
+        - field: query
+          contains: 'response_mode=form_post'
+        - field: query
+          regex: "(?i)redirect_uri=https?://(?:attacker|evil)\\."

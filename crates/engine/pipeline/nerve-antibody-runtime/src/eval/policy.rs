@@ -1,7 +1,8 @@
 use crate::route_gate::RouteGateConfig;
-use nerve_antibody_metrics::InspectPath;
+use crate::types::NativeRequest;
+use nerve_antibody_metrics::{InspectPath, RisZone};
 use nerve_antibody_pipeline::{PipelineConfig, RequestViews};
-use nerve_antibody_signals::SignalPack;
+use nerve_antibody_signals::{RequestSignals, SignalPack};
 use std::sync::Arc;
 
 /// inspect 模式：`auto` 双路径 · `deep` 全量（bench）· `fast` 仅预过滤。
@@ -29,6 +30,12 @@ impl InspectMode {
     }
 }
 
+/// Nerve RIS L1：Bloom / 负缓存探针（由 engine 注入，runtime 不依赖 cache crate）。
+pub trait RisL1Probe: Send + Sync {
+    fn probe(&self, req: &NativeRequest, signals: &RequestSignals) -> PlanCacheHints;
+    fn remember_clear(&self, req: &NativeRequest, signals: &RequestSignals);
+}
+
 /// Evaluator 附加策略（来自 pack.toml）。
 #[derive(Clone)]
 pub struct EvalPolicy {
@@ -48,6 +55,8 @@ pub struct EvalPolicy {
     pub signal_pack: Option<Arc<SignalPack>>,
     /// Deep decode 视图 LRU（engine 注入）。
     pub deep_view_cache: Option<Arc<dyn crate::decode_cache::DeepViewCache>>,
+    /// Nerve RIS L1 缓存探针（engine 注入）。
+    pub ris_l1: Option<Arc<dyn RisL1Probe>>,
 }
 
 impl Default for EvalPolicy {
@@ -64,6 +73,7 @@ impl Default for EvalPolicy {
             lazy_decode: true,
             signal_pack: None,
             deep_view_cache: None,
+            ris_l1: None,
         }
     }
 }
@@ -71,14 +81,22 @@ impl Default for EvalPolicy {
 /// 一次 inspect 的路由规划（engine 预览与 worker 执行共用，避免重复 build_views）。
 #[derive(Debug, Clone, Copy, Default)]
 pub struct PlanCacheHints {
-    /// Bloom 高置信干净：降低 deep 倾向（仍跑 L1）。
+    /// Bloom 高置信干净 → RIS clean。
     pub bloom_clear: bool,
+    /// 负向缓存命中（近期 Fast 放行）→ RIS clean。
+    pub negative_hit: bool,
+    /// L2 结构指纹曾学过（同 method+path 键集合）→ RIS clean。
+    pub structure_known: bool,
 }
 
 /// 一次 inspect 的路由规划（engine 预览与 worker 执行共用，避免重复 build_views）。
 #[derive(Debug, Clone)]
 pub struct InspectPlan {
     pub path: InspectPath,
+    /// Nerve RIS 风险分区。
+    pub ris_zone: RisZone,
+    /// `plan_inspect`（RIS 分流）耗时，微秒。
+    pub ris_us: u64,
     pub views_preview: RequestViews,
     pub decode_hint: bool,
     pub evasion_hint: bool,
@@ -92,6 +110,36 @@ pub struct InspectPlan {
     pub route_signals: nerve_antibody_signals::RequestSignals,
     /// 预拼接 prefilter haystack（64KB cap）。
     pub prefilter_hay: String,
+}
+
+/// 单次 inspect 执行摘要（含无命中时的路径与耗时，供 bench / Dashboard）。
+#[derive(Debug, Clone)]
+pub struct InspectExec {
+    pub hit: Option<crate::types::NativeHit>,
+    /// 最终检测路径：`fast` | `deep`（含 Fast 升级后的 Deep）。
+    pub path: InspectPath,
+    pub ris_zone: RisZone,
+    pub ris_us: u64,
+    pub fast_us: u64,
+    pub deep_us: u64,
+    pub route_score: f32,
+    pub route_deep: bool,
+    pub inline_fast_lane: bool,
+    pub api_positive_lane: bool,
+}
+
+impl InspectExec {
+    pub fn lane(&self) -> &'static str {
+        if self.api_positive_lane {
+            "api_positive"
+        } else if self.inline_fast_lane {
+            "inline_fast"
+        } else if self.path == InspectPath::Fast {
+            "fast"
+        } else {
+            "deep"
+        }
+    }
 }
 
 /// 条件命中证据。

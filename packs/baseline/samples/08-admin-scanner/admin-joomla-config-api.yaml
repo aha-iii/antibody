@@ -1,0 +1,41 @@
+- id: sample-admin-joomla-config-api-gen-block
+  rule_id: admin-joomla-config-api
+  name: Joomla config application API probe (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: medium
+  tags:
+  - admin
+  - scanner
+  - joomla
+  request:
+    method: GET
+    host: example.com
+    uri: /api/index.php/v1/config/application
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-admin-joomla-config-api-gen-pass
+  rule_id: admin-joomla-config-api
+  name: Joomla config application API probe (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - admin
+  - scanner
+  - joomla
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

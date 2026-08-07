@@ -10,12 +10,11 @@ when:
   any:
     - field: header
       regex: "(?i)transfer-encoding\\s*:[^\\n]*\\n[^\\n]*transfer-encoding\\s*:"
+    # 非法 TE / 混淆组合；勿单独匹配合法 chunked
     - field: header
-      regex: "(?i)transfer-encoding\\s*:\\s*(?:cow|chunk\\b|identity,\\s*chunked|chunked,\\s*identity|[a-z])\\s*$"
+      regex: "(?i)transfer-encoding\\s*:\\s*(?:cow|chunk\\b|identity,\\s*chunked|chunked,\\s*identity)\\s*"
     - field: header
       regex: "(?i)^[ \\t]+transfer-encoding\\s*:"
-    - field: header
-      regex: "(?i)transfer-encoding\\s*:\\s*[^\\n]*chunk"
     - field: header
       contains: 'transfer-encoding: cow'
     - field: header

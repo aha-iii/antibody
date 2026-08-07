@@ -9,14 +9,13 @@ transforms: [url_decode_uni, lowercase]
 when:
   any:
     - field: uri
-      regex: "(?i)^/api/(?:v\\d+/)?(?:secrets|config\\.json|swagger\\.json|workflows)(?:/|$|\\?)"
+      regex: "(?i)^/api/(?:v\\d+/)?(?:secrets|config\\.json|swagger\\.json)(?:/|$|\\?)"
     - field: uri
       regex: "(?i)/users/\\d+/private(?:/|$|\\?)"
     - field: uri
-      regex: "(?i)^/(?:rest/workflows|application/o/(?:token|authorize)|source/saml/)(?:|$|\\?)"
-    - field: uri
       regex: "(?i)^/api/v3/core/users/?$"
     - field: uri
-      regex: "(?i)^/api/(?:sudo|settings)/?$"
+      regex: "(?i)^/api/sudo/?$"
     - field: uri
       regex: "(?i)/users/\\d+/role(?:/|$|\\?)"
+    # 勿裸拦 /api/settings、/rest/workflows（业务路径 + WAFTester 白样本）

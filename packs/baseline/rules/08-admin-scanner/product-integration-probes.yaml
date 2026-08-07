@@ -15,11 +15,14 @@ when:
       regex: "(?i)^/api/v3/(?:core/(?:users|tokens)|stages/email/verify)/"
     - field: uri
       regex: "(?i)^/source/saml/[^/]+/acs/"
+    # 勿裸拦 POST /rest/workflows（n8n 合法创建）；要求危险 body
     - all:
         - field: method
           regex: "(?i)^post$"
         - field: uri
-          regex: "(?i)^/rest/workflows(?:/[^/]+/rue)?/?$"
+          regex: "(?i)^/rest/workflows(?:/[^/]+/run)?/?$"
+        - field: body
+          regex: "(?i)(?:credentials|__proto__|process\\.env|executiontimeout|webhooksecret)"
     - field: uri
       regex: "(?i)^/api/assets/test%00"
     - all:

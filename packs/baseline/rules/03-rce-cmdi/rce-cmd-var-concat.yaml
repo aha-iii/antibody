@@ -1,0 +1,28 @@
+id: rce-cmd-var-concat
+name: Windows cmd set/call variable concatenation
+severity: high
+score: 45
+action: block
+min_level: low
+tags: [rce, cmdi, windows]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - all:
+        - field: query
+          regex: "(?i)cmd(?:\\.exe)?(?:\\s|%20|\\+)+/c"
+        - field: query
+          regex: "(?i)\\bset\\s+[a-z0-9_]+=.*"
+        - field: query
+          regex: "(?i)call\\s+%|%25[a-z0-9_]+%25"
+    - all:
+        - field: body
+          regex: "(?i)cmd(?:\\.exe)?(?:\\s|%20|\\+)+/c"
+        - field: body
+          regex: "(?i)\\bset\\s+[a-z0-9_]+="
+        - field: body
+          regex: "(?i)call\\s+%|%[a-z0-9_]+%%[a-z0-9_]+%"
+    - field: query
+      regex: "(?i)set\\s+[a-z]=\\w+&set\\s+[a-z]=\\w+&call\\s+%"
+    - field: body
+      regex: "(?i)set\\s+[a-z]=\\w+&set\\s+[a-z]=\\w+&call\\s+%"

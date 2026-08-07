@@ -1,0 +1,59 @@
+- id: sample-ssrf-internal-ip
+  rule_id: ssrf-internal-ip
+  name: SSRF RFC1918 URL
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id001
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=http://10.
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-internal-ip-alt
+  rule_id: ssrf-internal-ip
+  name: SSRF RFC1918 URL (alt)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=http://10.
+- id: sample-ssrf-internal-ip-gen-pass
+  rule_id: ssrf-internal-ip
+  name: SSRF RFC1918 URL (neg)
+  category: 05-rfi-ssrf
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - ssrf
+  - rfi
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

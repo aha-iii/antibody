@@ -1,0 +1,14 @@
+{
+  "version": "1.0.1",
+  "items": [
+    {
+      "cve_id": "CVE-2024-AUTO01",
+      "title": "Demo intel → sandbox auto",
+      "severity": "high",
+      "match_contains": "nerve-vp-auto-token01",
+      "fields": ["query", "uri", "body"],
+      "source": "intel-demo",
+      "description": "P1 fixture: channel fetch materializes this CVE as sandbox only."
+    }
+  ]
+}

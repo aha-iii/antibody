@@ -11,7 +11,12 @@ when:
     - field: query
       regex: "(?i)(?:^|[=&])[^=&]*['\"]\\s*(?:--|#|/\\*)"
     - field: body
-      regex: "(?i)(?:^|[=&])[^=&]*['\"]\\s*(?:--|#|/\\*)"
+      regex: "(?i)['\"]\\s*(?:--(?:\\s|$)|/\\*)"
+    # 勿匹配香水文案 D'or 1st（or + 数字后跟字母）
+    - field: body
+      regex: "(?i)['\"]\\s*(?:or|and)\\s+(?:['\"]|true|false|/\\*|--|\\d+\\s*(?:=|--|#|/\\*|or\\b|and\\b))"
+    - field: query
+      regex: "(?i)['\"]\\s*(?:or|and)\\s+(?:['\"]|true|false|/\\*|--|\\d+\\s*(?:=|--|#|/\\*|or\\b|and\\b))"
     - field: query
       regex: "(?i)['\"]\\s*\\)\\s*or\\s*\\("
     - field: body
@@ -19,4 +24,4 @@ when:
     - field: query
       regex: "(?i)(?:^|[=&])(?:admin|root|user)['\"]\\s*(?:or|and)\\b"
     - field: body
-      regex: "(?i)(?:^|[=&])(?:admin|root|user)['\"]\\s*(?:or|and)\\b"
+      regex: "(?i)(?:^|[=&\"])(?:admin|root|user)['\"]\\s*(?:or|and)\\b"

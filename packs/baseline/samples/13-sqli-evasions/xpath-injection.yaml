@@ -1,0 +1,41 @@
+- id: sample-xpath-injection-gen-block
+  rule_id: xpath-injection
+  name: XPath injection probes (pos)
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - xpath
+  - injection
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=//password
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xpath-injection-gen-pass
+  rule_id: xpath-injection
+  name: XPath injection probes (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - xpath
+  - injection
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

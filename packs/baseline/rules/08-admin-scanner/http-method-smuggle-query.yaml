@@ -19,3 +19,6 @@ when:
       regex: "(?i)(?:^|[&])q=gpost(?:%20|\\s)+(?:/|%2f|%2F)"
     - field: query
       regex: "(?i)(?:^|[&])q=content-length(?:%20|%20|%3a|%3A)"
+    # 超长方法名（≥20）+ HTTP/1.x
+    - field: query
+      regex: "(?i)(?:^|[&])q=[a-z]{20,}(?:%20|\\s)+(?:/|%2f)"

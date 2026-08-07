@@ -1,0 +1,40 @@
+- id: sample-oauth-authorize-flow-allow-matched-allow
+  rule_id: oauth-authorize-flow-allow
+  name: Allow OAuth authorize and token endpoints with redirect_uri (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - redirect
+  - oauth
+  request:
+    method: GET
+    host: example.com
+    uri: /oauth
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-oauth-authorize-flow-allow-gen-pass
+  rule_id: oauth-authorize-flow-allow
+  name: Allow OAuth authorize and token endpoints with redirect_uri (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - redirect
+  - oauth
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -1,4 +1,7 @@
 //! 可热更新的自研检测引擎实现。
+//!
+//! 治理：live Program 热路径定罪；可选 sandbox Program 旁路观察（不改响应）。
+//! 详见 `docs/GOVERNANCE-ARCHITECTURE-zh.md`。
 
 use crate::error::NativeError;
 use crate::health::NativeHealth;
@@ -10,7 +13,11 @@ use nerve_antibody_dsl::NativeLevel;
 use nerve_antibody_metrics::{self, InspectPath};
 use nerve_antibody_pack::NativePack;
 use nerve_antibody_pipeline::PipelineConfig;
-use nerve_antibody_runtime::{EvalPolicy, Evaluator, NativeHit, NativeRequest, PlanCacheHints, RouteGateConfig, RouteGateWeights};
+use nerve_antibody_runtime::{
+    EvalPolicy, Evaluator, InspectExec, NativeHit, NativeRequest, PlanCacheHints, RouteGateConfig,
+    RouteGateWeights,
+};
+use crate::inspect_cache::{global_verdict_cache, RisL1CacheProbe};
 use nerve_antibody_semantic::{self as semantic, install_semantic_pack};
 use nerve_antibody_signals::{load_signal_pack, SignalPack};
 use parking_lot::RwLock;
@@ -41,25 +48,130 @@ fn edge_inline_enabled() -> bool {
 }
 
 fn apply_runtime_env_overrides(pipeline: &mut PipelineConfig, eval_policy: &mut EvalPolicy) {
+    // 运维覆盖：改基值，并同步写入三档（避免 by_level 旧值压住 env）
     if let Ok(v) = std::env::var("NERVE_NATIVE_MAX_INSPECT_MS") {
         if let Ok(n) = v.parse::<u64>() {
-            pipeline.max_inspect_ms = n.clamp(50, 1200);
+            pipeline.max_inspect_ms = n;
+            pipeline.by_level.low.max_inspect_ms = Some(n);
+            pipeline.by_level.medium.max_inspect_ms = Some(n);
+            pipeline.by_level.high.max_inspect_ms = Some(n);
         }
     }
     if let Ok(v) = std::env::var("NERVE_NATIVE_MAX_REGEX_EVALS") {
         if let Ok(n) = v.parse::<u32>() {
-            pipeline.max_regex_evals = n.clamp(1000, 120_000);
+            pipeline.max_regex_evals = n;
+            pipeline.by_level.low.max_regex_evals = Some(n);
+            pipeline.by_level.medium.max_regex_evals = Some(n);
+            pipeline.by_level.high.max_regex_evals = Some(n);
+        }
+    }
+    if let Ok(v) = std::env::var("NERVE_NATIVE_ABS_MAX_INSPECT_MS") {
+        if let Ok(n) = v.parse::<u64>() {
+            pipeline.abs_max_inspect_ms = n;
+        }
+    }
+    if let Ok(v) = std::env::var("NERVE_NATIVE_ABS_MAX_REGEX_EVALS") {
+        if let Ok(n) = v.parse::<u32>() {
+            pipeline.abs_max_regex_evals = n;
         }
     }
     if let Ok(v) = std::env::var("NERVE_NATIVE_FAST_MAX_INSPECT_MS") {
         if let Ok(n) = v.parse::<u64>() {
-            eval_policy.fast_max_inspect_ms = Some(n.clamp(20, 200));
+            eval_policy.fast_max_inspect_ms = Some(n);
         }
     }
+    pipeline.apply_abs_caps();
     if edge_inline_enabled() {
-        pipeline.max_inspect_ms = pipeline.max_inspect_ms.min(300);
-        pipeline.max_regex_evals = pipeline.max_regex_evals.min(20_000);
-        // 保留 lazy_decode：JWT/access_token 等 Deep 请求在全量 decode 下易超 1–2s。
+        // 边缘内联：默认来自 pack `[policy.pipeline.edge]`；可被 env 覆盖
+        let edge_ms = std::env::var("NERVE_NATIVE_EDGE_MAX_INSPECT_MS")
+            .ok()
+            .and_then(|s| s.parse::<u64>().ok())
+            .unwrap_or(pipeline.edge.max_inspect_ms);
+        let edge_re = std::env::var("NERVE_NATIVE_EDGE_MAX_REGEX_EVALS")
+            .ok()
+            .and_then(|s| s.parse::<u32>().ok())
+            .unwrap_or(pipeline.edge.max_regex_evals);
+        pipeline.max_inspect_ms = if pipeline.max_inspect_ms == 0 {
+            edge_ms
+        } else {
+            pipeline.max_inspect_ms.min(edge_ms)
+        };
+        pipeline.max_regex_evals = if pipeline.max_regex_evals == 0 {
+            edge_re
+        } else {
+            pipeline.max_regex_evals.min(edge_re)
+        };
+        pipeline.by_level.low.max_inspect_ms = Some(pipeline.max_inspect_ms);
+        pipeline.by_level.medium.max_inspect_ms = Some(pipeline.max_inspect_ms);
+        pipeline.by_level.high.max_inspect_ms = Some(pipeline.max_inspect_ms);
+        pipeline.by_level.low.max_regex_evals = Some(pipeline.max_regex_evals);
+        pipeline.by_level.medium.max_regex_evals = Some(pipeline.max_regex_evals);
+        pipeline.by_level.high.max_regex_evals = Some(pipeline.max_regex_evals);
+        pipeline.apply_abs_caps();
+    }
+}
+
+fn map_level_profile(
+    profile: &nerve_antibody_pack::LevelProfile,
+    legacy: &nerve_antibody_pack::PipelineLevelBudget,
+) -> nerve_antibody_pipeline::LevelBudgetOverride {
+    nerve_antibody_pipeline::LevelBudgetOverride {
+        max_inspect_ms: profile.max_inspect_ms.or(legacy.max_inspect_ms),
+        max_regex_evals: profile.max_regex_evals.or(legacy.max_regex_evals),
+        max_decode_blobs: profile.max_decode_blobs,
+        max_decode_depth: profile.max_decode_depth,
+        max_blob_chars: profile.max_blob_chars,
+        max_field_chars: profile.max_field_chars,
+        max_params: profile.max_params,
+        base64_expand: profile.base64_expand,
+        decode_enabled: profile.decode_enabled,
+        structural_enabled: profile.structural_enabled,
+        adaptive_level_weight: profile.adaptive_level_weight,
+        adaptive_score_cap: profile.adaptive_score_cap,
+    }
+}
+
+fn map_budget_by_level(
+    levels: &nerve_antibody_pack::LevelsPolicy,
+    legacy: &nerve_antibody_pack::PipelineByLevel,
+) -> nerve_antibody_pipeline::BudgetByLevel {
+    nerve_antibody_pipeline::BudgetByLevel {
+        low: map_level_profile(&levels.low, &legacy.low),
+        medium: map_level_profile(&levels.medium, &legacy.medium),
+        high: map_level_profile(&levels.high, &legacy.high),
+    }
+}
+
+fn map_route_preview(
+    src: &nerve_antibody_pack::RoutePreviewPolicy,
+) -> nerve_antibody_pipeline::RoutePreviewConfig {
+    nerve_antibody_pipeline::RoutePreviewConfig {
+        max_decode_blobs: src.max_decode_blobs,
+        max_blob_chars: src.max_blob_chars,
+        max_field_chars: src.max_field_chars,
+        max_decode_depth: src.max_decode_depth,
+        max_params: src.max_params,
+    }
+}
+
+fn map_fast_path(
+    src: &nerve_antibody_pack::FastPathPolicy,
+) -> nerve_antibody_pipeline::FastPathConfig {
+    nerve_antibody_pipeline::FastPathConfig {
+        decode_enabled: src.decode_enabled,
+        base64_expand: src.base64_expand,
+        structural_enabled: src.structural_enabled,
+        max_decode_blobs: src.max_decode_blobs,
+        max_decode_depth: src.max_decode_depth,
+    }
+}
+
+fn map_edge(
+    src: &nerve_antibody_pack::EdgePipelinePolicy,
+) -> nerve_antibody_pipeline::EdgePipelineConfig {
+    nerve_antibody_pipeline::EdgePipelineConfig {
+        max_inspect_ms: src.max_inspect_ms,
+        max_regex_evals: src.max_regex_evals,
     }
 }
 
@@ -74,6 +186,18 @@ struct EngineInner {
     medium: Arc<Evaluator>,
     high: Arc<Evaluator>,
     cache_dir: Option<PathBuf>,
+    /// live 编译用的 EvalPolicy 模板（沙箱复用，避免重装全局 semantic）。
+    eval_policy: EvalPolicy,
+    /// 候选沙箱：L1 Program 强制 observe；不重装全局 semantic/model。
+    sandbox: Option<SandboxSlot>,
+}
+
+struct SandboxSlot {
+    pack_root: PathBuf,
+    pack_id: String,
+    pack_version: String,
+    /// Medium 档足够做旁路对比。
+    medium: Arc<Evaluator>,
 }
 
 /// 可热更新的自研检测引擎（线程安全读；写路径用于 reload）。
@@ -91,7 +215,17 @@ impl Engine {
         cache_dir: Option<PathBuf>,
     ) -> Result<Self, NativeError> {
         let pack_root = path.as_ref().to_path_buf();
-        let inner = build_inner(pack_root, cache_dir)?;
+        let mut inner = build_inner(pack_root, cache_dir)?;
+        if let Ok(p) = std::env::var("NERVE_NATIVE_SANDBOX_PACK") {
+            let trimmed = p.trim();
+            if !trimmed.is_empty() {
+                inner.sandbox = Some(build_sandbox_slot(
+                    PathBuf::from(trimmed),
+                    inner.eval_policy.clone(),
+                    inner.cache_dir.clone(),
+                )?);
+            }
+        }
         Ok(Self {
             inner: RwLock::new(inner),
         })
@@ -103,11 +237,75 @@ impl Engine {
             .map(|p| p.to_path_buf())
             .unwrap_or_else(|| g.pack_root.clone());
         let cache = g.cache_dir.clone();
+        let sandbox_root = g.sandbox.as_ref().map(|s| s.pack_root.clone());
         *g = build_inner(root, cache)?;
+        if let Some(sb) = sandbox_root {
+            g.sandbox = Some(build_sandbox_slot(
+                sb,
+                g.eval_policy.clone(),
+                g.cache_dir.clone(),
+            )?);
+        } else if let Ok(p) = std::env::var("NERVE_NATIVE_SANDBOX_PACK") {
+            let trimmed = p.trim();
+            if !trimmed.is_empty() {
+                g.sandbox = Some(build_sandbox_slot(
+                    PathBuf::from(trimmed),
+                    g.eval_policy.clone(),
+                    g.cache_dir.clone(),
+                )?);
+            }
+        }
         Ok(())
     }
 
+    /// 挂载候选沙箱 Program（强制 observe，旁路采样；不改 live 响应）。
+    pub fn mount_sandbox(&self, path: impl AsRef<Path>) -> Result<(), NativeError> {
+        let mut g = self.inner.write();
+        let slot = build_sandbox_slot(
+            path.as_ref().to_path_buf(),
+            g.eval_policy.clone(),
+            g.cache_dir.clone(),
+        )?;
+        g.sandbox = Some(slot);
+        Ok(())
+    }
+
+    /// 卸载沙箱 Program。
+    pub fn unmount_sandbox(&self) {
+        self.inner.write().sandbox = None;
+    }
+
+    pub fn sandbox_mounted(&self) -> bool {
+        self.inner.read().sandbox.is_some()
+    }
+
     pub fn inspect(
+        &self,
+        req: &NativeRequest,
+        level: NativeLevel,
+    ) -> Result<Option<NativeHit>, NativeError> {
+        self.inspect_pooled(req, level)
+    }
+
+    /// 同 [`inspect`]，附带 RIS / Fast / Deep 分段耗时。
+    ///
+    /// 始终直连执行（不经 inspect 池），保证 per-case 耗时可观测；生产热路径请用 [`inspect`]。
+    pub fn inspect_exec(
+        &self,
+        req: &NativeRequest,
+        level: NativeLevel,
+    ) -> Result<InspectExec, NativeError> {
+        let g = self.inner.read();
+        let ev = match level {
+            NativeLevel::Low => g.low.clone(),
+            NativeLevel::Medium => g.medium.clone(),
+            NativeLevel::High => g.high.clone(),
+        };
+        let plan = ev.plan_inspect(req, PlanCacheHints::default());
+        Ok(ev.inspect_plan_exec(req, plan))
+    }
+
+    fn inspect_pooled(
         &self,
         req: &NativeRequest,
         level: NativeLevel,
@@ -118,6 +316,7 @@ impl Engine {
             NativeLevel::Medium => g.medium.clone(),
             NativeLevel::High => g.high.clone(),
         };
+        let sandbox_ev = g.sandbox.as_ref().map(|s| s.medium.clone());
         #[cfg(feature = "inspect-trace")]
         let plan = {
             let t0 = std::time::Instant::now();
@@ -148,7 +347,20 @@ impl Engine {
             ev.inspect_plan(req, plan.clone())
         };
         if plan.path == InspectPath::Fast {
-            shadow_runtime().submit_if_fast_clean(ev, req.clone(), hit.as_ref());
+            if let Some(sb) = sandbox_ev {
+                shadow_runtime().submit_sandbox_for_ris_zone(
+                    plan.ris_zone,
+                    sb,
+                    req.clone(),
+                    hit.as_ref(),
+                );
+            }
+            shadow_runtime().submit_for_ris_zone(
+                plan.ris_zone,
+                ev,
+                req.clone(),
+                hit.as_ref(),
+            );
         }
         Ok(hit)
     }
@@ -209,9 +421,9 @@ impl Engine {
             content_hash: g.pack.content_hash.clone(),
             rule_count: g.pack.rules.len(),
             block_threshold: g.pack.block_threshold(),
-            threshold_low: p.threshold_by_level.low,
-            threshold_medium: p.threshold_by_level.medium,
-            threshold_high: p.threshold_by_level.high,
+            threshold_low: p.threshold_for("low"),
+            threshold_medium: p.threshold_for("medium"),
+            threshold_high: p.threshold_for("high"),
             rules_low: g.low.program().rule_count(),
             rules_medium: g.medium.program().rule_count(),
             rules_high: g.high.program().rule_count(),
@@ -229,6 +441,8 @@ impl Engine {
                 level: NativeLevel::Medium,
                 features: &adaptive::FeatureSnapshot::default(),
                 contribute: false,
+                level_weight: p.levels.medium.adaptive_level_weight,
+                score_cap: p.levels.medium.adaptive_score_cap,
             })
             .version,
             inspect_mode: p.inspect.mode.clone(),
@@ -250,6 +464,10 @@ impl Engine {
                 .as_ref()
                 .map(|sp| sp.fingerprints.len())
                 .unwrap_or(0),
+            sandbox_mounted: g.sandbox.is_some(),
+            sandbox_pack_id: g.sandbox.as_ref().map(|s| s.pack_id.clone()),
+            sandbox_pack_version: g.sandbox.as_ref().map(|s| s.pack_version.clone()),
+            sandbox_sample_bps: shadow_runtime().sandbox_sample_bps(),
         }
     }
 
@@ -317,7 +535,16 @@ fn build_inner(pack_root: PathBuf, cache_dir: Option<PathBuf>) -> Result<EngineI
         max_inspect_ms: policy.pipeline.max_inspect_ms,
         max_regex_evals: policy.pipeline.max_regex_evals,
         max_view_slices: 0,
+        by_level: map_budget_by_level(&policy.levels, &policy.pipeline.by_level),
+        abs_max_inspect_ms: policy.pipeline.abs_max_inspect_ms,
+        abs_max_regex_evals: policy.pipeline.abs_max_regex_evals,
+        route_preview: map_route_preview(&policy.pipeline.route_preview),
+        fast_path: map_fast_path(&policy.pipeline.fast_path),
+        edge: map_edge(&policy.pipeline.edge),
+        adaptive_level_weight: None,
+        adaptive_score_cap: None,
     };
+    pipeline.apply_abs_caps();
     let mut eval_policy = EvalPolicy {
         semantic_enabled: policy.semantic.enabled,
         adaptive_enabled: policy.adaptive.enabled,
@@ -330,6 +557,7 @@ fn build_inner(pack_root: PathBuf, cache_dir: Option<PathBuf>) -> Result<EngineI
         lazy_decode: policy.pipeline.lazy_decode,
         signal_pack: signal_pack.clone(),
         deep_view_cache: None,
+        ris_l1: Some(std::sync::Arc::new(RisL1CacheProbe::new(global_verdict_cache()))),
     };
     apply_runtime_env_overrides(&mut pipeline, &mut eval_policy);
     eval_policy.pipeline = pipeline.clone();
@@ -338,7 +566,7 @@ fn build_inner(pack_root: PathBuf, cache_dir: Option<PathBuf>) -> Result<EngineI
     let low = compile_level(
         &pack,
         NativeLevel::Low,
-        policy.threshold_by_level.low,
+        policy.threshold_for("low"),
         &cache_dir,
         observe,
         eval_policy.clone(),
@@ -346,7 +574,7 @@ fn build_inner(pack_root: PathBuf, cache_dir: Option<PathBuf>) -> Result<EngineI
     let medium = compile_level(
         &pack,
         NativeLevel::Medium,
-        policy.threshold_by_level.medium,
+        policy.threshold_for("medium"),
         &cache_dir,
         observe,
         eval_policy.clone(),
@@ -354,10 +582,10 @@ fn build_inner(pack_root: PathBuf, cache_dir: Option<PathBuf>) -> Result<EngineI
     let high = compile_level(
         &pack,
         NativeLevel::High,
-        policy.threshold_by_level.high,
+        policy.threshold_for("high"),
         &cache_dir,
         observe,
-        eval_policy,
+        eval_policy.clone(),
     )?;
 
     Ok(EngineInner {
@@ -369,6 +597,33 @@ fn build_inner(pack_root: PathBuf, cache_dir: Option<PathBuf>) -> Result<EngineI
         medium,
         high,
         cache_dir,
+        eval_policy,
+        sandbox: None,
+    })
+}
+
+/// 加载候选沙箱：只编译 L1 Program 并强制 observe_only；复用 live 的 EvalPolicy（不重装全局 semantic）。
+fn build_sandbox_slot(
+    pack_root: PathBuf,
+    eval_policy: EvalPolicy,
+    cache_dir: Option<PathBuf>,
+) -> Result<SandboxSlot, NativeError> {
+    let loaded = NativePack::load_auto(&pack_root)?;
+    let pack = loaded.pack;
+    let threshold = pack.policy().threshold_for("medium");
+    let medium = compile_level(
+        &pack,
+        NativeLevel::Medium,
+        threshold,
+        &cache_dir,
+        true, // 沙箱拦截许可恒为 0
+        eval_policy,
+    )?;
+    Ok(SandboxSlot {
+        pack_root,
+        pack_id: pack.id().into(),
+        pack_version: pack.version().into(),
+        medium,
     })
 }
 
@@ -482,6 +737,7 @@ fn load_route_gate_config(
     RouteGateConfig {
         enabled: rg.enabled,
         deep_threshold: rg.deep_threshold,
+        gray_threshold: rg.gray_threshold.min(rg.deep_threshold),
         hard_decode_hint: rg.hard_decode_hint,
         weights,
     }

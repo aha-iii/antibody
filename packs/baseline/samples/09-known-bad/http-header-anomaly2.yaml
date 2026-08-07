@@ -1,0 +1,21 @@
+- id: sample-http-header-anomaly2-gen-pass
+  rule_id: http-header-anomaly2
+  name: Header format anomalies CL / space-before-colon (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: high
+  severity: info
+  tags:
+  - protocol
+  - fuzz
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

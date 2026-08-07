@@ -1,0 +1,39 @@
+- id: sample-webshell-preg-replace-e-matched-block
+  rule_id: webshell-preg-replace-e
+  name: Webshell preg_replace /e (pos)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /p/preg_replace(/e
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-preg-replace-e-gen-pass
+  rule_id: webshell-preg-replace-e
+  name: Webshell preg_replace /e (neg)
+  category: 07-webshell
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - webshell
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

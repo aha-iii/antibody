@@ -1,0 +1,42 @@
+- id: sample-graphql-introspection-gen-block
+  rule_id: graphql-introspection
+  name: GraphQL introspection / schema probe (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - graphql
+  - recon
+  - self
+  request:
+    method: POST
+    host: example.com
+    uri: /api/search
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=introspectionquery
+- id: sample-graphql-introspection-gen-pass
+  rule_id: graphql-introspection
+  name: GraphQL introspection / schema probe (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - graphql
+  - recon
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

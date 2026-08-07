@@ -1,0 +1,57 @@
+- id: sample-jwt-claim-abuse-cty-block
+  rule_id: jwt-claim-abuse
+  name: JWT cty=text/html abuse (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: critical
+  tags:
+  - auth
+  - jwt
+  request:
+    method: GET
+    host: example.com
+    uri: /api
+    query: access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6InRleHQvaHRtbCJ9.eyJzdWIiOiJhZG1pbiJ9.sig
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-jwt-claim-abuse-pass
+  rule_id: jwt-claim-abuse
+  name: Normal HS256 JWT (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - auth
+  - jwt
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api
+    query: access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyIn0.signature
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-jwt-claim-abuse-matched-pass
+  rule_id: jwt-claim-abuse
+  name: JWT header/claim abuse patterns (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - auth
+  - jwt
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/v1/items
+    query: q=hello-world&page=1&sort=name
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

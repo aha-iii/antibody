@@ -1,0 +1,59 @@
+- id: sample-lfi-svn-entries
+  rule_id: lfi-svn-entries
+  name: LFI .svn/entries
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id001
+  - lfi
+  - path
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=.svn/entries
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-svn-entries-alt
+  rule_id: lfi-svn-entries
+  name: LFI .svn/entries (alt)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=.svn/entries
+- id: sample-lfi-svn-entries-gen-pass
+  rule_id: lfi-svn-entries
+  name: LFI .svn/entries (neg)
+  category: 04-lfi-path
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - lfi
+  - path
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

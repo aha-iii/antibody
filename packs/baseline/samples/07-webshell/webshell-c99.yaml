@@ -1,0 +1,57 @@
+- id: sample-webshell-c99
+  rule_id: webshell-c99
+  name: Webshell known names
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id001
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=c99shell
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-c99-alt
+  rule_id: webshell-c99
+  name: Webshell known names (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=c99shell
+- id: sample-webshell-c99-gen-pass
+  rule_id: webshell-c99
+  name: Webshell known names (neg)
+  category: 07-webshell
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - webshell
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

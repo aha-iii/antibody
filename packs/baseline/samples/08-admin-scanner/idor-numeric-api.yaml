@@ -1,0 +1,41 @@
+- id: sample-idor-numeric-api-gen-block
+  rule_id: idor-numeric-api
+  name: Numeric IDOR / object enumeration API paths (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: high
+  severity: medium
+  tags:
+  - idor
+  - recon
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/users/0/
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-idor-numeric-api-gen-pass
+  rule_id: idor-numeric-api
+  name: Numeric IDOR / object enumeration API paths (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: high
+  severity: info
+  tags:
+  - idor
+  - recon
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

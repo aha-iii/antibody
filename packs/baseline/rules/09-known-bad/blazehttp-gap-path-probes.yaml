@@ -15,10 +15,11 @@ when:
       contains: '/inner/'
     - field: uri
       contains: '/example/tree'
+    # 仅 HTTP 请求走私形态（METHOD + 路径）；勿拦正文「DELETE 75oBC$」
     - all:
         - field: method
           regex: "(?i)^post$"
         - field: uri
           regex: "(?i)^/$"
         - field: body
-          regex: "(?i)(?:%0d%0a|\\r\\n)(?:get|post|put|delete|head)\\s+"
+          regex: "(?i)(?:%0d%0a|\\r\\n)(?:get|post|put|delete|head)\\s+/"

@@ -1,0 +1,161 @@
+- id: sample-gotestwaf-base64-flat-ldap-block
+  rule_id: gotestwaf-base64-flat
+  name: GoTestWAF Base64Flat LDAP (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - gotestwaf
+  - base64
+  request:
+    method: GET
+    host: example.com
+    uri: /
+    query: q=dXNlclBhc3N3b3JkOjIuNS4xMy4xODo9MTIz
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-gotestwaf-base64-flat-xss-uri-block
+  rule_id: gotestwaf-base64-flat
+  name: GoTestWAF Base64Flat XSS path (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - gotestwaf
+  - base64
+  request:
+    method: GET
+    host: example.com
+    uri: /Ik9uQ2xpQ2s9Iihwcm9tcHRgMWAp
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-gotestwaf-base64-flat-gen-pass
+  rule_id: gotestwaf-base64-flat
+  name: GoTestWAF Base64Flat benign b64 (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - gotestwaf
+  - base64
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=aGVsbG8td29ybGQ=
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-gotestwaf-texts-union-prose-pass
+  rule_id: sqli-union-select
+  name: GoTestWAF texts union prose (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - gotestwaf
+  - fp
+  - texts
+  request:
+    method: POST
+    host: example.com
+    uri: /
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Type: application/x-www-form-urlencoded
+      Accept: '*/*'
+    body: q=union was a great select
+- id: sample-gotestwaf-texts-perfume-pass
+  rule_id: sqli-auth-bypass-tail-comment
+  name: GoTestWAF texts perfume (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - gotestwaf
+  - fp
+  - texts
+  request:
+    method: POST
+    host: example.com
+    uri: /
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Type: application/x-www-form-urlencoded
+      Accept: '*/*'
+    body: q=D'or 1st parfume
+- id: sample-gotestwaf-texts-javascript-book-pass
+  rule_id: injection-ssi-xpath-ldap
+  name: GoTestWAF texts JavaScript book title (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - gotestwaf
+  - fp
+  - texts
+  request:
+    method: GET
+    host: example.com
+    uri: /
+    query: q=JavaScript:%20Basics%20of%20JavaScript%20Language
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-gotestwaf-texts-delete-sku-pass
+  rule_id: blazehttp-gap-path-probes
+  name: GoTestWAF texts DELETE sku (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: medium
+  severity: info
+  tags:
+  - gotestwaf
+  - fp
+  - texts
+  request:
+    method: POST
+    host: example.com
+    uri: /
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Type: multipart/form-data; boundary=----x
+      Accept: '*/*'
+    body: "------x\r\nContent-Disposition: form-data; name=\"q\"\r\n\r\nDELETE 75oBC$\r\n------x--"
+- id: sample-gotestwaf-texts-fromdate-pass
+  rule_id: sqli-shutdown-udf
+  name: GoTestWAF texts SELECT fromDate (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - gotestwaf
+  - fp
+  - texts
+  request:
+    method: GET
+    host: example.com
+    uri: /
+    query: q=_SELECT%20all%20the%20rows%20of%20fromDate%20%3D%20%40-_
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

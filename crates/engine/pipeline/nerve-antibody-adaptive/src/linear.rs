@@ -1,7 +1,7 @@
 //! 线性权重模型（JSON）：真实可校准 ML，非手工 if/else。
 
 use crate::scorer::{AdaptiveInput, AdaptiveOutput, FeatureSnapshot};
-use crate::{is_suspicious, level_weight, score_cap, RiskModel};
+use crate::{effective_level_weight, effective_score_cap, is_suspicious, RiskModel};
 use serde::Deserialize;
 use std::fs;
 use std::path::Path;
@@ -120,8 +120,8 @@ impl RiskModel for LinearModel {
     fn score(&self, input: &AdaptiveInput<'_>) -> AdaptiveOutput {
         let (logit, tops) = self.logit(input.features);
         let p = 1.0 / (1.0 + (-logit).exp());
-        let lw = level_weight(input.level);
-        let cap = score_cap(input.level);
+        let lw = effective_level_weight(input);
+        let cap = effective_score_cap(input);
         let raw = (p * lw * cap as f32).round() as u32;
         let mut model_score = raw.min(cap);
         let suspicious = is_suspicious(input.features);

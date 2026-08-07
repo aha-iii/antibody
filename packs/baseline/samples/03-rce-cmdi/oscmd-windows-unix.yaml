@@ -1,0 +1,75 @@
+- id: sample-oscmd-windows-unix-amp-id
+  rule_id: oscmd-windows-unix
+  name: OS cmdi &id (bare command)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - rce
+  - cmdi
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: name=aaa&id
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-oscmd-windows-unix-amp-id-semi
+  rule_id: oscmd-windows-unix
+  name: OS cmdi &id; (command chain)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: name=aaa&id;whoami
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-oscmd-windows-unix-amp-id-param-pass
+  rule_id: oscmd-windows-unix
+  name: Legitimate query param &id=
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - api
+  request:
+    method: GET
+    host: example.com
+    uri: /api/dynamic/new_stockoutorder/get
+    query: '&id=ffc06e39-2558-1300-296d-141f4c29fb74&formId=ff720001-0100-7f54-0000-066864045f1a'
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-oscmd-windows-unix-amp-type-param-pass
+  rule_id: oscmd-windows-unix
+  name: Legitimate query param &TYPE=
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: high
+  tags:
+  - fp
+  - api
+  request:
+    method: GET
+    host: example.com
+    uri: /fd/ls/l
+    query: IG=AB071B8E32B4494FA036CB7051595CF0&TYPE=Event.
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -8,9 +8,7 @@ tags: [protocol, smuggle, self]
 transforms: [lowercase]
 when:
   any:
-    - field: header
-      header_name: _proto_anomaly
-      regex: "(?i)(?:http09|te-anomaly|dup-header-te|get-with-te|chunk-anomaly|malformed-line)"
+    # harness 写入的 _proto_anomaly（见 dashboard parse_raw_http）
     - field: header
       header_name: _proto_anomaly
       contains: 'http09'
@@ -19,10 +17,41 @@ when:
       contains: 'get-with-te'
     - field: header
       header_name: _proto_anomaly
+      contains: 'dup-te'
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'dup-cl'
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'dup-host'
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'dup-xff-proto'
+    - field: header
+      header_name: _proto_anomaly
       contains: 'te-anomaly'
     - field: header
       header_name: _proto_anomaly
-      contains: 'chunk-anomaly'
+      contains: 'cl-anomaly'
     - field: header
       header_name: _proto_anomaly
-      contains: 'malformed-line'
+      contains: 'header-colon-ws'
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'bare-cr'
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'lf-only'
+    - field: header
+      header_name: _proto_anomaly
+      contains: 'leading-ws'
+    # 重复 TE/CL 值内含换行（parse 拼接）
+    - field: header
+      header_name: transfer-encoding
+      regex: "(?s).+\\n.+"
+    - field: header
+      header_name: content-length
+      regex: "(?s).+\\n.+"
+    - field: header
+      header_name: host
+      regex: "(?s).+\\n.+"

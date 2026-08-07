@@ -1,0 +1,60 @@
+- id: sample-open-redirect-legitimate-relative-allow-matched-allow
+  rule_id: open-redirect-legitimate-relative-allow
+  name: Allow same-site redirect_uri relative path normalization (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - redirect
+  - oauth
+  request:
+    method: GET
+    host: example.com
+    uri: /favicon.ico
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''
+- id: sample-open-redirect-legitimate-relative-allow-matched-allow
+  rule_id: open-redirect-legitimate-relative-allow
+  name: Allow same-site redirect_uri relative path normalization (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - redirect
+  - oauth
+  request:
+    method: GET
+    host: example.com
+    uri: /health
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-open-redirect-legitimate-relative-allow-gen-pass
+  rule_id: open-redirect-legitimate-relative-allow
+  name: Allow same-site redirect_uri relative path normalization (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - redirect
+  - oauth
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -1,53 +1,214 @@
+# Nerve Native Baseline 规则包清单
+#
+# 用途：Expert / Antibody 引擎加载的官方基线策略与规则入口。
+# 调参入口：改本文件即可（分档见 [policy.levels.*]，全局见 [policy.pipeline]）。
+# 禁止：在引擎源码写死毫秒预算、档权重、解码启发式；一律以本文件为准。
+# 版本：semver；发版时同步 CHANGELOG.md。min_engine 为引擎最低兼容版本。
+
 id = "baseline"
-version = "1.5.43"
+version = "1.5.59"
 name = "Nerve Native Baseline"
 min_engine = "0.1.0"
 
+# ---------------------------------------------------------------------------
+# [policy] 包级总开关
+# ---------------------------------------------------------------------------
 [policy]
+# 无分档覆盖时的默认拦截分阈值（兼容旧调用；实际以 levels / threshold_by_level 为准）。
 block_threshold = 40
+# true = 整包只观察不拦截（灰度）；生产基线应为 false。
 observe_only = false
 
-# 三档拦截目标：low≥85 / medium≥95 / high≥99.99（单规则分多为 40）
+# ---------------------------------------------------------------------------
+# [policy.threshold_by_level] 兼容旧包的分档阈值
+#
+# 优先级：若 [policy.levels.*.block_threshold] 有值，则以其为准；本段作回退。
+# 单规则命中分多为 40；阈值越低，同档越容易 block（high 更严）。
+# 目标口径参考：low≥85% / medium≥95% / high≥99.99%（评测场景，非硬 SLA）。
+# ---------------------------------------------------------------------------
 [policy.threshold_by_level]
 low = 40
 medium = 36
 high = 32
 
+# ===========================================================================
+# [policy.levels.*] 分档完整配置（推荐主入口）
+#
+# 每档可独立配置：拦截阈值、inspect 预算、解码上限、自适应模型贡献。
+# 字段缺省 = 继承 [policy.pipeline] 全局基值；显式写出便于运维审阅。
+# 引擎 for_level() 只应用本段，不再做源码内 min/max 启发式。
+# ===========================================================================
+
+# --- low：偏放过，预算紧，自适应不贡献 ------------------------------------
+[policy.levels.low]
+# 本档拦截分阈值；≥ 该分可 block（仍受 fusion / observe_only 约束）。
+block_threshold = 40
+# 本档单次 inspect 墙钟上限（毫秒）。0 = 不限制。高并发下过小会导致 budget_exhausted 假漏报。
+max_inspect_ms = 250
+# 本档单次 inspect 正则求值次数上限。0 = 不限制。
+max_regex_evals = 20000
+# 本档 base64/多层解码候选 blob 数量上限。
+max_decode_blobs = 24
+# 本档递归解码最大深度（层）。
+max_decode_depth = 3
+# 是否对本档启用 base64 候选展开。
+base64_expand = true
+# 自适应模型档权重（0~1）。0 = 模型分不计入融合。
+adaptive_level_weight = 0.0
+# 自适应模型分对本档贡献的硬封顶（整数分）。0 = 不贡献。
+adaptive_score_cap = 0
+
+# --- medium：默认生产档；预算需覆盖 waftester/高并发深检 -------------------
+[policy.levels.medium]
+# 较 low 略降阈值，提高检出；字段语义同 levels.low。
+block_threshold = 36
+# 深检墙钟（毫秒）。空明细 FN 曾顶在 2500；评测用 5000，建议并发 24–40。
+max_inspect_ms = 5000
+max_regex_evals = 160000
+max_decode_blobs = 48
+max_decode_depth = 4
+base64_expand = true
+# 模型可部分贡献（assist-only，不可裸模型硬拦）。
+adaptive_level_weight = 0.7
+adaptive_score_cap = 25
+
+# --- high：最严；解码更深，自适应满权重 -----------------------------------
+[policy.levels.high]
+block_threshold = 32
+# 与 medium 同墙钟，避免 high 评测仍顶预算。
+max_inspect_ms = 5000
+max_regex_evals = 160000
+max_decode_blobs = 64
+max_decode_depth = 6
+base64_expand = true
+adaptive_level_weight = 1.0
+adaptive_score_cap = 35
+
+# ---------------------------------------------------------------------------
+# [policy.semantic] L2 语义签名包
+# ---------------------------------------------------------------------------
 [policy.semantic]
+# false = 不加载语义层（仅规则 / 信号 / 自适应等）。
 enabled = true
+# 相对本 pack 根的语义签名 YAML。
 pack_path = "semantic/signatures.yaml"
 
+# ---------------------------------------------------------------------------
+# [policy.signals] 声明式 feature / fingerprint 信号
+# ---------------------------------------------------------------------------
 [policy.signals]
 enabled = true
+# 相对本 pack 根的信号定义 YAML。
 pack_path = "signals/signals.yaml"
 
+# ---------------------------------------------------------------------------
+# [policy.inspect] 快/深路径模式
+# ---------------------------------------------------------------------------
 [policy.inspect]
+# auto = 路由门闩分流快/深；deep = 强制深检（bench）；fast = 仅快路径。
+# 进程覆盖：NERVE_NATIVE_INSPECT_MODE。
 mode = "auto"
-fast_max_inspect_ms = 80
+# auto 快路径墙钟上限（毫秒）。未设置则不在此维额外收紧。
+# 进程覆盖：NERVE_NATIVE_FAST_MAX_INSPECT_MS。
+fast_max_inspect_ms = 120
 
+# Nerve RIS（Risk-stratified Inspection Staging）：route_gate 浅筛 → clean/gray/hot。
+# 只分流 Arc/Cortex，不参与 block 定罪。见 docs/superpowers/specs/2026-08-06-nerve-ris-design.md
 [policy.inspect.route_gate]
+# false = 不做门闩，按 mode 其它逻辑分流。
 enabled = true
-deep_threshold = 0.38
+# score ≥ deep_threshold → hot → Deep。
+# 合成校准曾给出 0.40，攻击集上过宽；在真实 bench 校准前用保守值。
+deep_threshold = 0.28
+# gray_threshold ≤ score < deep_threshold → gray → Fast(+一律 escalate)。
+gray_threshold = 0.18
+# true = 预览视图出现强解码攻击提示时强制 hot。
 hard_decode_hint = true
+# 相对 pack 根的 JSON 权重（bench 校准输出）；缺失则用内联/默认。
 weights_path = "config/route_weights.json"
 
+# ---------------------------------------------------------------------------
+# [policy.fusion] 多信号融合（Attribution-preserving）
+# ---------------------------------------------------------------------------
 [policy.fusion]
+# block 至少需要的独立信号类数。1 = 兼容旧行为；2 = 弱信号需双证（可降级 challenge）。
 min_independent_signals = 1
 
+# ---------------------------------------------------------------------------
+# [policy.adaptive] 自适应风险模型（assist-only）
+# ---------------------------------------------------------------------------
 [policy.adaptive]
+# false = 不跑模型打分。
 enabled = true
+# false = 算分但不向融合贡献（仅观测）。档权重见 levels.*.adaptive_*。
 contribute = true
+# 可选：相对 pack 根的线性/ONNX 模型路径。未配则启发式模型。
+# model_path = "models/linear-v1.json"
 
+# ===========================================================================
+# [policy.pipeline] 全局管线基值 + 硬顶
+#
+# 档未覆盖的字段继承此处。运维 env 可改基值并同步写入三档 by_level。
+# ===========================================================================
 [policy.pipeline]
+# 是否启用归一化 / 解码管线。
 decode_enabled = true
+# 全局默认是否展开 base64 候选（可被 levels.*.base64_expand 覆盖）。
 base64_expand = true
+# 是否拆 form / JSON / multipart / XML 参数。
 structural_enabled = true
+# 全局默认解码 blob 上限（档可覆盖）。
 max_decode_blobs = 48
+# 单个解码 blob 字符上限。
 max_blob_chars = 16384
-# 规则字段（uri/query/body）head-tail 截断；深路径与快路径共用
+# 规则求值字段（uri/query/body 等）head-tail 截断字符上限；快/深路径共用。
 max_field_chars = 65536
+# 结构拆参最多保留的参数个数。
 max_params = 256
+# 全局默认递归解码深度（档可覆盖）。
 max_decode_depth = 4
-max_inspect_ms = 1200
-max_regex_evals = 120000
+# 全局 inspect 墙钟基值（毫秒）。档未覆盖时使用。0 = 不限制。
+# 进程覆盖：NERVE_NATIVE_MAX_INSPECT_MS（同步三档）。
+max_inspect_ms = 5000
+# 全局正则求值次数基值。0 = 不限制。
+# 进程覆盖：NERVE_NATIVE_MAX_REGEX_EVALS。
+max_regex_evals = 160000
+# true = 深路径两阶段解码（浅层优先，可疑再全量），省干净流量成本。
 lazy_decode = true
+# 墙钟安全硬顶（毫秒）；最终 max_inspect_ms = min(配置, 硬顶)。0 = 不设硬顶。
+# 进程覆盖：NERVE_NATIVE_ABS_MAX_INSPECT_MS。
+abs_max_inspect_ms = 60000
+# 正则次数安全硬顶。0 = 不设硬顶。
+# 进程覆盖：NERVE_NATIVE_ABS_MAX_REGEX_EVALS。
+abs_max_regex_evals = 500000
+
+# ---------------------------------------------------------------------------
+# [policy.pipeline.route_preview] Stage-0 路由预览用浅解码上限
+# 供 route_gate / 预览视图；应明显小于深检，避免预览吃光预算。
+# ---------------------------------------------------------------------------
+[policy.pipeline.route_preview]
+max_decode_blobs = 8
+max_blob_chars = 4096
+max_field_chars = 8192
+max_decode_depth = 2
+max_params = 64
+
+# ---------------------------------------------------------------------------
+# [policy.pipeline.fast_path] auto 快路径管线开关
+# 干净流量跳过深解码/拆参；时间上限见 [policy.inspect].fast_max_inspect_ms。
+# ---------------------------------------------------------------------------
+[policy.pipeline.fast_path]
+decode_enabled = false
+base64_expand = false
+structural_enabled = false
+max_decode_blobs = 0
+max_decode_depth = 0
+
+# ---------------------------------------------------------------------------
+# [policy.pipeline.edge] 边缘内联模式默认收紧
+# 仅当 NERVE_NATIVE_EDGE_INLINE=1 时生效；仍受 abs_* 约束。
+# 进程覆盖：NERVE_NATIVE_EDGE_MAX_INSPECT_MS / NERVE_NATIVE_EDGE_MAX_REGEX_EVALS。
+# ---------------------------------------------------------------------------
+[policy.pipeline.edge]
+max_inspect_ms = 300
+max_regex_evals = 20000

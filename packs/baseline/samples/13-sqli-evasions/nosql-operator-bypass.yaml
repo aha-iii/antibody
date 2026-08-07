@@ -1,0 +1,41 @@
+- id: sample-nosql-operator-bypass-gen-block
+  rule_id: nosql-operator-bypass
+  name: NoSQL operator login bypass (pos)
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - nosql
+  - auth
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=$where
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-nosql-operator-bypass-gen-pass
+  rule_id: nosql-operator-bypass
+  name: NoSQL operator login bypass (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - nosql
+  - auth
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -1,0 +1,57 @@
+- id: sample-webshell-jsp
+  rule_id: webshell-jsp
+  name: Webshell JSP runtime
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: &id001
+  - webshell
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=runtime.getruntime
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-webshell-jsp-alt
+  rule_id: webshell-jsp
+  name: Webshell JSP runtime (alt)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=runtime.getruntime
+- id: sample-webshell-jsp-gen-pass
+  rule_id: webshell-jsp
+  name: Webshell JSP runtime (neg)
+  category: 07-webshell
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - webshell
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

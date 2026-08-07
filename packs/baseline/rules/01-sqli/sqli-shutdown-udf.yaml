@@ -14,8 +14,9 @@ when:
       regex: "(?i)'?;\\s*shutdown\\b|create\\s+function\\s+"
     - field: query
       regex: "(?i)/\\?\\?\\?\\?/[cp]\\?[st]|/\\?\\?\\?\\?/\\[[cp]\\]"
+    # SELECT … FROM table；from 须词界，避免 fromDate
     - field: query
-      regex: "(?i)select(?:%09|\\s|%a0|\\xa0)+.*(?:%09|\\s|%a0)+from"
+      regex: "(?i)\\bselect(?:%09|\\s|%a0|\\xa0)+.+\\bfrom\\b(?:%09|\\s|%a0)+[\\w(]"
     - field: query
       contains: '%ef%bc%87'
     - field: query

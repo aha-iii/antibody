@@ -1,0 +1,37 @@
+- id: sample-open-redirect-param-gen-pass
+  rule_id: open-redirect-param
+  name: Open redirect via common redirect parameters (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: medium
+  severity: info
+  tags:
+  - redirect
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-open-redirect-param-backslash-block
+  rule_id: open-redirect-param
+  name: Backslash protocol-relative url=\\/\\/evil.com (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: medium
+  severity: medium
+  tags:
+  - redirect
+  request:
+    method: GET
+    host: example.com
+    uri: /redirect
+    query: url=\/\/evil.com
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''

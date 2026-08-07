@@ -3,13 +3,13 @@ name: Null byte and bare CRLF control probes
 severity: medium
 score: 35
 action: block
-min_level: high
+min_level: low
 tags: [fuzz, protocol, self]
-transforms: []
+transforms: [url_decode_uni]
 when:
   any:
     - field: query
-      regex: "(?i)%25(?:00|7f|ff)|%00|%7f"
+      regex: "(?i)%25(?:00|7f|ff)|%00|%7f|%2500"
     - field: uri
       regex: "(?i)%00|%2500"
     - field: query

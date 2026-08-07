@@ -1,0 +1,43 @@
+- id: sample-jwt-header-url-ssrf-gen-block
+  rule_id: jwt-header-url-ssrf
+  name: JWT kid/jku/x5u remote URL SSRF (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - auth
+  - jwt
+  - ssrf
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=ImtpZCI6Imh0dHA
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-jwt-header-url-ssrf-gen-pass
+  rule_id: jwt-header-url-ssrf
+  name: JWT kid/jku/x5u remote URL SSRF (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - auth
+  - jwt
+  - ssrf
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

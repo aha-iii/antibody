@@ -1,0 +1,8 @@
+# virtual-patches/index.toml
+schema_version = 1
+
+[[entries]]
+cve_id = "CVE-2024-DEMO01"
+path = "CVE-2024-DEMO01"
+severity = "high"
+status = "sandbox"

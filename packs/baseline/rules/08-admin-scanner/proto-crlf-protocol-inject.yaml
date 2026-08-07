@@ -8,13 +8,13 @@ tags: [proto, crlf, self]
 transforms: [url_decode_uni, lowercase]
 when:
   any:
-    # Redis/Memcached/FTP/IMAP/SMTP/日志伪造
+    # 须像协议命令（set KEY / subject:）；勿因 multipart 换行 + 单词 set/subject 误报
     - field: query
-      regex: "(?i)(?:%0d%0a|%0a|%0d|[\\r\\n]).{0,8}(?:set|user|pass|login|subject|sec-websocket|\\[success\\]|\\d{1,3}(?:\\.\\d{1,3}){3}\\s+-)"
+      regex: "(?i)(?:%0d%0a|%0a|%0d|[\\r\\n]).{0,8}(?:\\bset\\s+\\w+|\\buser\\s+|\\bpass\\s+|\\blogin\\s+|\\bsubject\\s*:|sec-websocket|\\[success\\]|\\d{1,3}(?:\\.\\d{1,3}){3}\\s+-)"
     - field: body
-      regex: "(?i)(?:%0d%0a|%0a|%0d|[\\r\\n]).{0,8}(?:set|user|pass|login|subject|sec-websocket|\\[success\\]|\\d{1,3}(?:\\.\\d{1,3}){3}\\s+-)"
+      regex: "(?i)(?:%0d%0a|%0a|%0d|[\\r\\n]).{0,8}(?:\\bset\\s+\\w+|\\buser\\s+\\w+|\\bpass\\s+|\\blogin\\s+|\\bsubject\\s*:|sec-websocket|\\[success\\]|\\d{1,3}(?:\\.\\d{1,3}){3}\\s+-)"
     - field: header
-      regex: "(?i)(?:%0d%0a|%0a|[\\r\\n]).{0,8}(?:set|sec-websocket|subject)\\b"
+      regex: "(?i)%0d%0a.{0,8}(?:set\\s+\\w+|sec-websocket|subject\\s*:)"
     - field: query
       regex: "(?i)(?:%0d%0a|[\\r\\n])(?:set|get|del)\\s+\\w+"
     - field: body

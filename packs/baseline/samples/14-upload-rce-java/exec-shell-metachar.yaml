@@ -1,0 +1,38 @@
+- id: sample-exec-shell-metachar
+  rule_id: exec-shell-metachar
+  name: cmdi semicolon id
+  category: 14-upload-rce-java
+  expect_action: block
+  min_level: medium
+  tags:
+  - rce
+  request:
+    method: GET
+    host: example.com
+    uri: /ping
+    query: ip=127.0.0.1;id
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-exec-shell-metachar-gen-pass
+  rule_id: exec-shell-metachar
+  name: Command injection shell metachar (neg)
+  category: 14-upload-rce-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - cmdi
+  - blazehttp_gap
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

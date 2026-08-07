@@ -1,0 +1,63 @@
+- id: sample-websocket-handshake-invalid-gen-pass
+  rule_id: websocket-handshake-invalid
+  name: Invalid or incomplete WebSocket handshake (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - websocket
+  - protocol
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-websocket-handshake-invalid-matched-pass
+  rule_id: websocket-handshake-invalid
+  name: Invalid or incomplete WebSocket handshake (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - websocket
+  - protocol
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /favicon.ico
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''
+- id: sample-websocket-handshake-invalid-matched-pass
+  rule_id: websocket-handshake-invalid
+  name: Invalid or incomplete WebSocket handshake (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - websocket
+  - protocol
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /favicon.ico
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''

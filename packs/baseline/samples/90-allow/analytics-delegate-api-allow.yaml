@@ -1,0 +1,61 @@
+- id: sample-analytics-delegate-api-allow-matched-allow
+  rule_id: analytics-delegate-api-allow
+  name: Allow cloud analytics delegate API queries (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - sqli
+  - api
+  request:
+    method: GET
+    host: example.com
+    uri: /p/capi/
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-analytics-delegate-api-allow-matched-allow
+  rule_id: analytics-delegate-api-allow
+  name: Allow cloud analytics delegate API queries (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - sqli
+  - api
+  request:
+    method: POST
+    host: example.com
+    uri: /api/assets/upload
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Type: application/json
+    body: '{}'
+- id: sample-analytics-delegate-api-allow-gen-pass
+  rule_id: analytics-delegate-api-allow
+  name: Allow cloud analytics delegate API queries (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - sqli
+  - api
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -1,0 +1,37 @@
+- id: sample-path-rce-upload-probe-gen-block
+  rule_id: path-rce-upload-probe
+  name: Path-based RCE, file upload, and remote agent endpoints (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: high
+  severity: high
+  tags:
+  - rce
+  request:
+    method: GET
+    host: example.com
+    uri: /api/vuln/aggressive.php
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-path-rce-upload-probe-gen-pass
+  rule_id: path-rce-upload-probe
+  name: Path-based RCE, file upload, and remote agent endpoints (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: high
+  severity: info
+  tags:
+  - rce
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

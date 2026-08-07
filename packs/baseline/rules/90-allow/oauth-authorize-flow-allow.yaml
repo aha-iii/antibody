@@ -1,8 +1,10 @@
 # 放行：标准 OAuth/OIDC authorize 与 token 端点上的 redirect_uri（非开放重定向）
+# 禁止：无路径约束的 response_type=code + redirect_uri（会放行 Authentik evil.com）。
+# 恶意 redirect 靠 oauth-malicious-redirect-override（更高分）扣完后仍 block。
 id: oauth-authorize-flow-allow
 name: Allow OAuth authorize and token endpoints with redirect_uri
 severity: low
-score: 120
+score: 80
 action: allow
 min_level: low
 tags: [fp, redirect, oauth]
@@ -24,7 +26,3 @@ when:
           regex: "(?i)(?:^|[&])client_id="
         - field: uri
           regex: "(?i)/oauth2/(?:v2\\.0/)?authorize"
-    - all:
-        - field: query
-          contains: 'response_type=code'
-        - feature: query_has_redirect_uri

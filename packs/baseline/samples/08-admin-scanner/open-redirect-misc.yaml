@@ -1,0 +1,88 @@
+- id: sample-open-redirect-misc-proto-rel-block
+  rule_id: open-redirect-misc
+  name: q= protocol-relative redirect (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: medium
+  tags:
+  - redirect
+  request:
+    method: GET
+    host: example.com
+    uri: /
+    query: q=//attacker.com
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-open-redirect-misc-triple-slash-block
+  rule_id: open-redirect-misc
+  name: q= triple-slash redirect (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: medium
+  tags:
+  - redirect
+  request:
+    method: GET
+    host: example.com
+    uri: /
+    query: q=///attacker.com
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-open-redirect-misc-uri-encoded-block
+  rule_id: open-redirect-misc
+  name: URI double-slash encoded (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: medium
+  tags:
+  - redirect
+  request:
+    method: GET
+    host: example.com
+    uri: /%2f%2fattacker.com
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-open-redirect-misc-search-pass
+  rule_id: open-redirect-misc
+  name: Normal search query (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - redirect
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-open-redirect-param-nested-q-pass
+  rule_id: open-redirect-param
+  name: Nested redirect_uri inside q= must pass (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: medium
+  severity: info
+  tags:
+  - redirect
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /favicon.ico
+    query: ""
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''

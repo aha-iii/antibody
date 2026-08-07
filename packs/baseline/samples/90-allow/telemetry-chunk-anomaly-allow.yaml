@@ -1,0 +1,61 @@
+- id: sample-telemetry-chunk-anomaly-allow-matched-allow
+  rule_id: telemetry-chunk-anomaly-allow
+  name: Allow benign telemetry chunk-anomaly markers (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - protocol
+  - telemetry
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=ok
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      _proto_anomaly: chunk-anomaly
+    body: ''
+- id: sample-telemetry-chunk-anomaly-allow-matched-allow
+  rule_id: telemetry-chunk-anomaly-allow
+  name: Allow benign telemetry chunk-anomaly markers (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - protocol
+  - telemetry
+  request:
+    method: GET
+    host: example.com
+    uri: /v2/rum/events
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-telemetry-chunk-anomaly-allow-gen-pass
+  rule_id: telemetry-chunk-anomaly-allow
+  name: Allow benign telemetry chunk-anomaly markers (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - protocol
+  - telemetry
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

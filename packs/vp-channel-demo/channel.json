@@ -1,0 +1,11 @@
+{
+  "pack_id": "vp-feed",
+  "track": "urgent",
+  "latest": {
+    "version": "1.0.1",
+    "content_hash": "",
+    "artifact_path": "bundle/",
+    "published_at": "2026-08-06T00:00:00Z",
+    "cve_added": ["CVE-2024-AUTO01"]
+  }
+}

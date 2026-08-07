@@ -1,0 +1,35 @@
+- id: sample-encoded-evasion-probe-gen-block
+  rule_id: encoded-evasion-probe
+  name: Encoded evasion, path anomaly, and prototype pollution probes (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags: []
+  request:
+    method: GET
+    host: example.com
+    uri: /api\admin
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-encoded-evasion-probe-gen-pass
+  rule_id: encoded-evasion-probe
+  name: Encoded evasion, path anomaly, and prototype pollution probes (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

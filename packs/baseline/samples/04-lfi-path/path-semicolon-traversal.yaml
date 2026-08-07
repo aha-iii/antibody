@@ -1,0 +1,41 @@
+- id: sample-path-semicolon-traversal-gen-block
+  rule_id: path-semicolon-traversal
+  name: Path parameter / semicolon traversal (pos)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - lfi
+  - path
+  - bypass
+  request:
+    method: GET
+    host: example.com
+    uri: /..;/
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-path-semicolon-traversal-gen-pass
+  rule_id: path-semicolon-traversal
+  name: Path parameter / semicolon traversal (neg)
+  category: 04-lfi-path
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - lfi
+  - path
+  - bypass
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

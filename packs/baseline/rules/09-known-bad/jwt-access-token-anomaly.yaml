@@ -8,19 +8,16 @@ tags: [auth, jwt]
 transforms: [url_decode_uni]
 when:
   any:
+    # 仅结构异常 / 伪造签名；禁止宽匹配合法 JWT/JWE（五段 enc 票勿拦）
     - field: query
       contains: 'fake-signature'
     - field: query
       contains: '..signature'
     - field: query
-      contains: '..eyj'
+      contains: '..eyJ'
     - field: query
       regex: "access_token=eyJ[^&]*\\.\\."
     - field: query
       regex: "(?i)access_token=eyJ[^&]*fake-signature"
     - field: query
-      regex: "access_token=eyJ[^&]+\\.[A-Za-z0-9_-]{8,}(?:&|$)"
-    - field: query
       regex: "(?i)(?:^|[?&])q=\\.\\.eyJ"
-    - field: query
-      regex: "access_token=eyJ[^&]+(?:\\.[A-Za-z0-9_-]+){4,}"

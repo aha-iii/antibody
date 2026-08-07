@@ -1,0 +1,43 @@
+- id: sample-lfi-file-scheme-matched-block
+  rule_id: lfi-file-scheme
+  name: LFI file:// (pos)
+  category: 04-lfi-path
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - lfi
+  - path
+  - owasp
+  - fp_reviewed
+  request:
+    method: GET
+    host: example.com
+    uri: /p/file:/etc/
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-lfi-file-scheme-gen-pass
+  rule_id: lfi-file-scheme
+  name: LFI file:// (neg)
+  category: 04-lfi-path
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - lfi
+  - path
+  - owasp
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

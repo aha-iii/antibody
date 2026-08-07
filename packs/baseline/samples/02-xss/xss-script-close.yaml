@@ -1,0 +1,41 @@
+- id: sample-xss-script-close-matched-block
+  rule_id: xss-script-close
+  name: XSS script close (pos)
+  category: 02-xss
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - xss
+  - owasp
+  - fp_reviewed
+  request:
+    method: GET
+    host: example.com
+    uri: "/p/</script\t"
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xss-script-close-gen-pass
+  rule_id: xss-script-close
+  name: XSS script close (neg)
+  category: 02-xss
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - xss
+  - owasp
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

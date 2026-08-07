@@ -1,0 +1,36 @@
+- id: sample-sqli-select-case-when
+  rule_id: sqli-select-case-when
+  name: SQL SELECT CASE WHEN
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: medium
+  tags:
+  - sqli
+  request:
+    method: GET
+    host: example.com
+    uri: /item
+    query: id=SELECT CASE WHEN (1=1) THEN 1 ELSE 0 END
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-sqli-select-case-when-gen-pass
+  rule_id: sqli-select-case-when
+  name: SQL SELECT CASE WHEN (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

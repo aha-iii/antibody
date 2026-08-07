@@ -1,0 +1,39 @@
+- id: sample-http-smuggle-marker-gen-block
+  rule_id: http-smuggle-marker
+  name: HTTP request smuggling markers (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - proto
+  - smuggle
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=transfer-encoding%3a%09
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-http-smuggle-marker-gen-pass
+  rule_id: http-smuggle-marker
+  name: HTTP request smuggling markers (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - proto
+  - smuggle
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

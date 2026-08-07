@@ -1,0 +1,60 @@
+- id: sample-sso-service-param-allow-matched-allow
+  rule_id: sso-service-param-allow
+  name: Allow SSO login service=https redirect target (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - redirect
+  - sso
+  request:
+    method: GET
+    host: example.com
+    uri: /p/authui/login/
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sso-service-param-allow-matched-allow
+  rule_id: sso-service-param-allow
+  name: Allow SSO login service=https redirect target (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - redirect
+  - sso
+  request:
+    method: GET
+    host: example.com
+    uri: /login
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-sso-service-param-allow-gen-pass
+  rule_id: sso-service-param-allow
+  name: Allow SSO login service=https redirect target (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - redirect
+  - sso
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

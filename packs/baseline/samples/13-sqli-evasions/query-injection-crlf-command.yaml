@@ -1,0 +1,62 @@
+- id: sample-query-injection-crlf-command-gen-block
+  rule_id: query-injection-crlf-command
+  name: CRLF log injection and command probes in query (pos)
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - injection
+  - crlf
+  - nosql
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=%0d%0a[success]
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-query-injection-crlf-command-gen-pass
+  rule_id: query-injection-crlf-command
+  name: CRLF log injection and command probes in query (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - injection
+  - crlf
+  - nosql
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-query-injection-crlf-webdav-mkcol-pass
+  rule_id: query-injection-crlf-command
+  name: WebDAV MKCOL request text in q= must not block (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - injection
+  - crlf
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /
+    query: q=MKCOL%20%2F%20HTTP%2F1.1%0D%0AHost%3A%20target.com%0D%0A%0D%0A
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''

@@ -1,0 +1,60 @@
+- id: sample-oauth-token-exchange-allow-matched-allow
+  rule_id: oauth-token-exchange-allow
+  name: Allow Keycloak OAuth token exchange and auth redirect_uri (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - oauth
+  - keycloak
+  request:
+    method: GET
+    host: example.com
+    uri: /health
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-oauth-token-exchange-allow-matched-allow
+  rule_id: oauth-token-exchange-allow
+  name: Allow Keycloak OAuth token exchange and auth redirect_uri (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - oauth
+  - keycloak
+  request:
+    method: GET
+    host: example.com
+    uri: /health
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-oauth-token-exchange-allow-gen-pass
+  rule_id: oauth-token-exchange-allow
+  name: Allow Keycloak OAuth token exchange and auth redirect_uri (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - oauth
+  - keycloak
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

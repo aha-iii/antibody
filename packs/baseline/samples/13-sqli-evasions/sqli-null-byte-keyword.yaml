@@ -1,0 +1,39 @@
+- id: sample-sqli-null-byte-keyword-matched-block
+  rule_id: sqli-null-byte-keyword
+  name: SQLi keyword split by double-encoded null (pos)
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - evasion
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=sel%2500ect
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-null-byte-keyword-matched-pass
+  rule_id: sqli-null-byte-keyword
+  name: SQLi keyword split by double-encoded null (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - evasion
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/v1/items
+    query: q=hello-world&page=1&sort=name
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

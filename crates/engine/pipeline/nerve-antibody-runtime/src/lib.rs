@@ -1,24 +1,37 @@
 //! # nerve-antibody-runtime
 //!
-//! 解释已编译 Program：预过滤、规则分、allow 负分、语义与自适应融合。
+//! 解释已编译 Program：预过滤、规则分（正检测）、allow 负分（负检测）、语义与自适应融合。
+//! 拦截信号量见 [`intercept`] / [`InterceptPermit`]。
 
 mod decode_cache;
 mod error;
 mod eval;
 mod fusion;
 mod parallel;
+mod ris_calibrate;
 mod route_gate;
 mod route_train;
+mod structure_anchor;
 mod types;
 
 pub use error::RuntimeError;
-pub use eval::{EvalPolicy, Evaluator, InspectPlan, PlanCacheHints};
-pub use fusion::{fuse, FusionAction, FusionEvidence};
-pub use route_gate::{
-    decide_deep, extract_features, feature_names, feature_vector, route_sample, RouteDecision,
-    RouteFeatures, RouteGateConfig, RouteGateWeights, ROUTE_FEATURE_DIM,
+pub use eval::{EvalPolicy, Evaluator, InspectExec, InspectPlan, PlanCacheHints, RisL1Probe};
+pub use fusion::{
+    fuse, intercept, FusionAction, FusionEvidence, InterceptDecision, InterceptPermit,
 };
-pub use route_train::{parse_request_summary, train_logistic, RouteTrainSample};
+pub use ris_calibrate::{scan_threshold_curve, RisCalibrateReport, ThresholdCurvePoint};
+pub use route_gate::{
+    decide_deep, extract_features, feature_names, feature_vector, route_sample, route_sample_for_gate,
+    score_features, RouteDecision, RouteFeatures, RouteGateConfig, RouteGateWeights, RouteStump,
+    ROUTE_FEATURE_DIM,
+};
+pub use route_train::{
+    parse_request_summary, train_logistic, train_logistic_with_stumps, RouteTrainSample,
+};
+pub use structure_anchor::{
+    classify_structure, extract_param_keys, path_template as structure_path_template,
+    structure_fingerprint, StructureClass,
+};
 pub use types::{NativeHit, NativeRequest, MatchedRule, ModelHitDto, SemanticSignalDto};
 pub use nerve_antibody_pipeline::{InspectBudget, PipelineConfig, RequestViews};
 
@@ -66,6 +79,7 @@ mod tests {
                     field: MatchField::Uri,
                     header_name: None,
                     transforms: vec![],
+                    scope: nerve_antibody_dsl::FieldScope::All,
                     op: MatchOpFlat::Contains("alert".into()),
                 })])),
                 match_spec: None,

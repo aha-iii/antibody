@@ -1,0 +1,41 @@
+- id: sample-null-byte-control-gen-block
+  rule_id: null-byte-control
+  name: Null byte and bare CRLF control probes (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: high
+  severity: medium
+  tags:
+  - fuzz
+  - protocol
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=%2500
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-null-byte-control-gen-pass
+  rule_id: null-byte-control
+  name: Null byte and bare CRLF control probes (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: high
+  severity: info
+  tags:
+  - fuzz
+  - protocol
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

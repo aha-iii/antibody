@@ -13,7 +13,7 @@ when:
       regex: "(?i)(?:javascript:|<script|onerror\\s*=|onload\\s*=)"
     - field: header
       header_name: X-Forwarded-Scheme
-      regex: "(?i)(?:javascript:|<script|onerror\\s*=|onload\\s*=)"
+      regex: "(?i)(?:javascript:|data:|vbscript:|<script|onerror\\s*=|onload\\s*=)"
     - field: header
       header_name: Accept-Language
       regex: "(?i)(?:<script|javascript:|onerror\\s*=|onload\\s*=|<svg)"
@@ -28,7 +28,37 @@ when:
     - field: header
       header_name: Accept-Encoding
       regex: "(?i)(?:<script|javascript:|onerror\\s*=|onload\\s*=|<svg)"
+    - field: header
+      header_name: X-Original-URL
+      regex: "(?i).+"
+    - field: header
+      header_name: X-Rewrite-URL
+      regex: "(?i).+"
+    - field: header
+      header_name: _proto_anomaly
+      regex: "(?i)(?:dup-host|dup-x-forwarded|dup-xff-proto)"
+    - field: header
+      header_name: X-Forwarded-Proto
+      regex: "(?s).+\\n.+"
+    - field: header
+      header_name: X-Forwarded-Scheme
+      regex: "(?i)javascript"
     - field: uri
       contains: '/api/user/profile?;'
+    # decode 后 %3F → ?；同时保留编码形态
     - field: query
       contains: '%3finjected='
+    - field: query
+      contains: '?injected='
+    - field: uri
+      contains: '%3finjected='
+    - field: uri
+      contains: '?injected='
+    # 冲突转发协议
+    - all:
+        - field: header
+          header_name: X-Forwarded-Proto
+          regex: "(?i)https?"
+        - field: header
+          header_name: Front-End-Https
+          regex: "(?i).+"

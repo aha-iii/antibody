@@ -9,4 +9,4 @@ mod rules;
 mod tail;
 
 pub use inspector::Evaluator;
-pub use policy::{EvalPolicy, InspectPlan, PlanCacheHints};
+pub use policy::{EvalPolicy, InspectExec, InspectPlan, PlanCacheHints, RisL1Probe};

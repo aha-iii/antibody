@@ -1,7 +1,7 @@
 # Nerve Arc-Cortex Engine — 能力与技术说明
 
 > 产品名：**Nerve Arc-Cortex**（弧-皮层检测引擎）· Slogan：*反射级响应，皮层级深检。*  
-> 分层文档：[`arc-cortex/README.md`](./arc-cortex/README.md) · 术语：[`arc-cortex/terminology.md`](./arc-cortex/terminology.md)
+> 分层文档：`[arc-cortex/README.md](./arc-cortex/README.md)` · 术语：`[arc-cortex/terminology.md](./arc-cortex/terminology.md)`
 
 > 文档版本：与引擎代码同步（baseline pack **1.5.43** / workspace `0.1.0`）  
 > 代码根目录：`Nerve-waf-native/`
@@ -10,12 +10,14 @@
 
 规则编写、产品边界与加速后端细节见：
 
-| 文档 | 内容 |
-|------|------|
-| [RULE-AUTHORING.md](./RULE-AUTHORING.md) | L1 谓词优先级、嵌套 when、signals、allow FP |
-| [BOUNDARY-IP-GEO-RATE.md](./BOUNDARY-IP-GEO-RATE.md) | IP / Geo / 限流 **不在**引擎内 |
-| [HYPERSCAN.md](./HYPERSCAN.md) | Hyperscan / Vectorscan 可选加速 |
-| [ENGRAM-L3-HOOK.md](./ENGRAM-L3-HOOK.md) | L3 / Engram 接入原则（禁裸拦） |
+
+| 文档                                                   | 内容                                |
+| ---------------------------------------------------- | --------------------------------- |
+| [RULE-AUTHORING.md](./RULE-AUTHORING.md)             | L1 谓词优先级、嵌套 when、signals、allow FP |
+| [BOUNDARY-IP-GEO-RATE.md](./BOUNDARY-IP-GEO-RATE.md) | IP / Geo / 限流 **不在**引擎内           |
+| [HYPERSCAN.md](./HYPERSCAN.md)                       | Hyperscan / Vectorscan 可选加速       |
+| [ENGRAM-L3-HOOK.md](./ENGRAM-L3-HOOK.md)             | L3 / Engram 接入原则（禁裸拦）             |
+
 
 ---
 
@@ -23,11 +25,13 @@
 
 Nerve Native 是 **签名 + 异常分 + 偏执等级** 的可解释检测引擎，对标 OWASP CRS 的 paranoia / anomaly scoring 叙事：
 
-| 层 | 名称 | 能否单独决定拦截 |
-|----|------|------------------|
-| L1 | 规则 + 评分 / allow | 能 |
-| L2 | 语义分析（SQL / XSS / Path） | 只加分或 veto，不黑盒拍板 |
-| L3 | 自适应风险分 | **不能**单独 block |
+
+| 层   | 名称                     | 能否单独决定拦截        |
+| --- | ---------------------- | --------------- |
+| L1  | 规则 + 评分 / allow        | 能               |
+| L2  | 语义分析（SQL / XSS / Path） | 只加分或 veto，不黑盒拍板 |
+| L3  | 自适应风险分                 | **不能**单独 block  |
+
 
 对外稳定入口：`nerve_antibody_engine::Engine`（WAF 侧仍通过 compat `nerve_antibody::Engine` 接入）。
 
@@ -52,20 +56,22 @@ Nerve Native 是 **签名 + 异常分 + 偏执等级** 的可解释检测引擎�
 
 ### 2.1 规则包与 DSL
 
-| 能力 | 说明 |
-|------|------|
-| Pack 加载 | `pack.toml` + 递归 `rules/**/*.yaml` |
-| 内容哈希 / 验签 | SHA256；可选 HMAC（`NERVE_NATIVE_PACK_KEY`） |
-| **`min_engine` 强制校验** | 包要求引擎版本高于当前则拒绝加载 |
-| 规则语法 | `when.all` / `when.any`；**可嵌套**（`WhenNode::Group`）；兼容旧 `match` |
-| 谓词 | `contains`、`regex`、**`length_gt` / `length_lt`**、**`feature` / `fingerprint`** |
-| 字段 | `uri` / `query` / `body` / `method` / `host` / `header` / **`response_body`** / feature / fingerprint |
-| **具名 Header** | `field: header` + `header_name: User-Agent`（大小写不敏感） |
-| 动作 | `block` / `observe`（含 `log`）/ **`allow`（负分豁免）** |
-| 强度 | `min_level`: `low` \| `medium` \| `high` |
-| 变换（规则级） | `lowercase`、`url_decode`、`url_decode_uni`、`html_entity_decode`、`html_numeric_decode`、`js_unescape`、`strip_null` |
 
-**谓词成本**：`feature` / `fingerprint` / `length_*` / `contains` 优先于 `regex`。编写约定见 [RULE-AUTHORING.md](./RULE-AUTHORING.md)。
+| 能力                    | 说明                                                                                                              |
+| --------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Pack 加载               | `pack.toml` + 递归 `rules/**/*.yaml`                                                                              |
+| 内容哈希 / 验签             | SHA256；可选 HMAC（`NERVE_NATIVE_PACK_KEY`）                                                                         |
+| `**min_engine` 强制校验** | 包要求引擎版本高于当前则拒绝加载                                                                                                |
+| 规则语法                  | `when.all` / `when.any`；**可嵌套**（`WhenNode::Group`）；兼容旧 `match`                                                  |
+| 谓词                    | `contains`、`regex`、`**length_gt` / `length_lt`**、`**feature` / `fingerprint**`                                  |
+| 字段                    | `uri` / `query` / `body` / `method` / `host` / `header` / `**response_body**` / feature / fingerprint           |
+| **具名 Header**         | `field: header` + `header_name: User-Agent`（大小写不敏感）                                                             |
+| 动作                    | `block` / `observe`（含 `log`）/ `**allow`（负分豁免）**                                                                 |
+| 强度                    | `min_level`: `low` | `medium` | `high`                                                                          |
+| 变换（规则级）               | `lowercase`、`url_decode`、`url_decode_uni`、`html_entity_decode`、`html_numeric_decode`、`js_unescape`、`strip_null` |
+
+
+**谓词成本**：`feature` / `fingerprint` / `length_`* / `contains` 优先于 `regex`。编写约定见 [RULE-AUTHORING.md](./RULE-AUTHORING.md)。
 
 ```yaml
 # 嵌套 when：外层 any 多入口，内层 all = 门闩 ∧ 确认
@@ -83,71 +89,114 @@ when:
 
 ### 2.2 声明式信号（`signals.yaml`）
 
-| 能力 | 说明 |
-|------|------|
-| 配置 | `[policy.signals]`：`enabled` + `pack_path`（baseline：`signals/signals.yaml`） |
-| 种类 | `header_present` / `body_contains` / `query_param_present` / `length_gt` / `path_prefix` 等 |
-| 引用 | 规则写 `feature: name` / `fingerprint: name`；与内置信号 **叠加** |
-| 健康 | `NativeHealth.signals_enabled` / `signals_feature_count` / `signals_fingerprint_count` |
+
+| 能力  | 说明                                                                                         |
+| --- | ------------------------------------------------------------------------------------------ |
+| 配置  | `[policy.signals]`：`enabled` + `pack_path`（baseline：`signals/signals.yaml`）                |
+| 种类  | `header_present` / `body_contains` / `query_param_present` / `length_gt` / `path_prefix` 等 |
+| 引用  | 规则写 `feature: name` / `fingerprint: name`；与内置信号 **叠加**                                     |
+| 健康  | `NativeHealth.signals_enabled` / `signals_feature_count` / `signals_fingerprint_count`     |
+
 
 业务特征优先加 YAML，避免每加一个站点指纹就改 Rust。
 
 ### 2.3 引擎管线（`nerve-antibody-pipeline`）
 
-| 能力 | 说明 |
-|------|------|
-| **DecodePipeline** | 引擎级多视图：raw / 归一化 / base64 候选展开 |
-| **Structural** | form / JSON / multipart / path / **XML 轻量拆参** → `ParamUnit` |
-| **InspectBudget** | `max_inspect_ms` + `max_regex_evals` 熔断 |
-| **字段截断** | `max_field_chars`（默认 65536）：uri/query/body head-tail，防超大包拖垮 Deep |
-| 证据 | 命中携带 `param_path` + `decode_chain` |
+
+| 能力                 | 说明                                                               |
+| ------------------ | ---------------------------------------------------------------- |
+| **DecodePipeline** | 引擎级多视图：raw / 归一化 / base64 候选展开                                   |
+| **Structural**     | form / JSON / multipart / path / **XML 轻量拆参** → `ParamUnit`      |
+| **InspectBudget**  | `max_inspect_ms` + `max_regex_evals` 熔断                          |
+| **字段截断**           | `max_field_chars`（默认 65536）：uri/query/body head-tail，防超大包拖垮 Deep |
+| 证据                 | 命中携带 `param_path` + `decode_chain`                               |
+
 
 配置：`pack.toml` → `[policy.pipeline]`。
 
 ### 2.4 编译与加速
 
-| 能力 | 说明 |
-|------|------|
-| 三档 Program | Low / Medium / High 各编译一份 |
-| IR | `RuleExec` / `WhenExec`（嵌套 Group）/ `CondExec` |
-| Contains 字典 + 倒排 | `dict_to_rules` |
-| **Artifact format** | 当前写出 **format=3**；加载兼容 **format 2→3** 自动迁移 |
-| **Accel 后端抽象** | `PatternBackend`：Aho / Hyperscan 风格 / 线性 |
-| Aho-Corasick | 默认 feature `aho` |
-| Hyperscan | feature `accel-hyperscan`（RegexSet 多模）；`accel-hyperscan-ffi` 可选原生 HS/Vectorscan |
-| Artifact 缓存 | JSON 落盘；缓存键含 pack + engine format |
+
+| 能力                  | 说明                                                                              |
+| ------------------- | ------------------------------------------------------------------------------- |
+| 三档 Program          | Low / Medium / High 各编译一份                                                       |
+| IR                  | `RuleExec` / `WhenExec`（嵌套 Group）/ `CondExec`                                   |
+| Contains 字典 + 倒排    | `dict_to_rules`                                                                 |
+| **Artifact format** | 当前写出 **format=3**；加载兼容 **format 2→3** 自动迁移                                      |
+| **Accel 后端抽象**      | `PatternBackend`：Aho / Hyperscan 风格 / 线性                                        |
+| Aho-Corasick        | 默认 feature `aho`                                                                |
+| Hyperscan           | feature `accel-hyperscan`（RegexSet 多模）；`accel-hyperscan-ffi` 可选原生 HS/Vectorscan |
+| Artifact 缓存         | JSON 落盘；缓存键含 pack + engine format                                               |
+
 
 详见 [HYPERSCAN.md](./HYPERSCAN.md)。
 
 ### 2.5 运行时检测（热路径）
 
-| 能力 | 说明 |
-|------|------|
-| 管线优先 | `build_views` → 预过滤 haystack 含解码视图 |
-| 多视图匹配 | 整段字段 ∪ 拆参路径 ∪ base64 blob |
-| 预算熔断 | regex/时间耗尽时停止精匹配并记录 `budget_exhausted` |
-| 语义层 L2 | SQL / XSS / Path；支持 **veto**；semantic-pack YAML |
-| 自适应 L3 | `RiskModel` trait；启发式 / **Linear JSON** / ONNX 入口；**Fusion**：禁裸模型硬拦 |
-| 响应体 | `NativeRequest.response_body`；WAF 响应阶段优先 Native 引擎 |
-| 热更新 | `Engine::reload`；WAF `POST /api/expert/reload` |
-| **双路径 inspect** | `auto`：快路径（Aho + cheap regex，预算 ≤20ms）/ 深路径（全量 regex + L2 + L3）；bench 强制 `deep` |
-| **Runtime 指标** | `nerve-antibody-metrics`；Dashboard `GET /metrics`、`GET /api/metrics` |
-| **Stage-0 路由门闩** | `route_gate` 线性特征 → fast/deep；配置 `[policy.inspect.route_gate]` |
-| **快路径轻量 pipeline** | `PipelineConfig::for_fast_path()` 跳过深解码/拆参 |
-| **Shadow deep** | 快路径干净时异步深扫；FP 标注 → allow 草稿导出 |
+
+| 能力                 | 说明                                                                              |
+| ------------------ | ------------------------------------------------------------------------------- |
+| 管线优先               | `build_views` → 预过滤 haystack 含解码视图                                              |
+| 多视图匹配              | 整段字段 ∪ 拆参路径 ∪ base64 blob                                                       |
+| 预算熔断               | regex/时间耗尽时停止精匹配并记录 `budget_exhausted`                                          |
+| 语义层 L2             | SQL / XSS / Path；支持 **veto**；semantic-pack YAML                                 |
+| 自适应 L3             | `RiskModel` trait；启发式 / **Linear JSON** / ONNX 入口；**Fusion**：禁裸模型硬拦             |
+| 响应体                | `NativeRequest.response_body`；WAF 响应阶段优先 Native 引擎                              |
+| 热更新                | `Engine::reload`；WAF `POST /api/expert/reload`                                  |
+| **Nerve RIS**         | L1 缓存 → L2 结构锚定 → L3 route_gate → `ris_zone` clean/gray/hot；gray Shadow 默认全开 |
+| **双路径 inspect**    | `auto`：RIS 选 fast/deep；Dashboard bench 可选 `auto|deep|fast` |
+| **Runtime 指标**     | `nerve-antibody-metrics`（含 `ris_zone_*`）；Dashboard `GET /metrics` |
+| **Stage-0 浅筛**      | `route_gate` 浅解码预览 + 线性分 + 双阈值；权重 `config/route_weights.json`；`scripts/calibrate_route_gate.py` |
+| **快路径轻量 pipeline** | `PipelineConfig::for_fast_path()` 跳过深解码/拆参                                      |
+| **Shadow deep**    | 快路径干净时异步深扫；FP 标注 → allow 草稿导出                                                   |
+
 
 ### 2.6 语义包（L2 semantic-pack）
 
-| 能力 | 说明 |
-|------|------|
-| 配置 | `[policy.semantic].pack_path = "semantic/signatures.yaml"` |
-| 格式 | YAML `signatures[]`：`match: pattern`（regex）或 `match: token_seq` + `tokens[]` |
-| 加载 | `Engine::load_pack` / `reload` → `install_semantic_pack` |
-| 与内置关系 | pack 签名先匹配，再跑内置 analyzers；同类 score 取 max |
+
+| 能力    | 说明                                                                           |
+| ----- | ---------------------------------------------------------------------------- |
+| 配置    | `[policy.semantic].pack_path = "semantic/signatures.yaml"`                   |
+| 格式    | YAML `signatures[]`：`match: pattern`（regex）或 `match: token_seq` + `tokens[]` |
+| 加载    | `Engine::load_pack` / `reload` → `install_semantic_pack`                     |
+| 与内置关系 | pack 签名先匹配，再跑内置 analyzers；同类 score 取 max                                     |
+
 
 ### 2.7 策略（pack 级）
 
 ```toml
+# 分档完整配置（优先）；阈值 / 预算 / 解码 / 自适应均挂在 levels 下
+[policy.levels.low]
+block_threshold = 40
+max_inspect_ms = 250
+max_regex_evals = 20000
+max_decode_blobs = 24
+max_decode_depth = 3
+base64_expand = true
+adaptive_level_weight = 0.0
+adaptive_score_cap = 0
+
+[policy.levels.medium]
+block_threshold = 36
+max_inspect_ms = 2500
+max_regex_evals = 120000
+max_decode_blobs = 48
+max_decode_depth = 4
+base64_expand = true
+adaptive_level_weight = 0.7
+adaptive_score_cap = 25
+
+[policy.levels.high]
+block_threshold = 32
+max_inspect_ms = 2500
+max_regex_evals = 120000
+max_decode_blobs = 64
+max_decode_depth = 6
+base64_expand = true
+adaptive_level_weight = 1.0
+adaptive_score_cap = 35
+
+# 兼容旧包；有 levels.*.block_threshold 时忽略此处同名字段语义优先级
 [policy.threshold_by_level]
 low = 40
 medium = 36
@@ -163,11 +212,16 @@ pack_path = "signals/signals.yaml"
 
 [policy.inspect]
 mode = "auto"          # auto | deep | fast；可被 NERVE_NATIVE_INSPECT_MODE 覆盖
-fast_max_inspect_ms = 20
+fast_max_inspect_ms = 120
 
 [policy.inspect.route_gate]
 enabled = true
-deep_threshold = 0.38
+# Nerve RIS：score→clean/gray/hot；只分流不定罪。见 docs/superpowers/specs/2026-08-06-nerve-ris-design.md
+deep_threshold = 0.40
+gray_threshold = 0.22
+hard_decode_hint = true
+weights_path = "config/route_weights.json"
+# Dashboard：POST /api/ris/calibrate · GET /api/ris/curve
 
 [policy.fusion]
 min_independent_signals = 1   # 2 = 弱信号 block 需双证，降级 challenge
@@ -182,30 +236,71 @@ decode_enabled = true
 base64_expand = true
 structural_enabled = true
 max_decode_depth = 4
-max_inspect_ms = 1200
+# 基值；档未覆盖字段时继承。0 = 不限制。运维：NERVE_NATIVE_MAX_INSPECT_MS
+max_inspect_ms = 2500
 max_regex_evals = 120000
-max_field_chars = 65536       # 规则字段 head-tail；默认 65536
+max_field_chars = 65536
+abs_max_inspect_ms = 60000
+abs_max_regex_evals = 500000
+
+[policy.pipeline.route_preview]
+max_decode_blobs = 8
+max_blob_chars = 4096
+max_field_chars = 8192
+max_decode_depth = 2
+max_params = 64
+
+[policy.pipeline.fast_path]
+decode_enabled = false
+base64_expand = false
+structural_enabled = false
+max_decode_blobs = 0
+max_decode_depth = 0
+
+[policy.pipeline.edge]
+max_inspect_ms = 300
+max_regex_evals = 20000
 ```
+
+### 预算与分档边界（全部可配，禁止引擎写死）
+
+| 边界 | 配置入口 | 含义 |
+|------|----------|------|
+| 分档全量 | `[policy.levels.{low,medium,high}]` | 阈值、预算、解码深度/blobs、自适应权重与封顶 |
+| 全局基值 | `[policy.pipeline] max_inspect_ms` / `max_regex_evals` 等 | 档未覆盖字段时的默认；`0`=不限制 |
+| 硬顶 | `abs_max_inspect_ms` / `abs_max_regex_evals` | 防误配；`0`=不设硬顶 |
+| 路由预览 | `[policy.pipeline.route_preview]` | Stage-0 浅解码上限 |
+| 快路径管线 | `[policy.pipeline.fast_path]` | auto 快路径是否 decode/拆参 |
+| 边缘内联 | `[policy.pipeline.edge]` | `NERVE_NATIVE_EDGE_INLINE` 时默认收紧；可被 env 覆盖 |
+| 运维覆盖 | `NERVE_NATIVE_MAX_INSPECT_MS` 等 | 同步改基值+三档 |
+| 快路径时间 | `[policy.inspect] fast_max_inspect_ms` | auto 快路径；`NERVE_NATIVE_FAST_MAX_INSPECT_MS` |
 
 ### 2.8 Observability 指标（Prometheus）
 
-| 指标 | 含义 |
-|------|------|
-| `nerve_native_inspect_fast_total` / `inspect_deep_total` | 快/深路径分流 |
-| `nerve_native_inspect_latency_bucket{le=...}` | 延迟分桶（1ms … 1200ms） |
-| `nerve_native_budget_exhausted_ratio` | 预算熔断占比 |
-| `nerve_native_rule_hits_total{rule_id=...}` | 规则命中 TopN |
+
+| 指标                                                       | 含义                 |
+| -------------------------------------------------------- | ------------------ |
+| `nerve_native_inspect_fast_total` / `inspect_deep_total` | 快/深路径分流            |
+| `nerve_native_inspect_latency_bucket{le=...}`            | 延迟分桶（1ms … 1200ms） |
+| `nerve_native_budget_exhausted_ratio`                    | 预算熔断占比             |
+| `nerve_native_rule_hits_total{rule_id=...}`              | 规则命中 TopN          |
+
 
 详见 [arc-cortex/04-facade/metrics.md](./arc-cortex/04-facade/metrics.md)。
 
-### 2.9 Shadow FP 闭环
+### 2.9 Shadow / Sandbox 旁路观察
 
-| API | 说明 |
-|-----|------|
-| `GET /api/shadow/recent` | 最近深扫采样（含 `rule_id`） |
+
+| API / 配置 | 说明 |
+| ---------- | ---- |
+| `GET /api/shadow/recent` | 最近采样（含 `rule_id`、`source`=`shadow_deep`\|`sandbox`） |
 | `POST /api/shadow/feedback` | 标注 `fp` / `false_positive` / `allow` / `veto`（可选 `rule_id`） |
-| `GET /api/shadow/export-rules` | 导出 YAML allow 草稿（含 feature/fingerprint 占位） |
-| `Engine::shadow_export_rules` | 同上（引擎 API，勿破坏） |
+| `GET /api/shadow/export-rules` | 导出 YAML allow 草稿 |
+| `Engine::mount_sandbox` / `unmount_sandbox` | 挂载/卸载候选 Program（强制 observe） |
+| `NERVE_NATIVE_SANDBOX_PACK` | 启动时自动挂载沙箱包路径 |
+| `NERVE_NATIVE_SANDBOX_SAMPLE_BPS` | 沙箱采样万分比（默认 200=2%） |
+
+治理口径见 [GOVERNANCE-ARCHITECTURE-zh.md](./GOVERNANCE-ARCHITECTURE-zh.md)。
 
 ---
 
@@ -247,13 +342,17 @@ flowchart TB
   Eval --> hot
 ```
 
+
+
 ### 3.1 Fast / Deep
 
-| 模式 | 触发 | 行为 |
-|------|------|------|
-| `fast` | `route_gate` 低风险 / 显式 `mode=fast` | Aho + allow + 廉价谓词；跳过深解码与 L2/L3 |
-| `deep` | 可疑路由 / bench / `NERVE_NATIVE_INSPECT_MODE=deep` | 全量管线 + regex + semantic + adaptive |
-| `auto`（生产默认） | pack `[policy.inspect].mode` | Stage-0 分流；可选双 worker 池 |
+
+| 模式           | 触发                                              | 行为                                 |
+| ------------ | ----------------------------------------------- | ---------------------------------- |
+| `fast`       | `route_gate` 低风险 / 显式 `mode=fast`               | Aho + allow + 廉价谓词；跳过深解码与 L2/L3    |
+| `deep`       | 可疑路由 / bench / `NERVE_NATIVE_INSPECT_MODE=deep` | 全量管线 + regex + semantic + adaptive |
+| `auto`（生产默认） | pack `[policy.inspect].mode`                    | Stage-0 分流；可选双 worker 池            |
+
 
 环境变量：`NERVE_NATIVE_INSPECT_MODE`、`NERVE_NATIVE_INSPECT_POOL`、`NERVE_NATIVE_SHADOW_DEEP`。
 
@@ -271,11 +370,13 @@ ResponseBody 阶段
   → GET  /api/expert/health
 ```
 
-| Native `action` | 默认 WAF 映射 | 覆写 |
-|-----------------|---------------|------|
-| `block` | Block | — |
-| `challenge` | **Challenge** | `NERVE_EXPERT_CHALLENGE_AS=challenge\|log\|block` |
-| `observe` / 其它 | Log | — |
+
+| Native `action` | 默认 WAF 映射     | 覆写                                              |
+| --------------- | ------------- | ----------------------------------------------- |
+| `block`         | Block         | —                                               |
+| `challenge`     | **Challenge** | `NERVE_EXPERT_CHALLENGE_AS=challenge|log|block` |
+| `observe` / 其它  | Log           | —                                               |
+
 
 实现：`Nerve-waf/crates/engine/nerve-waf-inspect/src/expert_bridge.rs`。老部署若需「challenge 仅记日志」：设 `NERVE_EXPERT_CHALLENGE_AS=log`。
 
@@ -304,19 +405,23 @@ raw field / ViewSlice →（可选）规则 transforms → contains/regex/length
 
 ### 4.3 Artifact 兼容
 
-| Format | 状态 |
-|--------|------|
-| 3（当前） | 嵌套 `when` IR；写出始终用 3 |
-| 2 | 扁平 `All/Any(Vec<Cond>)`；加载时迁移为 format 3 |
-| &lt;2 / &gt;3 | 拒绝；触发重编译 |
+
+| Format  | 状态                                      |
+| ------- | --------------------------------------- |
+| 3（当前）   | 嵌套 `when` IR；写出始终用 3                    |
+| 2       | 扁平 `All/Any(Vec<Cond>)`；加载时迁移为 format 3 |
+| <2 / >3 | 拒绝；触发重编译                                |
+
 
 ### 4.4 自适应模型
 
-| 实现 | 版本串 | 说明 |
-|------|--------|------|
-| `HeuristicModel` | `heuristic-v1` | 默认 logit |
-| `LinearModel` | JSON 权重 | 可校准真实线性模型 |
-| `OnnxModel` | feature `onnx` | 加载入口（需链原生 Runtime） |
+
+| 实现               | 版本串            | 说明                 |
+| ---------------- | -------------- | ------------------ |
+| `HeuristicModel` | `heuristic-v1` | 默认 logit           |
+| `LinearModel`    | JSON 权重        | 可校准真实线性模型          |
+| `OnnxModel`      | feature `onnx` | 加载入口（需链原生 Runtime） |
+
 
 环境变量：`NERVE_NATIVE_MODEL` 指向权重文件。
 
@@ -339,27 +444,29 @@ nerve-antibody-engine       Facade: Engine / Health / reload / Shadow
 
 ## 5. 能力对照（相对完整引擎管线）
 
-| 能力 | 状态 |
-|------|------|
-| 引擎级 DecodePipeline（多视图） | ✅ |
-| 结构化拆参（form/JSON/multipart/XML） | ✅ |
-| inspect 预算 / 超时熔断 | ✅ |
-| `max_field_chars` 字段截断 | ✅ |
-| 参数路径证据 `param_path` / `decode_chain` | ✅ |
-| 声明式 signals.yaml | ✅ |
-| length / feature / fingerprint 谓词 | ✅ |
-| 嵌套 when | ✅ |
-| Artifact format 2/3 兼容 | ✅ |
-| Hyperscan | ✅ 可选 feature；真 FFI 见 [HYPERSCAN.md](./HYPERSCAN.md) |
-| Fast / Deep 双路径 | ✅ |
-| challenge → WAF Challenge | ✅ `expert_bridge` + `NERVE_EXPERT_CHALLENGE_AS` |
-| Shadow FP → allow 草稿 | ✅ `/api/shadow/export-rules` |
-| IP / Geo / rate 在引擎内 | ❌ 边界外（故意） |
-| 真实 ML / ONNX | ✅ Linear JSON + `RiskModel`；ONNX feature 入口 |
-| 按 Header 名匹配 | ✅ `header_name` |
-| 响应体检测 | ✅ `response_body` + WAF 响应阶段 |
-| `min_engine` 强制校验 | ✅ |
-| WAF 侧 reload 运维 API | ✅ `POST /api/expert/reload` |
+
+| 能力                                   | 状态                                                  |
+| ------------------------------------ | --------------------------------------------------- |
+| 引擎级 DecodePipeline（多视图）              | ✅                                                   |
+| 结构化拆参（form/JSON/multipart/XML）       | ✅                                                   |
+| inspect 预算 / 超时熔断                    | ✅                                                   |
+| `max_field_chars` 字段截断               | ✅                                                   |
+| 参数路径证据 `param_path` / `decode_chain` | ✅                                                   |
+| 声明式 signals.yaml                     | ✅                                                   |
+| length / feature / fingerprint 谓词    | ✅                                                   |
+| 嵌套 when                              | ✅                                                   |
+| Artifact format 2/3 兼容               | ✅                                                   |
+| Hyperscan                            | ✅ 可选 feature；真 FFI 见 [HYPERSCAN.md](./HYPERSCAN.md) |
+| Fast / Deep 双路径                      | ✅                                                   |
+| challenge → WAF Challenge            | ✅ `expert_bridge` + `NERVE_EXPERT_CHALLENGE_AS`     |
+| Shadow FP → allow 草稿                 | ✅ `/api/shadow/export-rules`                        |
+| IP / Geo / rate 在引擎内                 | ❌ 边界外（故意）                                           |
+| 真实 ML / ONNX                         | ✅ Linear JSON + `RiskModel`；ONNX feature 入口         |
+| 按 Header 名匹配                         | ✅ `header_name`                                     |
+| 响应体检测                                | ✅ `response_body` + WAF 响应阶段                        |
+| `min_engine` 强制校验                    | ✅                                                   |
+| WAF 侧 reload 运维 API                  | ✅ `POST /api/expert/reload`                         |
+
 
 目标管线：
 
@@ -406,17 +513,19 @@ cargo build -p nerve-antibody-engine --features accel-hyperscan-ffi
 
 ## 7. 相关文档
 
-| 文档 | 内容 |
-|------|------|
-| [RULE-AUTHORING.md](./RULE-AUTHORING.md) | 规则编写指南 |
-| [BOUNDARY-IP-GEO-RATE.md](./BOUNDARY-IP-GEO-RATE.md) | IP/Geo/限流边界 |
-| [HYPERSCAN.md](./HYPERSCAN.md) | Hyperscan / Vectorscan |
-| [ENGRAM-L3-HOOK.md](./ENGRAM-L3-HOOK.md) | L3 / Engram 接入原则 |
-| [arc-cortex/architecture.md](./arc-cortex/architecture.md) | 分层架构与请求流水线 |
-| [packs/baseline/README.md](../packs/baseline/README.md) | baseline 规则包说明 |
-| [packs/baseline/FALSE_POSITIVES.md](../packs/baseline/FALSE_POSITIVES.md) | 误报治理记录 |
-| [packs/baseline/CHANGELOG.md](../packs/baseline/CHANGELOG.md) | 包版本变更 |
-| [vendor/BLAZEHTTP.md](../vendor/BLAZEHTTP.md) | blazehttp 数据集 |
+
+| 文档                                                                        | 内容                     |
+| ------------------------------------------------------------------------- | ---------------------- |
+| [RULE-AUTHORING.md](./RULE-AUTHORING.md)                                  | 规则编写指南                 |
+| [BOUNDARY-IP-GEO-RATE.md](./BOUNDARY-IP-GEO-RATE.md)                      | IP/Geo/限流边界            |
+| [HYPERSCAN.md](./HYPERSCAN.md)                                            | Hyperscan / Vectorscan |
+| [ENGRAM-L3-HOOK.md](./ENGRAM-L3-HOOK.md)                                  | L3 / Engram 接入原则       |
+| [arc-cortex/architecture.md](./arc-cortex/architecture.md)                | 分层架构与请求流水线             |
+| [packs/baseline/README.md](../packs/baseline/README.md)                   | baseline 规则包说明         |
+| [packs/baseline/FALSE_POSITIVES.md](../packs/baseline/FALSE_POSITIVES.md) | 误报治理记录                 |
+| [packs/baseline/CHANGELOG.md](../packs/baseline/CHANGELOG.md)             | 包版本变更                  |
+| [vendor/BLAZEHTTP.md](../vendor/BLAZEHTTP.md)                             | blazehttp 数据集          |
+
 
 ---
 

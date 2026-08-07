@@ -3,11 +3,81 @@ use crate::types::{MatchedRule, NativeRequest};
 use nerve_antibody_adaptive::FeatureSnapshot;
 use nerve_antibody_dsl::{apply_transforms_into, Transform};
 use nerve_antibody_dsl::NativeLevel;
-use nerve_antibody_metrics::InspectPath;
+use nerve_antibody_metrics::{InspectPath, RisZone};
 use nerve_antibody_pipeline::{is_plausible_inspect_text, RequestViews, ViewKind, ViewSlice};
 use nerve_antibody_semantic::{self as semantic};
 
-/// 是否值得对 body/query/header 做全量 regex 深扫。
+/// Nerve RIS：风险分层巡检 → (路径, zone)。
+///
+/// 1. 硬规则 / hard_deep → hot + Deep  
+/// 2. score ≥ deep_threshold → hot + Deep（优先于 L1/L2「干净」捷径）  
+/// 3. score ≥ gray_threshold 或 L2 结构异常 → gray + Fast（escalate / Shadow）  
+/// 4. 仅当 score < gray 时，L1/L2/API/静态/极简 才可压成 clean + Fast  
+/// 5. **否则默认 hot + Deep**（未知流量检出优先；禁止默认 Fast）
+pub(super) fn resolve_ris(
+    mode: InspectMode,
+    static_asset: bool,
+    cache_deception_probe: bool,
+    hard_deep: bool,
+    has_response: bool,
+    decode_hint: bool,
+    evasion_hint: bool,
+    suspicious: bool,
+    clean_json_api: bool,
+    api_positive_lane: bool,
+    benign_simple: bool,
+    bloom_clear: bool,
+    negative_hit: bool,
+    structure_clean: bool,
+    structure_known: bool,
+    structure_anomaly: bool,
+    score: f32,
+    gray_threshold: f32,
+    deep_threshold: f32,
+) -> (InspectPath, RisZone) {
+    match mode {
+        InspectMode::Deep => (InspectPath::Deep, RisZone::Hot),
+        InspectMode::Fast => (InspectPath::Fast, RisZone::Clean),
+        InspectMode::Auto => {
+            let must_hot = cache_deception_probe
+                || has_response
+                || decode_hint
+                || evasion_hint
+                || hard_deep
+                || suspicious;
+            if must_hot {
+                return (InspectPath::Deep, RisZone::Hot);
+            }
+            let deep_thr = deep_threshold.max(gray_threshold);
+            let gray_thr = gray_threshold.min(deep_thr);
+            if score >= deep_thr {
+                return (InspectPath::Deep, RisZone::Hot);
+            }
+            if structure_anomaly || score >= gray_thr {
+                // 灰区直接 Deep（仍标 gray 供 Shadow/指标）；避免 Fast 规则集 + allow 高分冲掉检出。
+                return (InspectPath::Deep, RisZone::Gray);
+            }
+            // 干净捷径仅静态 / 极简。L1 Bloom/负缓存不参与压 clean：
+            // samples 回归里白样本 remember_clear 会污染后续黑样本指纹。
+            if (static_asset && !cache_deception_probe) || benign_simple {
+                return (InspectPath::Fast, RisZone::Clean);
+            }
+            let _ = (
+                bloom_clear,
+                negative_hit,
+                clean_json_api,
+                api_positive_lane,
+                structure_clean,
+                structure_known,
+            );
+            // 未知流量默认 Deep（hot）
+            (InspectPath::Deep, RisZone::Hot)
+        }
+    }
+}
+
+/// 兼容旧调用：仅返回路径。
+#[allow(dead_code)]
 pub(super) fn resolve_inspect_path(
     mode: InspectMode,
     static_asset: bool,
@@ -16,25 +86,82 @@ pub(super) fn resolve_inspect_path(
     has_response: bool,
     decode_hint: bool,
     evasion_hint: bool,
+    _suspicious: bool,
+    clean_json_api: bool,
+    api_positive_lane: bool,
+    benign_simple: bool,
 ) -> InspectPath {
-    match mode {
-        InspectMode::Deep => InspectPath::Deep,
-        InspectMode::Fast => InspectPath::Fast,
-        InspectMode::Auto => {
-            if cache_deception_probe
-                || has_response
-                || decode_hint
-                || evasion_hint
-                || route_deep
-            {
-                InspectPath::Deep
-            } else if static_asset {
-                InspectPath::Fast
-            } else {
-                InspectPath::Fast
-            }
-        }
+    resolve_ris(
+        mode,
+        static_asset,
+        cache_deception_probe,
+        route_deep,
+        has_response,
+        decode_hint,
+        evasion_hint,
+        false,
+        clean_json_api,
+        api_positive_lane,
+        benign_simple,
+        false,
+        false,
+        false,
+        false,
+        false,
+        if route_deep { 1.0 } else { 0.0 },
+        0.20,
+        0.35,
+    )
+    .0
+}
+
+/// 极简良性请求：无 body；无 query 或短字母数字键值（无编码/引号/尖括号）。
+pub(super) fn is_benign_simple_request(req: &NativeRequest) -> bool {
+    if !req.body.is_empty() || req.response_body.as_ref().is_some_and(|b| !b.is_empty()) {
+        return false;
     }
+    if req.query.is_empty() {
+        return true;
+    }
+    if req.query.len() > 128 {
+        return false;
+    }
+    let q = req.query.as_bytes();
+    if q.iter().any(|b| {
+        matches!(
+            *b,
+            b'%' | b'\'' | b'"' | b'<' | b'>' | b';' | b'(' | b')' | b'|' | b'`' | b'\\' | b'/'
+        )
+    }) {
+        return false;
+    }
+    q.iter()
+        .all(|b| b.is_ascii_alphanumeric() || matches!(*b, b'=' | b'&' | b'-' | b'_' | b'.' | b'+'))
+}
+
+/// 原始 URI/query/body 含百分号编码攻击标记（Fast 无解码时必升 deep）。
+pub(super) fn raw_encoded_attack_markers(req: &NativeRequest) -> bool {
+    let hay = format!("{} {} {}", req.uri, req.query, req.body).to_ascii_lowercase();
+    const MARKERS: &[&str] = &[
+        "%27", // '
+        "%22", // "
+        "%3c", // <
+        "%3e", // >
+        "%3b", // ;
+        "%28", // (
+        "%29", // )
+        "%2e%2e", // ..
+        "%252e", // double-encode .
+        "%2500",
+        "%00",
+        "%0d%0a",
+        "%0a",
+        "%2f%2e%2e",
+        "&#x",
+        "\\u00",
+        "\\x3c",
+    ];
+    MARKERS.iter().any(|m| hay.contains(m))
 }
 
 #[allow(dead_code)]
@@ -91,12 +218,36 @@ fn slice_eligible_for_soft_heuristic(s: &ViewSlice) -> bool {
     true
 }
 
+fn javascript_uri_attack_shape(lower: &str) -> bool {
+    // 书名「javascript: basics…」不触发；仅 URI 载荷形
+    let mut rest = lower;
+    while let Some(i) = rest.find("javascript:") {
+        let after = rest[i + "javascript:".len()..]
+            .trim_start_matches(|c: char| c == '/' || c.is_ascii_whitespace());
+        if after.starts_with("alert")
+            || after.starts_with("eval")
+            || after.starts_with("prompt")
+            || after.starts_with("confirm")
+            || after.starts_with("document.")
+            || after.starts_with("window.")
+            || after.starts_with("fetch(")
+            || after.starts_with("setinterval")
+            || after.starts_with("settimeout")
+            || after.starts_with('<')
+        {
+            return true;
+        }
+        rest = &rest[i + 1..];
+    }
+    false
+}
+
 fn text_has_attack_shape(t: &str) -> bool {
     let l = t.to_ascii_lowercase();
     if l.contains("union select")
         || l.contains("<script")
         || l.contains("oeerror=")
-        || l.contains("javascript:")
+        || javascript_uri_attack_shape(&l)
         || l.contains("alert(")
         || l.contains("alert.")
         || l.contains("prompt(")
@@ -346,6 +497,166 @@ mod static_asset_tests {
     }
 }
 
+#[cfg(test)]
+mod ris_tests {
+    use super::resolve_ris;
+    use crate::eval::policy::InspectMode;
+    use nerve_antibody_metrics::{InspectPath, RisZone};
+
+    fn auto(
+        hard: bool,
+        bloom: bool,
+        neg: bool,
+        score: f32,
+    ) -> (InspectPath, RisZone) {
+        resolve_ris(
+            InspectMode::Auto,
+            false, // static
+            false, // cache_deception
+            hard,
+            false, // has_response
+            false, // decode_hint
+            false, // evasion_hint
+            false, // suspicious
+            false, // clean_json_api
+            false, // api_positive
+            false, // benign_simple
+            bloom,
+            neg,
+            false, // structure_clean
+            false, // structure_known
+            false, // structure_anomaly
+            score,
+            0.20,
+            0.35,
+        )
+    }
+
+    #[test]
+    fn structure_anomaly_floors_gray() {
+        let (p, z) = resolve_ris(
+            InspectMode::Auto,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false, // suspicious
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true, // structure_anomaly
+            0.05,
+            0.20,
+            0.35,
+        );
+        assert_eq!(p, InspectPath::Deep);
+        assert_eq!(z, RisZone::Gray);
+    }
+
+    #[test]
+    fn structure_clean_cannot_override_high_score() {
+        let (p, z) = resolve_ris(
+            InspectMode::Auto,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true, // structure_clean
+            false,
+            false,
+            0.50,
+            0.20,
+            0.35,
+        );
+        assert_eq!(p, InspectPath::Deep);
+        assert_eq!(z, RisZone::Hot);
+    }
+
+    #[test]
+    fn structure_clean_alone_defaults_hot_deep() {
+        // structure_clean 不再单独压成 clean（避免 API 形攻击漏检）
+        let (p, z) = resolve_ris(
+            InspectMode::Auto,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true, // structure_clean
+            false,
+            false,
+            0.05,
+            0.20,
+            0.35,
+        );
+        assert_eq!(p, InspectPath::Deep);
+        assert_eq!(z, RisZone::Hot);
+    }
+
+    #[test]
+    fn hard_is_hot_deep() {
+        let (p, z) = auto(true, true, true, 0.0);
+        assert_eq!(p, InspectPath::Deep);
+        assert_eq!(z, RisZone::Hot);
+    }
+
+    #[test]
+    fn bloom_cannot_override_high_score() {
+        let (p, z) = auto(false, true, false, 0.9);
+        assert_eq!(p, InspectPath::Deep);
+        assert_eq!(z, RisZone::Hot);
+    }
+
+    #[test]
+    fn bloom_no_longer_forces_clean() {
+        let (p, z) = auto(false, true, false, 0.05);
+        assert_eq!(p, InspectPath::Deep);
+        assert_eq!(z, RisZone::Hot);
+    }
+
+    #[test]
+    fn mid_score_is_gray_deep() {
+        let (p, z) = auto(false, false, false, 0.25);
+        assert_eq!(p, InspectPath::Deep);
+        assert_eq!(z, RisZone::Gray);
+    }
+
+    #[test]
+    fn high_score_is_hot_deep() {
+        let (p, z) = auto(false, false, false, 0.40);
+        assert_eq!(p, InspectPath::Deep);
+        assert_eq!(z, RisZone::Hot);
+    }
+
+    #[test]
+    fn unknown_low_score_defaults_hot_deep() {
+        let (p, z) = auto(false, false, false, 0.05);
+        assert_eq!(p, InspectPath::Deep);
+        assert_eq!(z, RisZone::Hot);
+    }
+}
+
 pub(super) fn build_features(
     req: &NativeRequest,
     views: &RequestViews,
@@ -397,10 +708,9 @@ pub(super) fn build_features(
     .iter()
     .filter(|k| lower.contains(*k))
     .count() as u32;
-    let xss_kw = [
+    let mut xss_kw = [
         "<script",
         "oeerror=",
-        "javascript:",
         "alert(",
         "onfocus=",
         "data:text/",
@@ -413,6 +723,9 @@ pub(super) fn build_features(
     .iter()
     .filter(|k| lower.contains(*k))
     .count() as u32;
+    if javascript_uri_attack_shape(&lower) {
+        xss_kw = xss_kw.saturating_add(1);
+    }
     // SSTI 算术探针：{7*7} / {{7*7}}，避免 JSON 花括号误伤
     let expr_kw = {
         let b = kw_sample.as_bytes();

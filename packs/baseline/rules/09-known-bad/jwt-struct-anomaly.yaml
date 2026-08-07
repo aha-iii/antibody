@@ -14,7 +14,7 @@ when:
     - field: header
       header_name: Authorization
       regex: "(?i)^(?:Bearer\\s+)?eyJ[A-Za-z0-9_-]{8,}\\.\\.[A-Za-z0-9_-]*$"
-    # 缺签名：恰两段后结束（勿用 (?:\s|$) 扫全文，避免长 JWT 头尾截断误报）
+    # 缺签名：恰两段后结束（勿拦合法 3 段 JWT / 5 段 JWE）
     - field: query
       regex: "(?:^|[?&])(?:access_token|id_token|token)=eyJ[A-Za-z0-9_-]{8,}\\.[A-Za-z0-9_-]{8,}(?:&|$)"
     - field: header
@@ -34,8 +34,6 @@ when:
       regex: "(?i)access_token=eyJ[^&]*(?:x5c|x5t|\"kid\"|\"cty\"|InppcCI6IkRFRi)"
     - field: query
       regex: "access_token=eyJ[A-Za-z0-9_-]{8,}\\.[A-Za-z0-9_-]{8,}\\.\\.[A-Za-z0-9_-]*"
-    - field: query
-      regex: "access_token=eyJ[A-Za-z0-9_-]{8,}(?:\\.[A-Za-z0-9_-]+){3,}"
     - field: query
       regex: "(?i)access_token=\\.\\.+eyJ"
     - field: query

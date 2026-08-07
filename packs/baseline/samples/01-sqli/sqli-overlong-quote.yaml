@@ -1,0 +1,39 @@
+- id: sample-sqli-overlong-quote-gen-block
+  rule_id: sqli-overlong-quote
+  name: Overlong UTF-8 quote SQLi (pos)
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=%c0%27
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-overlong-quote-gen-pass
+  rule_id: sqli-overlong-quote
+  name: Overlong UTF-8 quote SQLi (neg)
+  category: 01-sqli
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

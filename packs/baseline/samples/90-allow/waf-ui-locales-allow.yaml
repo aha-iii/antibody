@@ -1,0 +1,42 @@
+- id: sample-waf-ui-locales-allow-matched-allow
+  rule_id: waf-ui-locales-allow
+  name: Allow WAF console UI and locale JSON paths (allow+)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - fp
+  - admin
+  - locales
+  - waf-ui
+  request:
+    method: GET
+    host: example.com
+    uri: /api/detectlog
+    query: tags=a&name=b&nodes=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-waf-ui-locales-allow-gen-pass
+  rule_id: waf-ui-locales-allow
+  name: Allow WAF console UI and locale JSON paths (neg)
+  category: 90-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - admin
+  - locales
+  - waf-ui
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

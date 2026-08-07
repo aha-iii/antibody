@@ -18,6 +18,7 @@ import { EnginePage } from "./pages/EnginePage";
 import { MetricsPage } from "./pages/MetricsPage";
 import { SamplesPage } from "./pages/SamplesPage";
 import { ShadowPage } from "./pages/ShadowPage";
+import { VpPage } from "./pages/VpPage";
 
 export function App() {
   const [authPhase, setAuthPhase] = useState<AuthPhase>("loading");
@@ -113,6 +114,7 @@ export function App() {
 
       {page === "metrics" ? <MetricsPage health={health} /> : null}
       {page === "shadow" ? <ShadowPage health={health} /> : null}
+      {page === "vp" ? <VpPage health={health} /> : null}
 
       {page === "engine" ? (
         <EnginePage

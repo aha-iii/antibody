@@ -1,0 +1,59 @@
+- id: sample-cache-poison-unkeyed-header-gen-block
+  rule_id: cache-poison-unkeyed-header
+  name: Cache poisoning via unkeyed request headers (pos)
+  category: 08-admin-scanner
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - cache
+  - header
+  request:
+    method: GET
+    host: example.com
+    uri: /api/user/profile?;
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-cache-poison-unkeyed-header-gen-pass
+  rule_id: cache-poison-unkeyed-header
+  name: Cache poisoning via unkeyed request headers (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - cache
+  - header
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-cache-poison-unkeyed-header-matched-pass
+  rule_id: cache-poison-unkeyed-header
+  name: Cache poisoning via unkeyed request headers (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - cache
+  - header
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /favicon.ico
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''

@@ -1,0 +1,57 @@
+- id: sample-allow-captcha-onload-callback-matched-allow
+  rule_id: allow-captcha-onload-callback
+  name: Allow captcha/recaptcha onload callback (allow+)
+  category: 00-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - allow
+  - fp_reviewed
+  request:
+    method: GET
+    host: example.com
+    uri: /favicon.ico
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0
+      Accept: '*/*'
+    body: ''
+- id: sample-allow-captcha-onload-callback-matched-allow
+  rule_id: allow-captcha-onload-callback
+  name: Allow captcha/recaptcha onload callback (allow+)
+  category: 00-allow
+  expect_action: pass
+  min_level: low
+  severity: low
+  tags:
+  - allow
+  - fp_reviewed
+  request:
+    method: GET
+    host: example.com
+    uri: /health
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-allow-captcha-onload-callback-gen-pass
+  rule_id: allow-captcha-onload-callback
+  name: Allow captcha/recaptcha onload callback (neg)
+  category: 00-allow
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - allow
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

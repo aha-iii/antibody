@@ -197,6 +197,7 @@ export type BenchMetrics = {
   fast_path_ratio?: number;
   avg_fast_ms?: number;
   avg_deep_ms?: number;
+  avg_ris_ms?: number;
   max_ms?: number;
   budget_exhausted_count?: number;
 };
@@ -217,6 +218,10 @@ export type CaseResult = {
   inspect_path?: string;
   inspect_mode?: string;
   lane?: string;
+  ris_zone?: string;
+  ris_ms?: number;
+  fast_ms?: number;
+  deep_ms?: number;
   route_score?: number;
   route_deep?: boolean;
   budget_exhausted?: string;
@@ -228,9 +233,10 @@ export type BenchStatus = {
   phase: BenchPhase;
   pack: string;
   level: string;
+  inspect_mode?: string;
   dataset: string;
   concurrency: number;
-  timeoutttttttttttttttttttttt_ms: number;
+  timeout_ms: number;
   target: string;
   progress_pct: number;
   done: number;
@@ -249,11 +255,15 @@ export type BenchStatus = {
 
 export type BenchDatasetId =
   | "samples"
+  | "samples-positive"
+  | "samples-negative"
   | "blazehttp"
   | "blazehttp-regression"
   | "gotestwaf"
   | "waftester"
   | "crs-ftw";
+
+export type BenchSampleExpect = "all" | "block" | "pass";
 
 export type BenchDatasetInfo = {
   id: BenchDatasetId;
@@ -269,8 +279,12 @@ export type BenchStartBody = {
   dataset?: BenchDatasetId;
   concurrency?: number;
   level?: NativeLevel;
-  timeoutttttttttttttttttttttt_ms?: number;
+  /** auto（默认）| deep | fast */
+  inspect_mode?: "auto" | "deep" | "fast";
+  timeout_ms?: number;
   limit?: number;
+  /** samples 极性：all | block（正）| pass（负）；亦可用 dataset samples-positive/negative */
+  sample_expect?: BenchSampleExpect;
 };
 
 export type BenchResultsOut = {
@@ -278,6 +292,32 @@ export type BenchResultsOut = {
   page: number;
   page_size: number;
   items: CaseResult[];
+};
+
+export type RisCurvePoint = {
+  threshold: number;
+  attack_fast_miss: number;
+  clean_fast_ratio: number;
+};
+
+export type RisCalibrateReport = {
+  recommended_deep_threshold: number;
+  recommended_gray_threshold: number;
+  attack_fast_miss: number;
+  clean_fast_ratio: number;
+  attack_count: number;
+  clean_count: number;
+  max_miss: number;
+  curve: RisCurvePoint[];
+  model: string;
+};
+
+export type RisCalibrateOut = {
+  ok: boolean;
+  report: RisCalibrateReport;
+  wrote?: { weights?: string; curve?: string } | null;
+  sample_count?: number;
+  path?: string;
 };
 
 async function parse<T>(res: Response): Promise<T> {
@@ -366,6 +406,21 @@ export const api = {
   benchReport: () =>
     authFetch("/api/bench/report").then((r) => parse<Record<string, unknown>>(r)),
 
+  risCalibrate: (body: {
+    use_last_report?: boolean;
+    max_miss?: number;
+    use_stumps?: boolean;
+    write_weights?: boolean;
+    pack?: string;
+  } = {}) =>
+    authFetch("/api/ris/calibrate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then((r) => parse<RisCalibrateOut>(r)),
+  risCurve: () =>
+    authFetch("/api/ris/curve").then((r) => parse<RisCalibrateOut>(r)),
+
   overlay: () => authFetch("/api/overlay").then((r) => parse<ExpertOverlay>(r)),
   putOverlay: (body: ExpertOverlay) =>
     authFetch("/api/overlay", {
@@ -417,6 +472,113 @@ export const api = {
       if (!r.ok) throw new Error(text || r.statusText);
       return text;
     }),
+
+  vpList: () =>
+    authFetch("/api/vp").then((r) => parse<VpListOut>(r)),
+  vpStatus: () =>
+    authFetch("/api/vp/status").then((r) => parse<VpStatus>(r)),
+  vpSandbox: (cve_id: string) =>
+    authFetch("/api/vp/sandbox", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cve_id }),
+    }).then((r) => parse<VpStatus>(r)),
+  vpPromote: (cve_id: string) =>
+    authFetch("/api/vp/promote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cve_id }),
+    }).then((r) => parse<VpStatus>(r)),
+  vpRollback: (cve_id: string) =>
+    authFetch("/api/vp/rollback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cve_id }),
+    }).then((r) => parse<VpStatus>(r)),
+  vpImport: (source_path: string) =>
+    authFetch("/api/vp/import", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source_path }),
+    }).then((r) => parse<VpListOut>(r)),
+  vpProbe: (query?: string) =>
+    authFetch("/api/vp/probe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(query != null ? { query } : {}),
+    }).then((r) => parse<VpProbeOut>(r)),
+  vpUpdatesCheck: () =>
+    authFetch("/api/vp/updates/check").then((r) => parse<VpChannelCheck>(r)),
+  vpUpdatesFetch: () =>
+    authFetch("/api/vp/updates/fetch", { method: "POST" }).then((r) =>
+      parse<VpFetchOut>(r),
+    ),
+  vpIngest: (item: VpIntelItem) =>
+    authFetch("/api/vp/ingest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(item),
+    }).then((r) => parse<VpListOut>(r)),
+};
+
+export type VpEntry = {
+  cve_id: string;
+  path: string;
+  title: string;
+  severity: string;
+  status: string;
+  default_action: string;
+  rule_count: number;
+  sample_count: number;
+};
+
+export type VpListOut = {
+  pack: string;
+  items: VpEntry[];
+};
+
+export type VpStatus = {
+  pack: string;
+  pack_version: string;
+  rule_count: number;
+  sandbox_mounted: boolean;
+  sandbox_pack_id: string | null;
+  vp_live_count: number;
+  vp_total: number;
+};
+
+export type VpProbeOut = {
+  action: string;
+  rule_id: string;
+  inspect_path: string;
+};
+
+export type VpChannelCheck = {
+  channel_url: string;
+  track: string;
+  remote_version: string;
+  local_version: string;
+  update_available: boolean;
+  cve_added: string[];
+  artifact_path: string;
+  published_at: string | null;
+};
+
+export type VpFetchOut = {
+  check: VpChannelCheck;
+  imported: string[];
+  sandbox_cve: string | null;
+  promoted_live: boolean;
+};
+
+export type VpIntelItem = {
+  cve_id: string;
+  title?: string;
+  severity?: string;
+  match_contains: string;
+  fields?: string[];
+  source?: string;
+  description?: string;
 };
 
 export type AdmissionConfig = {

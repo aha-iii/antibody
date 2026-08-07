@@ -1,0 +1,41 @@
+- id: sample-oscmd-extended-gen-block
+  rule_id: oscmd-extended
+  name: Extended OS command and LOLBAS probes (pos)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - rce
+  - cmdi
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=;env|
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-oscmd-extended-gen-pass
+  rule_id: oscmd-extended
+  name: Extended OS command and LOLBAS probes (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - cmdi
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -8,16 +8,15 @@ tags: [auth, logic]
 transforms: [url_decode_uni, lowercase]
 when:
   any:
-    - field: query
-      regex: "(?i)access_token=eyj[a-z0-9_-]{8,}(?:\\.[a-z0-9_-]+){3,}"
-    - field: query
-      regex: "(?i)access_token=eyj[^&]{350,}"
+    # 勿拦合法多段 JWE（5 段）；仅结构异常
     - field: query
       regex: "(?i)access_token=eyj[^&]*\\.fake-signature"
     - field: query
       regex: "(?i)access_token=eyj[a-z0-9_-]{8,}\\.\\.[a-z0-9_-]*"
     - field: query
-      regex: "(?i)access_token=eyj[^&]*(?:x5c|x5t|\"kid\"|\"cty\")"
+      regex: "(?i)access_token=eyj[^&]{350,}"
+    - field: query
+      regex: "(?i)access_token=eyj[^&]*(?:\"x5c\"|\"x5t\"|\"kid\"\\s*:\\s*\"|\"cty\")"
     - field: query
       contains: 'password[]='
     - field: query

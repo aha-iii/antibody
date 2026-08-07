@@ -1,0 +1,41 @@
+- id: sample-sqli-json-base64-pipe-gen-block
+  rule_id: sqli-json-base64-pipe
+  name: SQLi JSON base64 command pipe (pos)
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - rce
+  - blazehttp_gap
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q="id":"AAAAAAAAAAAAAAAA"
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-json-base64-pipe-gen-pass
+  rule_id: sqli-json-base64-pipe
+  name: SQLi JSON base64 command pipe (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - rce
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

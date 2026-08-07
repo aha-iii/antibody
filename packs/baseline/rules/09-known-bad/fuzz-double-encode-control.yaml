@@ -1,0 +1,38 @@
+id: fuzz-double-encode-control
+name: Double-encoded null/CRLF and control-char fuzz
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [fuzz, protocol, self]
+transforms: [lowercase]
+when:
+  any:
+    - field: query
+      regex: "(?i)%2500|%250a|%250d|%257f|%25ff|%250d%250a"
+    - field: uri
+      regex: "(?i)%2500|%250a|%250d|%257f|%25ff|%250d%250a"
+    - field: query
+      contains: '%2500'
+    - field: query
+      contains: '%250a'
+    - field: query
+      contains: '%250d'
+    - field: query
+      contains: '%250d%250a'
+    - field: query
+      contains: '%257f'
+    - field: query
+      contains: '%25ff'
+    # 转义空字节 \\0
+    - field: query
+      regex: "(?i)(?:^|[=&])[^=&]*%5c0(?:&|$)"
+    - field: query
+      contains: '%5c0'
+    - field: query
+      regex: "(?i)%250aid|%250d%250aid"
+    - field: header
+      regex: "(?i)[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]"
+    - field: header
+      header_name: _proto_anomaly
+      regex: "(?i)(?:header-ctl|header-colon-ws|cl-anomaly|space-before-colon|non-numeric-cl)"

@@ -1,0 +1,21 @@
+- id: sample-n8n-workflow-expr-abuse-matched-pass
+  rule_id: n8n-workflow-expr-abuse
+  name: n8n / workflow expression and code abuse (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: high
+  severity: info
+  tags:
+  - recon
+  - rce
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/v1/items
+    query: q=hello-world&page=1&sort=name
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

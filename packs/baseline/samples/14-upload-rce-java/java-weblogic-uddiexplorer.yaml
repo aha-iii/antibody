@@ -1,0 +1,41 @@
+- id: sample-java-weblogic-uddiexplorer-gen-block
+  rule_id: java-weblogic-uddiexplorer
+  name: WebLogic/UDDI explorer paths (pos)
+  category: 14-upload-rce-java
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - java
+  - cve
+  - blazehttp_gap
+  request:
+    method: GET
+    host: example.com
+    uri: /uddiexplorer
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-java-weblogic-uddiexplorer-gen-pass
+  rule_id: java-weblogic-uddiexplorer
+  name: WebLogic/UDDI explorer paths (neg)
+  category: 14-upload-rce-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - java
+  - cve
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

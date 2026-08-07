@@ -1,0 +1,39 @@
+- id: sample-ssrf-encoded-loopback-gen-block
+  rule_id: ssrf-encoded-loopback
+  name: SSRF encoded loopback / decimal IP (pos)
+  category: 05-rfi-ssrf
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - ssrf
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=http://0x7f
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-ssrf-encoded-loopback-gen-pass
+  rule_id: ssrf-encoded-loopback
+  name: SSRF encoded loopback / decimal IP (neg)
+  category: 05-rfi-ssrf
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - ssrf
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

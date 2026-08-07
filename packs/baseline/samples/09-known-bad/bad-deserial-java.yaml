@@ -1,0 +1,57 @@
+- id: sample-bad-deserial-java
+  rule_id: bad-deserial-java
+  name: Java deserialization markers
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: &id001
+  - known_bad
+  - cve
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: q=rO0AB
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-deserial-java-alt
+  rule_id: bad-deserial-java
+  name: Java deserialization markers (alt)
+  category: 09-known-bad
+  expect_action: block
+  min_level: medium
+  severity: high
+  tags: *id001
+  request:
+    method: POST
+    host: example.com
+    uri: /api/submit
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/x-www-form-urlencoded
+    body: payload=rO0AB
+- id: sample-bad-deserial-java-gen-pass
+  rule_id: bad-deserial-java
+  name: Java deserialization markers (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - known_bad
+  - cve
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

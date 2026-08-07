@@ -1,0 +1,39 @@
+- id: sample-auth-query-bypass-gen-block
+  rule_id: auth-query-bypass
+  name: Authentication bypass via query parameters (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - auth
+  - logic
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: password[]=
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-auth-query-bypass-gen-pass
+  rule_id: auth-query-bypass
+  name: Authentication bypass via query parameters (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - auth
+  - logic
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

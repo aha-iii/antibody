@@ -1,0 +1,41 @@
+- id: sample-sqli-shutdown-udf-gen-block
+  rule_id: sqli-shutdown-udf
+  name: SQLi SHUTDOWN / CREATE FUNCTION RCE (pos)
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - rce
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=%ef%bc%87
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-shutdown-udf-gen-pass
+  rule_id: sqli-shutdown-udf
+  name: SQLi SHUTDOWN / CREATE FUNCTION RCE (neg)
+  category: 01-sqli
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - rce
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

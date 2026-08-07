@@ -1,0 +1,21 @@
+- id: sample-idor-bola-paths-gen-pass
+  rule_id: idor-bola-paths
+  name: BOLA / guessable resource path probes (neg)
+  category: 08-admin-scanner
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - idor
+  - recon
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

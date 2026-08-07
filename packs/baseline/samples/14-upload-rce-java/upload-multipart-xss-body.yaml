@@ -1,0 +1,21 @@
+- id: sample-upload-multipart-xss-body-gen-pass
+  rule_id: upload-multipart-xss-body
+  name: XSS or script payload inside multipart upload body (neg)
+  category: 14-upload-rce-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - upload
+  - xss
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

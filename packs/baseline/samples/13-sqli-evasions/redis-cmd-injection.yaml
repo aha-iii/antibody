@@ -1,0 +1,41 @@
+- id: sample-redis-cmd-injection-matched-block
+  rule_id: redis-cmd-injection
+  name: Redis command injection probes (pos)
+  category: 13-sqli-evasions
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - nosql
+  - redis
+  - self
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: 'q=lpush '
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-redis-cmd-injection-gen-pass
+  rule_id: redis-cmd-injection
+  name: Redis command injection probes (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - nosql
+  - redis
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

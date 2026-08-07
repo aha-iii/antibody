@@ -1,0 +1,41 @@
+- id: sample-rfi-remote-http-matched-block
+  rule_id: rfi-remote-http
+  name: RFI remote http include (pos)
+  category: 05-rfi-ssrf
+  expect_action: observe
+  min_level: low
+  severity: high
+  tags:
+  - ssrf
+  - rfi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /p/include=http://0.0.0.0
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rfi-remote-http-gen-pass
+  rule_id: rfi-remote-http
+  name: RFI remote http include (neg)
+  category: 05-rfi-ssrf
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - ssrf
+  - rfi
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

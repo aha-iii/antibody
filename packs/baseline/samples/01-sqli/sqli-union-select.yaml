@@ -1,0 +1,41 @@
+- id: sample-sqli-union-select-matched-block
+  rule_id: sqli-union-select
+  name: SQL UNION SELECT (pos)
+  category: 01-sqli
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - sqli
+  - owasp
+  - fp_reviewed
+  request:
+    method: GET
+    host: example.com
+    uri: "/p/'union\tselect"
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-sqli-union-select-gen-pass
+  rule_id: sqli-union-select
+  name: SQL UNION SELECT (neg)
+  category: 01-sqli
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - owasp
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

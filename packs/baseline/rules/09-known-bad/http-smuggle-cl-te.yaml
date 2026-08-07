@@ -8,15 +8,21 @@ tags: [protocol, smuggle, self]
 transforms: [lowercase]
 when:
   any:
+    # CL 与 TE 同时出现
     - field: header
       regex: "(?is)content-length\\s*:.*transfer-encoding\\s*:|transfer-encoding\\s*:.*content-length\\s*:"
+    # 重复 TE / 重复 CL
     - field: header
       regex: "(?i)transfer-encoding\\s*:[^\\n]*\\n[^\\n]*transfer-encoding\\s*:"
     - field: header
       regex: "(?i)content-length\\s*:[^\\n]*\\n[^\\n]*content-length\\s*:"
+    # 仅非法 / 异常 TE 值（勿拦 identity|gzip|deflate|compress|chunked）
     - field: header
-      regex: "(?i)transfer-encoding\\s*:\\s*(?:cow|identity|compress|deflate|gzip|[a-z]{1,12})\\s*$"
+      regex: "(?i)transfer-encoding\\s*:\\s*(?:cow|chunk\\b|identity,\\s*chunked|chunked,\\s*identity)\\s*"
     - field: header
       regex: "(?i)content-length\\s*:\\s*(?:-\\d|\\+\\d)"
     - field: header
       regex: "(?i)transfer-encoding\\s*:\\s*$"
+    - field: header
+      header_name: _proto_anomaly
+      regex: "(?i)(?:dup-cl|dup-te|smuggle)"

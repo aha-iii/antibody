@@ -1,0 +1,58 @@
+- id: sample-rce-chmod
+  rule_id: rce-chmod
+  name: RCE chmod +x
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: &id001
+  - rce
+  - cmdi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/vuln/chmod 777
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rce-chmod-alt
+  rule_id: rce-chmod
+  name: RCE chmod +x (alt)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: high
+  severity: high
+  tags: *id001
+  request:
+    method: GET
+    host: example.com
+    uri: /api/vuln/chmod 777
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rce-chmod-gen-pass
+  rule_id: rce-chmod
+  name: RCE chmod +x (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - cmdi
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -1,0 +1,43 @@
+- id: sample-xxe-doctype-matched-block
+  rule_id: xxe-doctype
+  name: XXE DOCTYPE with ENTITY/SYSTEM (pos)
+  category: 06-xxe-ssti
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - xxe
+  - ssti
+  - owasp
+  - fp_reviewed
+  request:
+    method: GET
+    host: example.com
+    uri: /p/<!doctypeentity
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-xxe-doctype-gen-pass
+  rule_id: xxe-doctype
+  name: XXE DOCTYPE with ENTITY/SYSTEM (neg)
+  category: 06-xxe-ssti
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - xxe
+  - ssti
+  - owasp
+  - fp_reviewed
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

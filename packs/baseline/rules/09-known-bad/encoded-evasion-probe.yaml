@@ -7,8 +7,7 @@ min_level: low
 transforms: [lowercase]
 when:
   any:
-    - field: query
-      regex: "(?i)access_token=eyj[^&]*\\.[^&]*\\.[^&]*\\."
+    # 勿拦合法多段 JWE（与 jwt-access-token-anomaly 一致）
     - field: query
       regex: "(?i)%5cx00|valid_session%5cx00"
     - field: uri
@@ -67,9 +66,14 @@ when:
       contains: '%20chunked'
     - field: header
       regex: "(?i)^[a-z0-9_-]+ :"
+    # 过长重复字符探测；阈值抬高避免 FUZZ-LONG 白样本
     - field: query
-      regex: "(?i)q=a{80,}"
+      regex: "(?i)q=a{1024,}"
     - field: body
       contains: '__proto__'
     - field: body
       contains: 'isadmin'
+    - field: query
+      regex: "(?i)(?:^|[=&])q=%3[fF]__proto__"
+    - field: query
+      regex: "(?i)(?:^|[=&])q=%3[fF]a\\[constructor\\]"

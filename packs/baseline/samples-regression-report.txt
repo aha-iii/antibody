@@ -1,0 +1,2 @@
+pack=packs/baseline level=medium total=975 ok=975 fail_pos=0 fail_neg=0 errors=0 pass_rate=100.00% clean_fast_ratio=51.04% (269/527)
+

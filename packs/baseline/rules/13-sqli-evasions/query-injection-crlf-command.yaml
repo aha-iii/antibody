@@ -1,4 +1,5 @@
 # 注入：query/uri 参数内 CRLF / 日志注入 / Redis·Mongo / LDAP 命令探测
+# WebDAV 方法白样本（q=MKCOL|REPORT|… HTTP/1.1 + Host:）不拦：头注入仅认常见走私方法前缀。
 id: query-injection-crlf-command
 name: CRLF log injection and command probes in query
 severity: high
@@ -15,8 +16,9 @@ when:
       contains: '%0d%0a[success]'
     - field: query
       regex: "(?i)^user=[^&]*(?:%0d%0a|%0a|[\\r\\n])"
+    # 头注入：要求 q= 以常见 HTTP 动词开头（排除 MKCOL/REPORT 等 WebDAV 白样本）
     - field: query
-      regex: "(?i)(?:^|[&?][^=&]*=)[^&]*(?:%0d%0a|%0a|%0d|[\\r\\n]).{0,60}(?:set-cookie|access-control-allow-origin|host)\\s*:"
+      regex: "(?i)(?:^|[&])q=(?:get|post|put|delete|patch|options|head|trace|connect|gpost)\\s[^&]*(?:%0d%0a|%0a|%0d|[\\r\\n]).{0,80}(?:set-cookie|access-control-allow-origin|host)\\s*:"
     - field: query
       regex: "(?i)(?:^|[&])(?:user|file|folder|key|de|data|type)=[^&]*(?:%0d%0a|%0a|%0d|[\\r\\n])"
     - field: query
@@ -28,6 +30,6 @@ when:
     - field: uri
       regex: "(?i)^//user\\[(?:contains|starts-with)\\("
     - field: query
-      regex: "(?i)(?:^|[&])q=[^&]*(?:<!doctype|<\\?xml|&a\\s+\\[|public\\s+\")"
+      regex: "(?i)(?:^|[&])q=[^&]*(?:<!doctype|<!entity|<\\?xml[^&]{0,80}(?:system|entity|<!))"
     - field: query
       regex: "(?i)(?:^|[&])q=count\\s*\\(\\s*/"

@@ -28,6 +28,28 @@ impl InspectPath {
     }
 }
 
+/// Nerve RIS 风险分区（只分流，不定罪）。
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum RisZone {
+    /// 高置信干净 → Arc Fast
+    #[default]
+    Clean,
+    /// 不确定 → Fast + escalate / Shadow
+    Gray,
+    /// 高风险或硬触发 → Cortex Deep
+    Hot,
+}
+
+impl RisZone {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Clean => "clean",
+            Self::Gray => "gray",
+            Self::Hot => "hot",
+        }
+    }
+}
+
 /// 热路径分阶段耗时（微秒，单次 inspect 累加）。
 #[derive(Debug, Clone, Copy, Default)]
 pub struct InspectStages {
@@ -51,9 +73,11 @@ impl InspectTimer {
         }
     }
 
-    pub fn finish(self, metrics: &EngineMetrics, budget_exhausted: bool, blocked: bool) {
+    /// 记录全局指标并返回本次耗时（微秒）。
+    pub fn finish(self, metrics: &EngineMetrics, budget_exhausted: bool, blocked: bool) -> u64 {
         let us = self.start.elapsed().as_micros().min(u128::from(u64::MAX)) as u64;
         metrics.record_inspect(self.path, us, budget_exhausted, blocked);
+        us
     }
 }
 
@@ -62,6 +86,9 @@ const LATENCY_BUCKET_US: [u64; 7] = [1_000, 5_000, 20_000, 50_000, 200_000, 1_20
 pub struct EngineMetrics {
     inspect_total: AtomicU64,
     inspect_fast: AtomicU64,
+    ris_zone_clean: AtomicU64,
+    ris_zone_gray: AtomicU64,
+    ris_zone_hot: AtomicU64,
     inspect_deep: AtomicU64,
     inspect_hit: AtomicU64,
     inspect_block: AtomicU64,
@@ -92,6 +119,9 @@ impl EngineMetrics {
         Self {
             inspect_total: AtomicU64::new(0),
             inspect_fast: AtomicU64::new(0),
+            ris_zone_clean: AtomicU64::new(0),
+            ris_zone_gray: AtomicU64::new(0),
+            ris_zone_hot: AtomicU64::new(0),
             inspect_deep: AtomicU64::new(0),
             inspect_hit: AtomicU64::new(0),
             inspect_block: AtomicU64::new(0),
@@ -178,6 +208,20 @@ impl EngineMetrics {
         }
     }
 
+    pub fn record_ris_zone(&self, zone: RisZone) {
+        match zone {
+            RisZone::Clean => {
+                self.ris_zone_clean.fetch_add(1, Ordering::Relaxed);
+            }
+            RisZone::Gray => {
+                self.ris_zone_gray.fetch_add(1, Ordering::Relaxed);
+            }
+            RisZone::Hot => {
+                self.ris_zone_hot.fetch_add(1, Ordering::Relaxed);
+            }
+        }
+    }
+
     pub fn record_stages(&self, s: &InspectStages) {
         self.stage_decode_us_sum
             .fetch_add(s.decode_us, Ordering::Relaxed);
@@ -249,6 +293,9 @@ impl EngineMetrics {
         MetricsSnapshot {
             inspect_total: total,
             inspect_fast: self.inspect_fast.load(Ordering::Relaxed),
+            ris_zone_clean: self.ris_zone_clean.load(Ordering::Relaxed),
+            ris_zone_gray: self.ris_zone_gray.load(Ordering::Relaxed),
+            ris_zone_hot: self.ris_zone_hot.load(Ordering::Relaxed),
             inspect_deep: self.inspect_deep.load(Ordering::Relaxed),
             inspect_hit: self.inspect_hit.load(Ordering::Relaxed),
             inspect_block: self.inspect_block.load(Ordering::Relaxed),
@@ -306,6 +353,9 @@ impl EngineMetrics {
              # TYPE nerve_native_inspect_total counter\n\
              nerve_native_inspect_total {}\n\
              nerve_native_inspect_fast_total {}\n\
+             nerve_native_ris_zone_clean_total {}\n\
+             nerve_native_ris_zone_gray_total {}\n\
+             nerve_native_ris_zone_hot_total {}\n\
              nerve_native_inspect_deep_total {}\n\
              nerve_native_inspect_hit_total {}\n\
              nerve_native_inspect_block_total {}\n\
@@ -331,6 +381,9 @@ impl EngineMetrics {
              nerve_native_fast_pool_escalate_total {}\n",
             s.inspect_total,
             s.inspect_fast,
+            s.ris_zone_clean,
+            s.ris_zone_gray,
+            s.ris_zone_hot,
             s.inspect_deep,
             s.inspect_hit,
             s.inspect_block,
@@ -396,6 +449,9 @@ fn avg_stage(sum: u64, total: u64) -> u64 {
 pub struct MetricsSnapshot {
     pub inspect_total: u64,
     pub inspect_fast: u64,
+    pub ris_zone_clean: u64,
+    pub ris_zone_gray: u64,
+    pub ris_zone_hot: u64,
     pub inspect_deep: u64,
     pub inspect_hit: u64,
     pub inspect_block: u64,

@@ -1,0 +1,41 @@
+- id: sample-rce-base64-pipe-matched-block
+  rule_id: rce-base64-pipe
+  name: RCE base64 decode pipe (pos)
+  category: 03-rce-cmdi
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - rce
+  - cmdi
+  - owasp
+  request:
+    method: GET
+    host: example.com
+    uri: "/p/base64\t-d|"
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rce-base64-pipe-gen-pass
+  rule_id: rce-base64-pipe
+  name: RCE base64 decode pipe (neg)
+  category: 03-rce-cmdi
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - cmdi
+  - owasp
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

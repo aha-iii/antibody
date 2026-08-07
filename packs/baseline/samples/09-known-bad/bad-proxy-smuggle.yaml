@@ -1,0 +1,38 @@
+- id: sample-bad-proxy-smuggle-matched-block
+  rule_id: bad-proxy-smuggle
+  name: HTTP request smuggling - CL:0 with TE:chunked conflict (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - known_bad
+  - cve-444
+  - http-smuggling
+  request:
+    method: GET
+    host: example.com
+    uri: /api/item
+    query: 1' and 1=1--
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-bad-proxy-smuggle-matched-pass
+  rule_id: bad-proxy-smuggle
+  name: normal POST (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  request:
+    method: POST
+    host: example.com
+    uri: /api/v1/items
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Type: application/json
+    body: '{}'

@@ -10,6 +10,22 @@ when:
   any:
     - field: query
       regex: "(?i)(?:^|[=&])(?:url|q)=https?://(?:attacker|evil|example)\\."
+    # q= 协议相对 / 多斜杠外链（WAFTester redirect-001..003）
+    - field: query
+      regex: "(?i)(?:^|[=&])q=/{2,}[a-z0-9._-]+"
+    - field: query
+      regex: "(?i)(?:^|[=&])q=\\\\+/[a-z0-9._-]+"
+    - field: query
+      regex: "(?i)(?:^|[=&])q=%5c/+[a-z0-9._-]+"
+    - field: uri
+      regex: "(?i)^/(?:%2f){2,}[a-z0-9._-]+"
+    - field: uri
+      regex: "(?i)^/(?:%252f){2,}[a-z0-9._-]+"
+    - field: uri
+      regex: "(?i)^//{2,}[a-z0-9._-]+"
+    # q= 内嵌 redirect_uri=https://attacker（OAuth 黑样本；仅恶意 host）
+    - field: query
+      regex: "(?i)(?:^|[=&])q=redirect_uri=https?://(?:attacker|evil)\\."
     - field: query
       regex: "(?i)(?:^|[&])(?:url|next|redirect)=/\\\\/"
     - field: query

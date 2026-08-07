@@ -9,3 +9,6 @@ Cargo.lock
 /dist/
 .env
 **/*.local.env
+
+# Local dataset checkouts / symlinks (fetch scripts; do not commit)
+/vendor/

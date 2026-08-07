@@ -9,14 +9,14 @@ transforms: [url_decode, lowercase, html_entity_decode]
 when:
   any:
     - field: uri
-      contains: 'chmod +x'
+      contains: 'chmod 777'
     - field: uri
-      contains: 'chmod 777'
-    - field: query
-      contains: 'chmod +x'
+      regex: '(?i)chmod\s*\+x'
     - field: query
       contains: 'chmod 777'
-    - field: body
-      contains: 'chmod +x'
+    - field: query
+      regex: '(?i)chmod\s*\+x'
     - field: body
       contains: 'chmod 777'
+    - field: body
+      regex: '(?i)chmod\s*\+x'

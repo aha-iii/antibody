@@ -1,0 +1,41 @@
+- id: sample-rce-f5-bash-util-gen-block
+  rule_id: rce-f5-bash-util
+  name: F5 BIG-IP tm util bash (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: critical
+  tags:
+  - rce
+  - known_bad
+  - blazehttp_gap
+  request:
+    method: GET
+    host: example.com
+    uri: /tm/util/bash
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
+- id: sample-rce-f5-bash-util-gen-pass
+  rule_id: rce-f5-bash-util
+  name: F5 BIG-IP tm util bash (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - known_bad
+  - blazehttp_gap
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

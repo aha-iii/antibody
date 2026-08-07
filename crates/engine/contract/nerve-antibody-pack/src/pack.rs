@@ -118,6 +118,12 @@ impl NativePack {
             return Err(PackError::Msg("pack has no rules".into()));
         }
 
+        // 虚拟补丁：仅 status=live 合入热路径（不影响签名哈希基，签名仍覆盖 rules/）。
+        let vp_live = crate::virtual_patch::load_vp_rules_with_status(&root, &["live"])?;
+        if !vp_live.is_empty() {
+            rules.extend(vp_live);
+        }
+
         let content_hash = hash_pack(&manifest_raw, &rule_blobs);
         verify_signature(&root, &content_hash, hmac_key.as_deref())?;
 

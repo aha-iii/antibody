@@ -1,5 +1,12 @@
 //! Fusion v2：分层定罪（L1 / L2 / L3 佐证），禁止裸模型硬拦。
 //!
+//! 治理口径（沙箱 · 正负检测 · 拦截信号量）见
+//! `docs/superpowers/specs/2026-08-05-antibody-governance-architecture-design.md`。
+//!
+//! - **正检测**：`rule_score` + `semantic_score` + `model_score`
+//! - **负检测**：`allow_score`（自体豁免）
+//! - **拦截信号量**：[`intercept`] / [`InterceptPermit`] —— 分数回答「多像攻击」，许可回答「允不允许拦」
+//!
 //! # 生产动作边界（必须清晰）
 //! - **pass / observe**：无攻击佐证（模型未贡献、无解码攻击片段）
 //! - **challenge**：有可解释可疑点但不够硬拦 → 深检，不硬拒
@@ -8,7 +15,7 @@
 //! - **block**：强 L1 / 可定罪语义 / 过阈融合 → 硬拦
 //!
 //! 决策优先级（从高到低）：
-//! 1. `observe_only` → observe
+//! 1. `observe_only` → observe（拦截许可=0，含沙箱路径）
 //! 2. 强 L1（block 规则）过阈 → block
 //! 3. 强 L2（`block_eligible` 语义）过阈 → block
 //! 4. 弱 L1 ∧ 模型加分 过阈 → block
@@ -70,6 +77,73 @@ pub struct FusionEvidence {
     pub min_independent_signals: u8,
 }
 
+impl FusionEvidence {
+    /// 正检测累加分（攻击规则 + 语义 + 模型），未扣 allow。
+    pub fn positive_score(&self) -> u32 {
+        self.rule_score
+            .saturating_add(self.semantic_score)
+            .saturating_add(self.model_score)
+    }
+
+    /// 负检测分（allow / 自体豁免）。
+    pub fn negative_score(&self) -> u32 {
+        self.allow_score
+    }
+
+    /// L1 净分：规则分 − allow。
+    pub fn net_l1_score(&self) -> u32 {
+        self.rule_score.saturating_sub(self.allow_score)
+    }
+}
+
+/// 拦截信号量许可：是否授予硬拦 / 挑战资格。
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum InterceptPermit {
+    /// 允许生产 block。
+    Block,
+    /// 允许 challenge，不允许硬拦。
+    Challenge,
+    /// 无拦截许可（observe / 沙箱 / 证据不足）。
+    None,
+}
+
+impl InterceptPermit {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Block => "block",
+            Self::Challenge => "challenge",
+            Self::None => "none",
+        }
+    }
+}
+
+/// 拦截信号量判决（分数 + 许可 + 最终动作）。
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct InterceptDecision {
+    pub total_score: u32,
+    pub positive_score: u32,
+    pub negative_score: u32,
+    pub permit: InterceptPermit,
+    pub action: FusionAction,
+}
+
+/// 拦截信号量入口：包装 [`fuse`]，显式给出正负分与许可。
+pub fn intercept(e: &FusionEvidence) -> InterceptDecision {
+    let (total_score, action) = fuse(e);
+    let permit = match action {
+        FusionAction::Block => InterceptPermit::Block,
+        FusionAction::Challenge => InterceptPermit::Challenge,
+        FusionAction::Observe => InterceptPermit::None,
+    };
+    InterceptDecision {
+        total_score,
+        positive_score: e.positive_score(),
+        negative_score: e.negative_score(),
+        permit,
+        action,
+    }
+}
+
 fn independent_signal_classs(e: &FusionEvidence) -> u8 {
     let mut n = 0u8;
     if e.any_rule_hit {
@@ -106,8 +180,9 @@ pub fn fuse(e: &FusionEvidence) -> (u32, FusionAction) {
     // 散文否决：压掉语义/模型软分，但绝不抹掉强 L1（否则真攻击被 veto 误放）
     if e.semantic_veto {
         let l1 = e.rule_score.saturating_sub(e.allow_score);
-        if e.wants_block && l1 >= e.threshold {
-            total = l1;
+        if e.wants_block {
+            // hard L1 已由上游裁定（solo block / 净分达阈）；veto 不得抹掉
+            total = e.rule_score.max(l1).max(e.threshold);
         } else {
             total = total.min(e.threshold.saturating_sub(1)).min(l1);
         }
@@ -120,9 +195,9 @@ pub fn fuse(e: &FusionEvidence) -> (u32, FusionAction) {
     let over = total >= e.threshold;
     let level = e.level.rank();
 
-    // 1) 强 L1
-    if e.wants_block && over {
-        return (total, FusionAction::Block);
+    // 1) 强 L1：上游已裁定 hard block 时，高分 allow 不得把动作降成 observe
+    if e.wants_block {
+        return (total.max(e.threshold), FusionAction::Block);
     }
 
     // 2) 强 L2：可定罪语义（veto 已压分）
@@ -249,6 +324,44 @@ mod tests {
         let (t, a) = fuse(&e);
         assert_eq!(t, 40);
         assert_eq!(a, FusionAction::Block);
+        let d = intercept(&e);
+        assert_eq!(d.permit, InterceptPermit::Block);
+        assert_eq!(d.positive_score, 40);
+        assert_eq!(d.negative_score, 0);
+    }
+
+    #[test]
+    fn strong_l1_blocks_despite_high_allow_score() {
+        let mut e = base();
+        e.wants_block = true;
+        e.any_rule_hit = true;
+        e.rule_score = 40;
+        e.allow_score = 200;
+        let (t, a) = fuse(&e);
+        assert_eq!(a, FusionAction::Block);
+        assert!(t >= e.threshold);
+    }
+
+    #[test]
+    fn observe_only_clears_intercept_permit() {
+        let mut e = base();
+        e.wants_block = true;
+        e.rule_score = 40;
+        e.observe_only = true;
+        let d = intercept(&e);
+        assert_eq!(d.action, FusionAction::Observe);
+        assert_eq!(d.permit, InterceptPermit::None);
+        assert_eq!(d.total_score, 40);
+    }
+
+    #[test]
+    fn allow_negative_detector_reduces_net_l1() {
+        let mut e = base();
+        e.rule_score = 40;
+        e.allow_score = 25;
+        assert_eq!(e.positive_score(), 40);
+        assert_eq!(e.negative_score(), 25);
+        assert_eq!(e.net_l1_score(), 15);
     }
 
     #[test]

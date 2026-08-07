@@ -1,0 +1,21 @@
+- id: sample-redis-lua-eval-gen-pass
+  rule_id: redis-lua-eval
+  name: Redis EVAL / Lua injection and n8n code RCE (neg)
+  category: 13-sqli-evasions
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - nosql
+  - rce
+  - self
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/search
+    query: q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''
