@@ -16,11 +16,11 @@ bash scripts/run-blazehttp-bench-report.sh
 
 ```bash
 bash scripts/build-blazehttp-regression-from-report.sh
-# 或指定报告：
-bash scripts/build-blazehttp-regression-from-report.sh data/bench/blazehttp-report-20260801-113739.json
+# 或指定本地报告（本目录产物默认不入库，需先跑全量 bench）：
+bash scripts/build-blazehttp-regression-from-report.sh data/bench/blazehttp-report-<stamp>.json
 ```
 
-产出：
+产出（均在 `data/bench/`，gitignore，勿提交）：
 
 - `blazehttp-regression-latest.json` — 仅 FP/FN 用例 id + 元数据
 - `blazehttp-analysis-<stamp>.md` — 问题分类与修复建议

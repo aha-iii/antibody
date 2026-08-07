@@ -12,3 +12,11 @@ Cargo.lock
 
 # Local dataset checkouts / symlinks (fetch scripts; do not commit)
 /vendor/
+# Local / generated runtime & bench artifacts (do not commit)
+/data/expert-overlay.json
+/data/bench/**
+!/data/bench/README.md
+/packs/baseline/samples-regression-console.log
+/packs/baseline/samples-regression-report.txt
+/packs/baseline/WAFTTEST-FAIL-TRIAGE.md
+*.log
