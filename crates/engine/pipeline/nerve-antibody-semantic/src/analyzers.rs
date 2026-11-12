@@ -84,7 +84,10 @@ fn re_xss_script() -> &'static Regex {
 fn re_xss_script_prose() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
-        Regex::new(r"(?i)(?:binary\s*<script|script\s+is\s+incorrect|<script\s+ability|<script\s+is\b)").unwrap()
+        Regex::new(
+            r"(?i)(?:binary\s*<script|script\s+is\s+incorrect|<script\s+ability|<script\s+is\b)",
+        )
+        .unwrap()
     })
 }
 
@@ -182,7 +185,8 @@ fn re_ldap() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
         // 收紧：避免普通 `)(` / 短 token 误报
-        Regex::new(r"(?i)(?:\(\|(?:\(|!)|\)\(|objectclass=\*|userpassword\s*=\*|uid=\*\)\()").unwrap()
+        Regex::new(r"(?i)(?:\(\|(?:\(|!)|\)\(|objectclass=\*|userpassword\s*=\*|uid=\*\)\()")
+            .unwrap()
     })
 }
 
@@ -241,16 +245,13 @@ fn re_search_like() -> &'static Regex {
 fn re_callback_onload() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
-        Regex::new(r"(?i)(?:recaptcha|turnstile|captcha).*onload=|/api\.js\?[^&]*onload=")
-            .unwrap()
+        Regex::new(r"(?i)(?:recaptcha|turnstile|captcha).*onload=|/api\.js\?[^&]*onload=").unwrap()
     })
 }
 
 fn re_case_when_prose() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
-    RE.get_or_init(|| {
-        Regex::new(r"(?i)\bin the case when\b|\bcase when you\b").unwrap()
-    })
+    RE.get_or_init(|| Regex::new(r"(?i)\bin the case when\b|\bcase when you\b").unwrap())
 }
 
 fn re_hex_blob() -> &'static Regex {
@@ -831,7 +832,8 @@ fn analyze_jwt(blob: &str, out: &mut Vec<SemanticSignal>) {
                 }
             }
             // claim 注入：路径 / SQLi / XSS / SSTI
-            if lower.contains("../") && (lower.contains("etc/passwd") || lower.contains("etc\\\\passwd"))
+            if lower.contains("../")
+                && (lower.contains("etc/passwd") || lower.contains("etc\\\\passwd"))
             {
                 out.push(SemanticSignal::attack(
                     SemanticKind::Path,
@@ -851,7 +853,9 @@ fn analyze_jwt(blob: &str, out: &mut Vec<SemanticSignal>) {
                 ));
             }
             if (lower.contains("'--") || lower.contains("' or ") || lower.contains("union select"))
-                && (lower.contains("\"sub\"") || lower.contains("\"name\"") || lower.contains("kid"))
+                && (lower.contains("\"sub\"")
+                    || lower.contains("\"name\"")
+                    || lower.contains("kid"))
             {
                 out.push(SemanticSignal::attack(
                     SemanticKind::Sqli,
@@ -909,8 +913,10 @@ fn re_open_redirect() -> &'static Regex {
 fn re_nosql_op() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
     RE.get_or_init(|| {
-        Regex::new(r#"(?i)["']?\$(?:ne|gt|gte|lt|lte|regex|where|nin)\b|\|\|\s*['"][a-z0-9]['"]\s*=="#)
-            .unwrap()
+        Regex::new(
+            r#"(?i)["']?\$(?:ne|gt|gte|lt|lte|regex|where|nin)\b|\|\|\s*['"][a-z0-9]['"]\s*=="#,
+        )
+        .unwrap()
     })
 }
 

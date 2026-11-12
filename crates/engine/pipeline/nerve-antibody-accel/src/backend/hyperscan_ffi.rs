@@ -28,11 +28,9 @@ impl HsFfiBackend {
     ///   `Err("hyperscan-ffi: native unavailable; RegexSet fallback failed: …")`
     pub fn try_build(patterns: &[String]) -> Result<Self, String> {
         if patterns.is_empty() {
-            return Err(
-                "hyperscan-ffi: cannot build: empty pattern list \
+            return Err("hyperscan-ffi: cannot build: empty pattern list \
                  (install libhyperscan-dev + feature accel-hyperscan-ffi; see docs/HYPERSCAN.md)"
-                    .into(),
-            );
+                .into());
         }
         // 预留：原生 Database::compile 成功后可扩展结构并让 is_native() 返回 true。
         let inner = HsBackend::try_build(patterns).map_err(|e| {

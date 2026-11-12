@@ -93,11 +93,7 @@ fn rule_matches(
     body_len: usize,
     signals: &RequestSignals,
 ) -> bool {
-    if !rule
-        .require_features
-        .iter()
-        .all(|f| signals.feature(f))
-    {
+    if !rule.require_features.iter().all(|f| signals.feature(f)) {
         return false;
     }
     if !rule
@@ -107,20 +103,12 @@ fn rule_matches(
     {
         return false;
     }
-    if rule
-        .exclude_features
-        .iter()
-        .any(|f| signals.feature(f))
-    {
+    if rule.exclude_features.iter().any(|f| signals.feature(f)) {
         return false;
     }
     if !rule.methods.is_empty() {
         let m = req_method.to_ascii_uppercase();
-        if !rule
-            .methods
-            .iter()
-            .any(|x| x.eq_ignore_ascii_case(&m))
-        {
+        if !rule.methods.iter().any(|x| x.eq_ignore_ascii_case(&m)) {
             return false;
         }
     }
@@ -129,10 +117,7 @@ fn rule_matches(
             return false;
         }
     }
-    if rule.get_empty_body
-        && req_method.eq_ignore_ascii_case("GET")
-        && body_len > 0
-    {
+    if rule.get_empty_body && req_method.eq_ignore_ascii_case("GET") && body_len > 0 {
         return false;
     }
     true

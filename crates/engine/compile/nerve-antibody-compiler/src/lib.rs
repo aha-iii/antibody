@@ -20,18 +20,23 @@ mod error;
 mod ir;
 mod program;
 
-pub use clusters::{active_fields, build_field_clusters, cluster_candidate_seed, FieldClusters, RuleFieldSet};
+pub use clusters::{
+    active_fields, build_field_clusters, cluster_candidate_seed, FieldClusters, RuleFieldSet,
+};
 
 pub use compile::{compile, CompileOptions};
 pub use error::CompileError;
-pub use ir::{CondExec, CondIr, PredExec, PredIr, RuleExec, RuleIr, RuleMeta, WhenExec, WhenIr, WhenNodeExec, WhenNodeIr};
+pub use ir::{
+    CondExec, CondIr, PredExec, PredIr, RuleExec, RuleIr, RuleMeta, WhenExec, WhenIr, WhenNodeExec,
+    WhenNodeIr,
+};
 pub use program::{Program, ProgramArtifact};
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use nerve_antibody_dsl::{
-        Condition, NativeLevel, NativeRule, MatchField, MatchOpFlat, RuleAction,
+        Condition, MatchField, MatchOpFlat, NativeLevel, NativeRule, RuleAction,
     };
 
     fn legacy(id: &str, level: NativeLevel, needle: &str) -> NativeRule {
@@ -191,7 +196,13 @@ mod tests {
         for q in pass {
             assert!(!re.is_match(q), "false positive on {q}");
         }
-        let block = ["$or", "pass[$or]=1", r#"{"$or":[]}"#, "$or=1", "x=1&$or&y=2"];
+        let block = [
+            "$or",
+            "pass[$or]=1",
+            r#"{"$or":[]}"#,
+            "$or=1",
+            "x=1&$or&y=2",
+        ];
         for q in block {
             assert!(re.is_match(q), "false negative on {q}");
         }
@@ -222,7 +233,13 @@ mod tests {
         for q in pass {
             assert!(!re.is_match(q), "false positive on {q}");
         }
-        let block = ["sel'ect", "sel+ect", "sel'+ect", "SEL'+'ECT", "1+sel''ect+from"];
+        let block = [
+            "sel'ect",
+            "sel+ect",
+            "sel'+ect",
+            "SEL'+'ECT",
+            "1+sel''ect+from",
+        ];
         for q in block {
             assert!(re.is_match(q), "false negative on {q}");
         }
@@ -263,8 +280,9 @@ mod tests {
             "proto-smuggle-xss-sqli must not block on chat/socket path alone"
         );
 
-        let combo = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../../../packs/baseline/rules/09-known-bad/websocket-path-smuggle-combo.yaml");
+        let combo = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join(
+            "../../../../packs/baseline/rules/09-known-bad/websocket-path-smuggle-combo.yaml",
+        );
         let combo_text = std::fs::read_to_string(&combo)
             .unwrap_or_else(|e| panic!("missing websocket-path-smuggle-combo.yaml: {e}"));
         assert!(
@@ -272,8 +290,7 @@ mod tests {
             "combo rule id missing"
         );
         assert!(
-            combo_text.contains("header_name: upgrade")
-                && combo_text.contains("transfer-encoding"),
+            combo_text.contains("header_name: upgrade") && combo_text.contains("transfer-encoding"),
             "combo rule must require upgrade/TE markers, not path alone"
         );
 

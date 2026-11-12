@@ -28,7 +28,8 @@ pub fn path_template(uri: &str) -> String {
             }
             if seg.bytes().all(|b| b.is_ascii_digit()) {
                 "{d}".into()
-            } else if seg.len() == 36 && seg.as_bytes().iter().filter(|&&b| b == b'-').count() == 4 {
+            } else if seg.len() == 36 && seg.as_bytes().iter().filter(|&&b| b == b'-').count() == 4
+            {
                 "{uuid}".into()
             } else {
                 seg.to_string()
@@ -142,8 +143,7 @@ pub fn classify_structure(req: &NativeRequest) -> StructureClass {
         return StructureClass::Anomaly;
     }
     // 超大非 JSON body 且无 query：中性（交给 L3）
-    if !req.body.is_empty() && ct_class(req) != "json" && keys.is_empty() && req.body.len() > 4096
-    {
+    if !req.body.is_empty() && ct_class(req) != "json" && keys.is_empty() && req.body.len() > 4096 {
         return StructureClass::Neutral;
     }
     let method = req.method.to_ascii_uppercase();
@@ -194,6 +194,9 @@ mod tests {
 
     #[test]
     fn path_template_digits() {
-        assert_eq!(path_template("/api/users/123/items"), "/api/users/{d}/items");
+        assert_eq!(
+            path_template("/api/users/123/items"),
+            "/api/users/{d}/items"
+        );
     }
 }

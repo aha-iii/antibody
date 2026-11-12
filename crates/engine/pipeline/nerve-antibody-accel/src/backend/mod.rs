@@ -46,19 +46,15 @@ trait PatternBackend: Send + Sync + std::fmt::Debug {
 
 impl MultiMatcher {
     pub fn build(patterns: &[String]) -> Self {
-        let patterns: Vec<String> = patterns
-            .iter()
-            .filter(|p| !p.is_empty())
-            .cloned()
-            .collect();
+        let patterns: Vec<String> = patterns.iter().filter(|p| !p.is_empty()).cloned().collect();
 
         #[cfg(all(feature = "accel-hyperscan", feature = "accel-hyperscan-ffi"))]
-        let inner: Arc<dyn PatternBackend> =
-            match hyperscan_ffi::HsFfiBackend::try_build(&patterns) {
-                // 取 inner：FFI 模块不直接 impl PatternBackend（规避 rustc 1.93 ICE）
-                Ok(hs) => Arc::new(hs.inner),
-                Err(_) => fallback_backend(&patterns),
-            };
+        let inner: Arc<dyn PatternBackend> = match hyperscan_ffi::HsFfiBackend::try_build(&patterns)
+        {
+            // 取 inner：FFI 模块不直接 impl PatternBackend（规避 rustc 1.93 ICE）
+            Ok(hs) => Arc::new(hs.inner),
+            Err(_) => fallback_backend(&patterns),
+        };
 
         #[cfg(all(feature = "accel-hyperscan", not(feature = "accel-hyperscan-ffi")))]
         let inner: Arc<dyn PatternBackend> = match hyperscan::HsBackend::try_build(&patterns) {

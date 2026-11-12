@@ -55,12 +55,7 @@ pub fn expand_base64_candidates(hay: &str, max: usize, max_chars: usize) -> Vec<
 }
 
 fn try_decode_b64(tok: &str) -> Option<Vec<u8>> {
-    let engines = [
-        &STANDARD,
-        &STANDARD_NO_PAD,
-        &URL_SAFE,
-        &URL_SAFE_NO_PAD,
-    ];
+    let engines = [&STANDARD, &STANDARD_NO_PAD, &URL_SAFE, &URL_SAFE_NO_PAD];
     for eng in engines {
         if let Ok(v) = eng.decode(tok) {
             if !v.is_empty() {
@@ -99,6 +94,9 @@ mod tests {
     fn ignores_openapi_sign_in_query() {
         let q = "sign=05A6E5389357923F02BCC67FAA5036131ECCDC122950646D3A1178FD1F7E5976&timestamp=1785289955109";
         let v = expand_base64_candidates(q, 8, 1024);
-        assert!(v.is_empty(), "hex sign and timestamp must not decode as b64 payloads");
+        assert!(
+            v.is_empty(),
+            "hex sign and timestamp must not decode as b64 payloads"
+        );
     }
 }

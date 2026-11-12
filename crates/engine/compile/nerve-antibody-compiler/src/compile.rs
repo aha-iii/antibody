@@ -6,7 +6,7 @@ use crate::error::CompileError;
 use crate::ir::{CondExec, PredExec, RuleExec, RuleMeta, WhenExec, WhenNodeExec};
 use crate::program::Program;
 use nerve_antibody_accel::{self, MultiMatcher};
-use nerve_antibody_dsl::{NativeLevel, NativeRule, MatchOpFlat, Transform, WhenExpr, WhenNode};
+use nerve_antibody_dsl::{MatchOpFlat, NativeLevel, NativeRule, Transform, WhenExpr, WhenNode};
 use regex::Regex;
 
 /// 编译选项：写入 Program 元数据与拦截阈值。
@@ -187,12 +187,8 @@ fn compile_when_node(
     dict: &mut Vec<String>,
 ) -> Result<WhenNodeExec, CompileError> {
     Ok(match node {
-        WhenNode::Cond(c) => WhenNodeExec::Cond(compile_cond(
-            rule_id, c, rule_transforms, dict,
-        )?),
-        WhenNode::Group(w) => {
-            WhenNodeExec::Group(compile_when(rule_id, w, rule_transforms, dict)?)
-        }
+        WhenNode::Cond(c) => WhenNodeExec::Cond(compile_cond(rule_id, c, rule_transforms, dict)?),
+        WhenNode::Group(w) => WhenNodeExec::Group(compile_when(rule_id, w, rule_transforms, dict)?),
     })
 }
 

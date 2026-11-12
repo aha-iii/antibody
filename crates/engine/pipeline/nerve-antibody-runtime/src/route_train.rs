@@ -87,8 +87,7 @@ pub fn train_logistic_with_stumps(
                 let mut right_n = 0.0f32;
                 for s in samples {
                     let x = feature_vector(&s.features);
-                    let pred = score_linear_only(&s.features, &base)
-                        + stump_contrib(&stumps, &x);
+                    let pred = score_linear_only(&s.features, &base) + stump_contrib(&stumps, &x);
                     let y = if s.deep { 1.0 } else { 0.0 };
                     let resid = y - pred;
                     if x[feat] < thr {

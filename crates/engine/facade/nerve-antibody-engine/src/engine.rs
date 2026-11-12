@@ -5,6 +5,7 @@
 
 use crate::error::NativeError;
 use crate::health::NativeHealth;
+use crate::inspect_cache::{global_verdict_cache, RisL1CacheProbe};
 use crate::pool;
 use crate::shadow::{ShadowConfig, ShadowRuntime};
 use nerve_antibody_adaptive::{self as adaptive, load_model};
@@ -17,7 +18,6 @@ use nerve_antibody_runtime::{
     EvalPolicy, Evaluator, InspectExec, NativeHit, NativeRequest, PlanCacheHints, RouteGateConfig,
     RouteGateWeights,
 };
-use crate::inspect_cache::{global_verdict_cache, RisL1CacheProbe};
 use nerve_antibody_semantic::{self as semantic, install_semantic_pack};
 use nerve_antibody_signals::{load_signal_pack, SignalPack};
 use parking_lot::RwLock;
@@ -355,12 +355,7 @@ impl Engine {
                     hit.as_ref(),
                 );
             }
-            shadow_runtime().submit_for_ris_zone(
-                plan.ris_zone,
-                ev,
-                req.clone(),
-                hit.as_ref(),
-            );
+            shadow_runtime().submit_for_ris_zone(plan.ris_zone, ev, req.clone(), hit.as_ref());
         }
         Ok(hit)
     }
@@ -557,7 +552,9 @@ fn build_inner(pack_root: PathBuf, cache_dir: Option<PathBuf>) -> Result<EngineI
         lazy_decode: policy.pipeline.lazy_decode,
         signal_pack: signal_pack.clone(),
         deep_view_cache: None,
-        ris_l1: Some(std::sync::Arc::new(RisL1CacheProbe::new(global_verdict_cache()))),
+        ris_l1: Some(std::sync::Arc::new(RisL1CacheProbe::new(
+            global_verdict_cache(),
+        ))),
     };
     apply_runtime_env_overrides(&mut pipeline, &mut eval_policy);
     eval_policy.pipeline = pipeline.clone();
@@ -687,11 +684,14 @@ fn compile_level(
             level.as_str(),
             ProgramArtifact::FORMAT
         ));
-        let cached = path.is_file().then(|| ProgramArtifact::load(&path)).and_then(|r| {
-            r.ok().filter(|a| {
-                a.pack_version == pack.version() && ProgramArtifact::format_compatible(a.format)
-            })
-        });
+        let cached = path
+            .is_file()
+            .then(|| ProgramArtifact::load(&path))
+            .and_then(|r| {
+                r.ok().filter(|a| {
+                    a.pack_version == pack.version() && ProgramArtifact::format_compatible(a.format)
+                })
+            });
         match cached.and_then(|a| nerve_antibody_compiler::Program::from_artifact(a).ok()) {
             Some(mut p) => {
                 // 缓存可能带旧阈值；以当前策略覆盖

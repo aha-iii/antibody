@@ -132,12 +132,8 @@ impl Format2Artifact {
 
 fn migrate_when_f2(w: Format2WhenIr) -> WhenIr {
     match w {
-        Format2WhenIr::All(conds) => {
-            WhenIr::All(conds.into_iter().map(WhenNodeIr::Cond).collect())
-        }
-        Format2WhenIr::Any(conds) => {
-            WhenIr::Any(conds.into_iter().map(WhenNodeIr::Cond).collect())
-        }
+        Format2WhenIr::All(conds) => WhenIr::All(conds.into_iter().map(WhenNodeIr::Cond).collect()),
+        Format2WhenIr::Any(conds) => WhenIr::Any(conds.into_iter().map(WhenNodeIr::Cond).collect()),
     }
 }
 
@@ -198,12 +194,13 @@ impl Program {
 
     /// 从 Artifact 重建 Program（重新编译 Regex、重建 MultiMatcher）。
     pub fn from_artifact(a: ProgramArtifact) -> Result<Self, CompileError> {
-        let level: NativeLevel = a.level.parse().map_err(|e: nerve_antibody_dsl::DslError| {
-            CompileError::Rule {
-                id: "level".into(),
-                msg: e.to_string(),
-            }
-        })?;
+        let level: NativeLevel =
+            a.level
+                .parse()
+                .map_err(|e: nerve_antibody_dsl::DslError| CompileError::Rule {
+                    id: "level".into(),
+                    msg: e.to_string(),
+                })?;
         let mut rules = Vec::new();
         for r in a.rules {
             rules.push(RuleExec {
@@ -341,9 +338,7 @@ fn cond_to_ir(c: &CondExec) -> CondIr {
                 threshold: *threshold,
             },
             PredExec::Feature(name) => PredIr::Feature { name: name.clone() },
-            PredExec::Fingerprint(name) => PredIr::Fingerprint {
-                name: name.clone(),
-            },
+            PredExec::Fingerprint(name) => PredIr::Fingerprint { name: name.clone() },
         },
     }
 }
@@ -384,12 +379,12 @@ fn when_node_from_ir(n: WhenNodeIr) -> Result<WhenNodeExec, CompileError> {
 fn cond_from_ir(c: CondIr) -> Result<CondExec, CompileError> {
     let pred = match c.pred {
         PredIr::Contains { needle, dict_index } => PredExec::Contains { needle, dict_index },
-        PredIr::Regex { pattern } => PredExec::Regex(Regex::new(&pattern).map_err(|e| {
-            CompileError::Regex {
+        PredIr::Regex { pattern } => {
+            PredExec::Regex(Regex::new(&pattern).map_err(|e| CompileError::Regex {
                 id: "artifact".into(),
                 msg: e.to_string(),
-            }
-        })?),
+            })?)
+        }
         PredIr::LengthGt { threshold } => PredExec::LengthGt(threshold),
         PredIr::LengthLt { threshold } => PredExec::LengthLt(threshold),
         PredIr::Feature { name } => PredExec::Feature(name),

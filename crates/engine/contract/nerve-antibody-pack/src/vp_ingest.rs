@@ -41,10 +41,7 @@ pub struct IntelBundle {
 }
 
 /// 将情报写成 pack 下 `virtual-patches/CVE-…/`，强制 `status=sandbox`。
-pub fn materialize_intel_item(
-    pack_root: &Path,
-    item: &IntelItem,
-) -> Result<PathBuf, PackError> {
+pub fn materialize_intel_item(pack_root: &Path, item: &IntelItem) -> Result<PathBuf, PackError> {
     let cve = item.cve_id.trim();
     if cve.is_empty() {
         return Err(PackError::Msg("cve_id required".into()));
@@ -138,7 +135,8 @@ request:
 "#
     );
     fs::write(
-        dest.join("samples/positive").join(format!("sample-{cve}-block.yaml")),
+        dest.join("samples/positive")
+            .join(format!("sample-{cve}-block.yaml")),
         pos,
     )?;
 
@@ -157,7 +155,8 @@ request:
 "#
     );
     fs::write(
-        dest.join("samples/negative").join(format!("sample-{cve}-pass.yaml")),
+        dest.join("samples/negative")
+            .join(format!("sample-{cve}-pass.yaml")),
         neg,
     )?;
 
@@ -171,10 +170,7 @@ pub fn load_intel_bundle(path: &Path) -> Result<IntelBundle, PackError> {
 
 /// 从 artifact 目录导入：优先 `intel.json`，否则拷贝 `virtual-patches/`。
 /// 所有写入条目强制 sandbox（从不自动 live）。
-pub fn apply_feed_artifact(
-    pack_root: &Path,
-    artifact: &Path,
-) -> Result<Vec<String>, PackError> {
+pub fn apply_feed_artifact(pack_root: &Path, artifact: &Path) -> Result<Vec<String>, PackError> {
     let mut imported = Vec::new();
     let intel_path = if artifact.is_file()
         && artifact
@@ -301,10 +297,9 @@ mod tests {
         let tmp = tempfile::tempdir().unwrap();
         let imported = apply_feed_artifact(tmp.path(), &demo).unwrap();
         assert!(imported.iter().any(|c| c.contains("AUTO01")));
-        let meta = crate::virtual_patch::read_meta(
-            &tmp.path().join("virtual-patches").join(&imported[0]),
-        )
-        .unwrap();
+        let meta =
+            crate::virtual_patch::read_meta(&tmp.path().join("virtual-patches").join(&imported[0]))
+                .unwrap();
         assert_eq!(meta.status, "sandbox");
     }
 }

@@ -45,7 +45,9 @@ impl StructuralParser {
         }
 
         let ct = content_type.unwrap_or("").to_ascii_lowercase();
-        if ct.contains("application/json") || body.trim_start().starts_with('{') || body.trim_start().starts_with('[')
+        if ct.contains("application/json")
+            || body.trim_start().starts_with('{')
+            || body.trim_start().starts_with('[')
         {
             push_json(&mut out, body, opts.max_params);
         } else if ct.contains("multipart/") {

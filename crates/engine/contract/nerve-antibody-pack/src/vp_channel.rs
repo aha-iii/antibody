@@ -70,7 +70,10 @@ pub fn load_channel_local_state(packs_root: &Path) -> ChannelLocalState {
         .unwrap_or_default()
 }
 
-pub fn save_channel_local_state(packs_root: &Path, state: &ChannelLocalState) -> Result<(), PackError> {
+pub fn save_channel_local_state(
+    packs_root: &Path,
+    state: &ChannelLocalState,
+) -> Result<(), PackError> {
     let p = channel_state_path(packs_root);
     let raw = serde_json::to_string_pretty(state)
         .map_err(|e| PackError::Msg(format!("serialize channel state: {e}")))?;

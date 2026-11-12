@@ -1,9 +1,7 @@
 //! Inspect 负向/Bloom/结构记忆缓存与 Nerve RIS L1 探针。
 
 use nerve_antibody_cache::{cache_key_hash, NegativeCacheKey, VerdictCache};
-use nerve_antibody_runtime::{
-    structure_fingerprint, NativeRequest, PlanCacheHints, RisL1Probe,
-};
+use nerve_antibody_runtime::{structure_fingerprint, NativeRequest, PlanCacheHints, RisL1Probe};
 use nerve_antibody_signals::RequestSignals;
 use parking_lot::Mutex;
 use std::collections::{HashMap, HashSet};
@@ -65,10 +63,7 @@ impl StructureMemory {
     }
 
     fn route_key(req: &NativeRequest) -> (String, String) {
-        (
-            req.method.to_ascii_uppercase(),
-            path_template(&req.uri),
-        )
+        (req.method.to_ascii_uppercase(), path_template(&req.uri))
     }
 
     fn known(&self, req: &NativeRequest) -> bool {

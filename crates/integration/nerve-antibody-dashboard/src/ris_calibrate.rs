@@ -127,10 +127,12 @@ pub async fn api_ris_calibrate(
 
     let mut wrote = serde_json::Value::Null;
     if body.write_weights {
-        let pack = body
-            .pack
-            .clone()
-            .unwrap_or_else(|| st.current_pack.try_read().map(|g| g.clone()).unwrap_or_else(|_| "baseline".into()));
+        let pack = body.pack.clone().unwrap_or_else(|| {
+            st.current_pack
+                .try_read()
+                .map(|g| g.clone())
+                .unwrap_or_else(|_| "baseline".into())
+        });
         let root = st.packs_root.join(&pack).join("config");
         let _ = std::fs::create_dir_all(&root);
         let wpath = root.join("route_weights.json");
@@ -163,18 +165,16 @@ pub async fn api_ris_curve_get(
         return Ok(Json(serde_json::json!({ "ok": true, "report": r })));
     }
     // 尝试读 pack 落盘
-    let pack = st
-        .current_pack
-        .read()
-        .await
-        .clone();
+    let pack = st.current_pack.read().await.clone();
     let path = st
         .packs_root
         .join(&pack)
         .join("config/route_threshold_curve.json");
     if let Ok(text) = std::fs::read_to_string(&path) {
         if let Ok(v) = serde_json::from_str::<serde_json::Value>(&text) {
-            return Ok(Json(serde_json::json!({ "ok": true, "report": v, "path": path.display().to_string() })));
+            return Ok(Json(
+                serde_json::json!({ "ok": true, "report": v, "path": path.display().to_string() }),
+            ));
         }
     }
     Err((
@@ -185,5 +185,7 @@ pub async fn api_ris_curve_get(
 
 #[allow(dead_code)]
 pub fn curve_cache_path(packs_root: &PathBuf, pack: &str) -> PathBuf {
-    packs_root.join(pack).join("config/route_threshold_curve.json")
+    packs_root
+        .join(pack)
+        .join("config/route_threshold_curve.json")
 }

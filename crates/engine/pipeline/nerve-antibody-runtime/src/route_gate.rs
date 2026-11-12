@@ -262,7 +262,11 @@ pub fn route_sample(req: &NativeRequest, max_total: usize) -> String {
 
 /// 优先用 route_preview 浅解码 haystack；为空则回退 raw sample。
 /// 同时拼接一段 raw，保留 `%27` 等编码标记供特征/硬规则使用。
-pub fn route_sample_for_gate(req: &NativeRequest, views: &RequestViews, max_total: usize) -> String {
+pub fn route_sample_for_gate(
+    req: &NativeRequest,
+    views: &RequestViews,
+    max_total: usize,
+) -> String {
     let hay = views.haystack_for_prefilter(max_total.saturating_mul(3) / 4);
     if hay.trim().is_empty() {
         return route_sample(req, max_total);
@@ -420,7 +424,11 @@ pub fn feature_vector(f: &RouteFeatures) -> [f32; ROUTE_FEATURE_DIM] {
         f.operator_hits as f32 / 8.0,
         f.quote_ratio.min(0.25) * 4.0,
         f.special_ratio.min(0.04) * 3.0,
-        if f.url_encoded_ratio > 0.005 { 1.0 } else { 0.0 },
+        if f.url_encoded_ratio > 0.005 {
+            1.0
+        } else {
+            0.0
+        },
         (f.entropy_bits / 8.0).min(1.0),
         f.large_body_soft,
         f32::from(f.proto_anomaly),
@@ -718,7 +726,11 @@ mod tests {
         let cfg = RouteGateConfig::default();
         let views = RequestViews::default();
         let d = decide_deep(&cfg, &req, &views, false, false, false, false);
-        assert!(!d.route_deep, "large prose body should not hard-deep: {}", d.score);
+        assert!(
+            !d.route_deep,
+            "large prose body should not hard-deep: {}",
+            d.score
+        );
     }
 
     #[test]
@@ -749,7 +761,10 @@ mod tests {
         let views = RequestViews::default();
         let d = decide_deep(&cfg, &req, &views, false, false, false, false);
         assert!(!d.route_deep, "JSON API score={}", d.score);
-        assert!(d.api_positive_lane, "SMS openapi should use api positive lane");
+        assert!(
+            d.api_positive_lane,
+            "SMS openapi should use api positive lane"
+        );
     }
 
     #[test]

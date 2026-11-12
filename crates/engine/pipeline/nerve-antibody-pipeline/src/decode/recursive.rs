@@ -60,7 +60,12 @@ pub fn expand_one_layer(views: &mut RequestViews, path: &str, raw: &str, opts: &
 }
 
 /// 对路径文本做 raw + 有界递归归一化 / base64 展开。
-pub fn expand_text_recursive(views: &mut RequestViews, path: &str, raw: &str, opts: &DecodeOptions) {
+pub fn expand_text_recursive(
+    views: &mut RequestViews,
+    path: &str,
+    raw: &str,
+    opts: &DecodeOptions,
+) {
     if raw.is_empty() {
         return;
     }

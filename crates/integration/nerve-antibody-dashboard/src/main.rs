@@ -46,8 +46,7 @@ pub(crate) struct AppState {
 async fn main() {
     tracing_subscriber::fmt()
         .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "info".into()),
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()),
         )
         .init();
 
@@ -90,8 +89,8 @@ async fn main() {
             eprintln!("invalid BENCH_LISTEN");
             std::process::exit(1);
         });
-    let bench_target = std::env::var("BENCH_TARGET")
-        .unwrap_or_else(|_| format!("http://{}", bench_listen));
+    let bench_target =
+        std::env::var("BENCH_TARGET").unwrap_or_else(|_| format!("http://{}", bench_listen));
     let bench_level = Arc::new(RwLock::new(NativeLevel::Medium));
     let bench_status = Arc::new(RwLock::new(BenchStatus {
         target: bench_target.clone(),
@@ -391,7 +390,12 @@ async fn api_samples(
         return Err(ApiError::bad("invalid pack name"));
     }
     let mut samples = load_pack_samples(&st.packs_root, &pack).map_err(ApiError::bad)?;
-    if let Some(cat) = q.category.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
+    if let Some(cat) = q
+        .category
+        .as_deref()
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+    {
         samples.retain(|s| s.category == cat);
     }
     if let Some(needle) = q.q.as_deref().map(str::trim).filter(|s| !s.is_empty()) {
@@ -517,7 +521,15 @@ async fn api_inspect(
 
 async fn api_bench_status(State(st): State<Arc<AppState>>) -> Json<BenchStatus> {
     let dataset = st.bench.status.read().await.dataset.clone();
-    refresh_ready(&st.bench.status, if dataset.is_empty() { "samples" } else { &dataset }).await;
+    refresh_ready(
+        &st.bench.status,
+        if dataset.is_empty() {
+            "samples"
+        } else {
+            &dataset
+        },
+    )
+    .await;
     let mut status = st.bench.status.read().await.clone();
     let pack = st.current_pack.read().await.clone();
     if status.phase != bench::BenchPhase::Running {
@@ -535,22 +547,15 @@ async fn api_bench_start(
     Json(body): Json<BenchStartBody>,
 ) -> Result<Json<BenchStatus>, ApiError> {
     let pack = st.current_pack.read().await.clone();
-    start_job(
-        st.bench.clone(),
-        st.packs_root.clone(),
-        pack,
-        body,
-    )
-    .await
-    .map_err(ApiError::bad)?;
+    start_job(st.bench.clone(), st.packs_root.clone(), pack, body)
+        .await
+        .map_err(ApiError::bad)?;
     let status = st.bench.status.read().await.clone();
     Ok(Json(status))
 }
 
 async fn api_bench_stop(State(st): State<Arc<AppState>>) -> Result<Json<BenchStatus>, ApiError> {
-    stop_job(st.bench.clone())
-        .await
-        .map_err(ApiError::bad)?;
+    stop_job(st.bench.clone()).await.map_err(ApiError::bad)?;
     let status = st.bench.status.read().await.clone();
     Ok(Json(status))
 }
@@ -593,7 +598,10 @@ async fn api_bench_report(State(st): State<Arc<AppState>>) -> Json<serde_json::V
 
 async fn api_metrics_prometheus(State(st): State<Arc<AppState>>) -> impl IntoResponse {
     (
-        [(axum::http::header::CONTENT_TYPE, "text/plain; version=0.0.4")],
+        [(
+            axum::http::header::CONTENT_TYPE,
+            "text/plain; version=0.0.4",
+        )],
         st.engine.metrics_prometheus(),
     )
 }
@@ -643,12 +651,8 @@ async fn api_shadow_feedback(
     State(st): State<Arc<AppState>>,
     Json(body): Json<ShadowFeedbackBody>,
 ) -> Json<serde_json::Value> {
-    st.engine.shadow_add_feedback_with_rule(
-        body.uri,
-        body.label,
-        body.note,
-        body.rule_id,
-    );
+    st.engine
+        .shadow_add_feedback_with_rule(body.uri, body.label, body.note, body.rule_id);
     Json(serde_json::json!({ "ok": true }))
 }
 
@@ -672,7 +676,10 @@ async fn api_shadow_feedback_list(State(st): State<Arc<AppState>>) -> Json<serde
 
 async fn api_shadow_export_rules(State(st): State<Arc<AppState>>) -> impl IntoResponse {
     (
-        [(axum::http::header::CONTENT_TYPE, "text/yaml; charsett=utf-8")],
+        [(
+            axum::http::header::CONTENT_TYPE,
+            "text/yaml; charsett=utf-8",
+        )],
         st.engine.shadow_export_rules(),
     )
 }
@@ -713,10 +720,6 @@ impl ApiError {
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         warn!(error = %self.msg, status = %self.status, "api error");
-        (
-            self.status,
-            Json(serde_json::json!({ "error": self.msg })),
-        )
-            .into_response()
+        (self.status, Json(serde_json::json!({ "error": self.msg }))).into_response()
     }
 }

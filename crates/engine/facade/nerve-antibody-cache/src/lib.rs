@@ -40,7 +40,10 @@ pub struct VerdictCache {
 impl VerdictCache {
     pub fn new(policy: CachePolicy) -> Self {
         Self {
-            bloom: Arc::new(Mutex::new(ClearBloom::new(policy.bloom_bits, policy.bloom_k))),
+            bloom: Arc::new(Mutex::new(ClearBloom::new(
+                policy.bloom_bits,
+                policy.bloom_k,
+            ))),
             negative: Arc::new(Mutex::new(NegativeCache::new(
                 policy.negative_capacity,
                 Duration::from_secs(policy.negative_ttl_secs),

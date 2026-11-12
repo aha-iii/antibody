@@ -26,8 +26,8 @@ fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
     let (input, output, epochs, lr) = parse_cli(&args);
 
-    let text = fs::read_to_string(&input)
-        .unwrap_or_else(|e| panic!("read {}: {e}", input.display()));
+    let text =
+        fs::read_to_string(&input).unwrap_or_else(|e| panic!("read {}: {e}", input.display()));
     let report: ReportFile =
         serde_json::from_str(&text).unwrap_or_else(|e| panic!("parse JSON: {e}"));
 
@@ -71,24 +71,16 @@ fn parse_cli(args: &[String]) -> (PathBuf, Option<PathBuf>, usize, f32) {
         Some(_) => (default_input(), args),
     };
     let output = rest.first().map(|s| PathBuf::from(s));
-    let epochs: usize = rest
-        .get(1)
-        .and_then(|s| s.parse().ok())
-        .unwrap_or(400);
-    let lr: f32 = rest
-        .get(2)
-        .and_then(|s| s.parse().ok())
-        .unwrap_or(0.08);
+    let epochs: usize = rest.get(1).and_then(|s| s.parse().ok()).unwrap_or(400);
+    let lr: f32 = rest.get(2).and_then(|s| s.parse().ok()).unwrap_or(0.08);
     (input, output, epochs, lr)
 }
 
 fn is_bench_input_path(path: &PathBuf) -> bool {
-    path.file_name()
-        .and_then(|e| e.to_str())
-        .is_some_and(|e| {
-            (e.contains("blazehttp") || e.contains("regression") || e.ends_with("-report.json"))
-                && !e.contains("weights")
-        })
+    path.file_name().and_then(|e| e.to_str()).is_some_and(|e| {
+        (e.contains("blazehttp") || e.contains("regression") || e.ends_with("-report.json"))
+            && !e.contains("weights")
+    })
 }
 
 fn default_input() -> PathBuf {

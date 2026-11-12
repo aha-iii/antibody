@@ -121,11 +121,12 @@ pub fn load_gotestwaf_cases(root: &Path, limit: u64) -> Result<Vec<PreparedCase>
     files.sort();
     let mut out = Vec::new();
     for path in files {
-        let text = std::fs::read_to_string(&path).map_err(|e| format!("{}: {e}", path.display()))?;
+        let text =
+            std::fs::read_to_string(&path).map_err(|e| format!("{}: {e}", path.display()))?;
         // GoTestWAF payload 常含 `\'` 等非 YAML 转义（如 xss-scripting.yml），需先规范化。
         let text = sanitize_gotestwaf_yaml(&text);
-        let doc: GoTestFile = serde_yaml::from_str(&text)
-            .map_err(|e| format!("parse {}: {e}", path.display()))?;
+        let doc: GoTestFile =
+            serde_yaml::from_str(&text).map_err(|e| format!("parse {}: {e}", path.display()))?;
         let rel = path
             .strip_prefix(root)
             .unwrap_or(&path)
@@ -154,13 +155,15 @@ pub fn load_gotestwaf_cases(root: &Path, limit: u64) -> Result<Vec<PreparedCase>
                     out.push(PreparedCase {
                         id: id.clone(),
                         suite: "gotestwaf".into(),
-                        kind: if is_fp { "white".into() } else { "black".into() },
+                        kind: if is_fp {
+                            "white".into()
+                        } else {
+                            "black".into()
+                        },
                         name: format!(
                             "{} · {}",
                             if doc.r#type.is_empty() {
-                                path.file_stem()
-                                    .and_then(|s| s.to_str())
-                                    .unwrap_or("case")
+                                path.file_stem().and_then(|s| s.to_str()).unwrap_or("case")
                             } else {
                                 doc.r#type.as_str()
                             },
@@ -292,8 +295,25 @@ fn sanitize_yaml_dq_inner(inner: &str) -> String {
 fn is_yaml_double_quote_escape(c: char) -> bool {
     matches!(
         c,
-        '0' | 'a' | 'b' | 't' | 'n' | 'v' | 'f' | 'r' | 'e' | ' '
-            | '"' | '/' | '\\' | 'N' | '_' | 'L' | 'P' | 'x' | 'u' | 'U'
+        '0' | 'a'
+            | 'b'
+            | 't'
+            | 'n'
+            | 'v'
+            | 'f'
+            | 'r'
+            | 'e'
+            | ' '
+            | '"'
+            | '/'
+            | '\\'
+            | 'N'
+            | '_'
+            | 'L'
+            | 'P'
+            | 'x'
+            | 'u'
+            | 'U'
     )
 }
 
@@ -320,10 +340,7 @@ fn placeholder_to_request(ph: &serde_yaml::Value, encoded: &str) -> (String, Nat
                 Some((k, v)) => (k.clone(), Some(v.clone())),
                 None => (serde_yaml::Value::String("URLParam".into()), None),
             };
-            (
-                k.as_str().unwrap_or("URLParam").to_string(),
-                v,
-            )
+            (k.as_str().unwrap_or("URLParam").to_string(), v)
         }
         _ => ("URLParam".into(), None),
     };
@@ -860,10 +877,7 @@ fn waftester_http2_pseudo_to_request(payload: &str) -> NativeRequest {
         .get(":method")
         .cloned()
         .unwrap_or_else(|| "GET".into());
-    let uri = headers
-        .get(":path")
-        .cloned()
-        .unwrap_or_else(|| "/".into());
+    let uri = headers.get(":path").cloned().unwrap_or_else(|| "/".into());
     NativeRequest {
         method,
         host: headers
@@ -947,8 +961,7 @@ fn looks_like_uri_path_payload(p: &str) -> bool {
         b.is_ascii_alphanumeric()
             || matches!(
                 b,
-                b'/'
-                    | b'-'
+                b'/' | b'-'
                     | b'_'
                     | b'.'
                     | b'~'
@@ -1298,7 +1311,9 @@ type: XSS
             req.query
         );
         assert!(
-            !req.headers.keys().any(|k| k.eq_ignore_ascii_case("authorization")),
+            !req.headers
+                .keys()
+                .any(|k| k.eq_ignore_ascii_case("authorization")),
             "authorization should be omitted to avoid regex budget exhaustion"
         );
     }

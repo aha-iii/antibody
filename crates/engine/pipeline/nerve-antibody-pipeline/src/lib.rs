@@ -16,14 +16,15 @@ mod text_plausibility;
 mod views;
 
 pub use budget::{BudgetExhausted, InspectBudget};
-pub use decode::{expand_base64_candidates, expand_one_layer, DecodeMode, DecodeOptions, DecodePipeline};
+pub use decode::{
+    expand_base64_candidates, expand_one_layer, DecodeMode, DecodeOptions, DecodePipeline,
+};
 pub use sidechannel::expand_sidechannel_headers;
 pub use structural::{StructuralOptions, StructuralParser};
 pub use text_plausibility::{
     is_plausible_b64_candidate, is_plausible_decoded_text, is_plausible_inspect_text,
 };
 pub use views::{DecodeChain, ParamUnit, RequestViews, ViewKind, ViewSlice};
-
 
 use nerve_antibody_dsl::NativeLevel;
 
@@ -484,8 +485,7 @@ mod tests {
             &cfg,
         );
         assert!(views.slices.iter().any(|s| {
-            s.path.starts_with("header.Referer")
-                && s.text.to_ascii_lowercase().contains("<script")
+            s.path.starts_with("header.Referer") && s.text.to_ascii_lowercase().contains("<script")
         }));
     }
 

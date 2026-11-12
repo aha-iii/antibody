@@ -23,14 +23,14 @@ mod shadow;
 pub use engine::Engine;
 pub use error::NativeError;
 pub use health::NativeHealth;
-pub use shadow::{
-    sandbox_sample_hit, shadow_source, ShadowConfig, ShadowFeedback, ShadowRecord, ShadowRuntime,
-};
 pub use nerve_antibody_dsl::NativeLevel;
 pub use nerve_antibody_metrics::{self, EngineMetrics, MetricsSnapshot};
 pub use nerve_antibody_runtime::{
-    intercept, InterceptDecision, InterceptPermit, InspectExec, MatchedRule, NativeHit,
+    intercept, InspectExec, InterceptDecision, InterceptPermit, MatchedRule, NativeHit,
     NativeRequest,
+};
+pub use shadow::{
+    sandbox_sample_hit, shadow_source, ShadowConfig, ShadowFeedback, ShadowRecord, ShadowRuntime,
 };
 
 #[cfg(test)]
@@ -57,7 +57,10 @@ mod tests {
         assert!(h.semantic_signature_count >= 6, "semantic pack signatures");
         assert!(h.signals_enabled);
         assert!(h.signals_feature_count >= 4, "declared signal features");
-        assert!(h.signals_fingerprint_count >= 2, "declared signal fingerprints");
+        assert!(
+            h.signals_fingerprint_count >= 2,
+            "declared signal fingerprints"
+        );
         assert!(h.rules_low < h.rules_medium);
         assert!(h.rules_medium <= h.rules_high);
         let hit = eng
@@ -125,7 +128,10 @@ mod tests {
         for level in [NativeLevel::Low, NativeLevel::Medium, NativeLevel::High] {
             let hit = eng.inspect(&fp, level).unwrap();
             if let Some(h) = hit {
-                assert_ne!(h.action, "block", "adobe cat= should not block at {level:?}");
+                assert_ne!(
+                    h.action, "block",
+                    "adobe cat= should not block at {level:?}"
+                );
             }
         }
         let atk = NativeRequest {
@@ -134,7 +140,10 @@ mod tests {
             query: "id=1'+and+''%3D'".into(),
             ..Default::default()
         };
-        let mid = eng.inspect(&atk, NativeLevel::Medium).unwrap().expect("sqli");
+        let mid = eng
+            .inspect(&atk, NativeLevel::Medium)
+            .unwrap()
+            .expect("sqli");
         assert_eq!(mid.action, "block");
         assert_eq!(mid.block_threshold, 36);
         let high = eng.inspect(&atk, NativeLevel::High).unwrap().expect("sqli");
@@ -288,9 +297,7 @@ mod tests {
         let mut headers = HashMap::new();
         headers.insert(
             "Authorization".into(),
-            format!(
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.{huge_payload}.sig"
-            ),
+            format!("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.{huge_payload}.sig"),
         );
         let hit = eng
             .inspect(
@@ -378,7 +385,10 @@ mod tests {
             ("/favicon.ico", ""),
             ("/health", ""),
             ("/api/search", "q=hello-world&page=1"),
-            ("/api/search", "q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000"),
+            (
+                "/api/search",
+                "q=hello-world&page=1&id=550e8400-e29b-41d4-a716-446655440000",
+            ),
             ("/api/", "tags=a&name=b&nodes=1"),
         ] {
             let req = NativeRequest {
@@ -457,7 +467,10 @@ mod tests {
 
         std::env::set_var("NERVE_NATIVE_DEV_PACK", "1");
         let src = baseline_pack();
-        if !src.join("virtual-patches/CVE-2024-DEMO01/meta.toml").is_file() {
+        if !src
+            .join("virtual-patches/CVE-2024-DEMO01/meta.toml")
+            .is_file()
+        {
             return;
         }
         let tmp = tempfile::tempdir().expect("tmp");
@@ -486,7 +499,11 @@ mod tests {
             .inspect(&req, NativeLevel::Medium)
             .expect("inspect")
             .expect("expected hit");
-        assert_eq!(hit.action, "block", "rule={} evidence={}", hit.rule_id, hit.evidence);
+        assert_eq!(
+            hit.action, "block",
+            "rule={} evidence={}",
+            hit.rule_id, hit.evidence
+        );
         assert!(
             hit.rule_id.starts_with("vp-"),
             "expected vp- rule, got {}",

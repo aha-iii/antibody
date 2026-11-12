@@ -18,7 +18,13 @@ pub struct SqliToken {
     pub text: String,
 }
 
-fn push_slice(out: &mut Vec<SqliToken>, kind: SqliTokenKind, input: &str, start: usize, end: usize) {
+fn push_slice(
+    out: &mut Vec<SqliToken>,
+    kind: SqliTokenKind,
+    input: &str,
+    start: usize,
+    end: usize,
+) {
     let start = floor_boundary(input, start);
     let end = floor_boundary(input, end.max(start));
     if start < end && end <= input.len() {
@@ -219,7 +225,9 @@ mod tests {
 
     #[test]
     fn union_prose_not_shape() {
-        assert!(!sqli_union_select_shape("the labor union select their leaders"));
+        assert!(!sqli_union_select_shape(
+            "the labor union select their leaders"
+        ));
     }
 
     #[test]

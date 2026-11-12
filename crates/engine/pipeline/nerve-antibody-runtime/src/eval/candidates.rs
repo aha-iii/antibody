@@ -14,12 +14,7 @@ pub(super) fn rule_ready_at_layer(
     if allow_set.contains(&ri) {
         return true;
     }
-    program
-        .rule_min_decode_layers
-        .get(ri)
-        .copied()
-        .unwrap_or(1)
-        <= layer
+    program.rule_min_decode_layers.get(ri).copied().unwrap_or(1) <= layer
 }
 
 pub(super) fn collect_contains_groups(
@@ -53,7 +48,10 @@ pub(super) fn is_cheap_regex_rule(w: &WhenExec) -> bool {
     walk_when_codes(w, &mut |c| {
         if matches!(c.pred, PredExec::Regex(_)) {
             has_regex = true;
-            if !matches!(c.field, MatchField::Uri | MatchField::Method | MatchField::Host) {
+            if !matches!(
+                c.field,
+                MatchField::Uri | MatchField::Method | MatchField::Host
+            ) {
                 cheap = false;
             }
         }

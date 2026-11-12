@@ -232,9 +232,8 @@ mod tests {
         let mut out = Vec::new();
         push_xml(&mut out, body, 64);
         assert!(
-            out.iter()
-                .any(|p| p.path == "body.xml.tag:data"
-                    && p.value.to_ascii_lowercase().contains("<script")),
+            out.iter().any(|p| p.path == "body.xml.tag:data"
+                && p.value.to_ascii_lowercase().contains("<script")),
             "expected body.xml.tag:data with script-like CDATA, got {out:?}"
         );
         assert!(

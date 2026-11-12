@@ -8,9 +8,7 @@ mod scorer;
 
 pub use heuristic::HeuristicModel;
 pub use linear::{LinearModel, LinearWeights};
-pub use scorer::{
-    install_model, score, AdaptiveInput, AdaptiveOutput, FeatureSnapshot,
-};
+pub use scorer::{install_model, score, AdaptiveInput, AdaptiveOutput, FeatureSnapshot};
 
 use nerve_antibody_dsl::NativeLevel;
 use std::path::Path;
@@ -28,8 +26,7 @@ pub fn load_model(path: Option<&Path>) -> Arc<dyn RiskModel> {
         if p.is_file() {
             #[cfg(feature = "onnx")]
             {
-                if p
-                    .extension()
+                if p.extension()
                     .and_then(|e| e.to_str())
                     .is_some_and(|e| e.eq_ignore_ascii_case("onnx"))
                 {
@@ -74,7 +71,9 @@ pub fn score_cap(level: NativeLevel) -> u32 {
 
 /// 解析有效档权重（配置优先）。
 pub fn effective_level_weight(input: &AdaptiveInput<'_>) -> f32 {
-    input.level_weight.unwrap_or_else(|| level_weight(input.level))
+    input
+        .level_weight
+        .unwrap_or_else(|| level_weight(input.level))
 }
 
 /// 解析有效分贡献上限（配置优先）。
@@ -92,9 +91,6 @@ pub fn effective_score_cap(input: &AdaptiveInput<'_>) -> u32 {
 /// - `special_ratio`（JSON/JS 引号会淹没生产）
 /// - 单纯 `decode_depth`（URL/HTML 正规化也会 ≥2）
 pub fn is_suspicious(f: &FeatureSnapshot) -> bool {
-    let kw = f.sql_keyword_hits
-        + f.xss_keyword_hits
-        + f.path_keyword_hits
-        + f.rce_keyword_hits;
+    let kw = f.sql_keyword_hits + f.xss_keyword_hits + f.path_keyword_hits + f.rce_keyword_hits;
     kw > 0 || f.rule_hit_count > 0 || f.semantic_score > 0
 }

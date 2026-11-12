@@ -9,8 +9,10 @@ mod sqli_lexer;
 mod types;
 
 pub use analyzers::analyze;
-pub use sqli_lexer::{lex_sqli, sqli_tautology_shape, sqli_union_select_shape, SqliToken, SqliTokenKind};
 pub use pack::{install as install_semantic_pack, loaded as loaded_semantic_pack, SemanticPack};
+pub use sqli_lexer::{
+    lex_sqli, sqli_tautology_shape, sqli_union_select_shape, SqliToken, SqliTokenKind,
+};
 pub use types::{SemanticKind, SemanticReport, SemanticSignal};
 
 use nerve_antibody_dsl::NativeLevel;

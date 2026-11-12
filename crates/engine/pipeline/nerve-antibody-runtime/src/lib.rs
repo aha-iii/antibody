@@ -19,11 +19,12 @@ pub use eval::{EvalPolicy, Evaluator, InspectExec, InspectPlan, PlanCacheHints, 
 pub use fusion::{
     fuse, intercept, FusionAction, FusionEvidence, InterceptDecision, InterceptPermit,
 };
+pub use nerve_antibody_pipeline::{InspectBudget, PipelineConfig, RequestViews};
 pub use ris_calibrate::{scan_threshold_curve, RisCalibrateReport, ThresholdCurvePoint};
 pub use route_gate::{
-    decide_deep, extract_features, feature_names, feature_vector, route_sample, route_sample_for_gate,
-    score_features, RouteDecision, RouteFeatures, RouteGateConfig, RouteGateWeights, RouteStump,
-    ROUTE_FEATURE_DIM,
+    decide_deep, extract_features, feature_names, feature_vector, route_sample,
+    route_sample_for_gate, score_features, RouteDecision, RouteFeatures, RouteGateConfig,
+    RouteGateWeights, RouteStump, ROUTE_FEATURE_DIM,
 };
 pub use route_train::{
     parse_request_summary, train_logistic, train_logistic_with_stumps, RouteTrainSample,
@@ -32,8 +33,7 @@ pub use structure_anchor::{
     classify_structure, extract_param_keys, path_template as structure_path_template,
     structure_fingerprint, StructureClass,
 };
-pub use types::{NativeHit, NativeRequest, MatchedRule, ModelHitDto, SemanticSignalDto};
-pub use nerve_antibody_pipeline::{InspectBudget, PipelineConfig, RequestViews};
+pub use types::{MatchedRule, ModelHitDto, NativeHit, NativeRequest, SemanticSignalDto};
 
 pub use nerve_antibody_compiler::{compile, CompileError, CompileOptions, ProgramArtifact};
 
@@ -42,7 +42,7 @@ mod tests {
     use super::*;
     use nerve_antibody_compiler::CompileOptions;
     use nerve_antibody_dsl::{
-        Condition, NativeLevel, NativeRule, MatchField, MatchOpFlat, RuleAction, WhenExpr, WhenNode,
+        Condition, MatchField, MatchOpFlat, NativeLevel, NativeRule, RuleAction, WhenExpr, WhenNode,
     };
 
     #[test]

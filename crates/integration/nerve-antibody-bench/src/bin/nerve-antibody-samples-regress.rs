@@ -61,8 +61,7 @@ fn collect_yaml(dir: &Path, out: &mut Vec<PathBuf>) {
             collect_yaml(&p, out);
             continue;
         }
-        if p
-            .extension()
+        if p.extension()
             .and_then(|x| x.to_str())
             .map(|x| x == "yaml" || x == "yml")
             .unwrap_or(false)
@@ -101,7 +100,11 @@ fn main() {
         "pack={} level={} filter={}",
         pack.display(),
         level.as_str(),
-        if filter.is_empty() { "*" } else { filter.as_str() }
+        if filter.is_empty() {
+            "*"
+        } else {
+            filter.as_str()
+        }
     );
     let eng = Engine::load_pack(&pack).unwrap_or_else(|e| {
         eprintln!("load pack failed: {e}");

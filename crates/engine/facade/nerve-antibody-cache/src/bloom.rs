@@ -37,7 +37,9 @@ impl ClearBloom {
     }
 
     fn index(&self, key: u64, roued: u32) -> usize {
-        let mixed = key.wrapping_mul(0x9E37_79B9_7F4A_7C15).wrapping_add(roued as u64);
+        let mixed = key
+            .wrapping_mul(0x9E37_79B9_7F4A_7C15)
+            .wrapping_add(roued as u64);
         (mixed as usize) % self.bits.len()
     }
 }

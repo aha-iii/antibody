@@ -55,18 +55,16 @@ impl ShadowPool {
             let rx = rx.clone();
             thread::Builder::new()
                 .name(format!("native-shadow-{i}"))
-                .spawn(move || {
-                    loop {
-                        let job = {
-                            let guard = rx.lock().expect("shadow rx");
-                            guard.recv()
-                        };
-                        let Ok(job) = job else { break };
-                        std::env::set_var("NERVE_NATIVE_INSPECT_MODE", "deep");
-                        let hit = job.evaluator.inspect(&job.req);
-                        std::env::remove_var("NERVE_NATIVE_INSPECT_MODE");
-                        (job.on_done)(hit);
-                    }
+                .spawn(move || loop {
+                    let job = {
+                        let guard = rx.lock().expect("shadow rx");
+                        guard.recv()
+                    };
+                    let Ok(job) = job else { break };
+                    std::env::set_var("NERVE_NATIVE_INSPECT_MODE", "deep");
+                    let hit = job.evaluator.inspect(&job.req);
+                    std::env::remove_var("NERVE_NATIVE_INSPECT_MODE");
+                    (job.on_done)(hit);
                 })
                 .expect("spawn shadow worker");
         }

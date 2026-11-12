@@ -169,16 +169,14 @@ fn spawn_pool(name: &str, workers: usize, queue: usize) -> SyncSender<Job> {
         let tname = format!("{name}-{i}");
         thread::Builder::new()
             .name(tname)
-            .spawn(move || {
-                loop {
-                    let job = {
-                        let guard = rx.lock().expect("pool rx");
-                        guard.recv()
-                    };
-                    let Ok(job) = job else { break };
-                    let hit = job.evaluator.inspect_plan(&job.req, job.plan);
-                    let _ = job.resp_tx.send(hit);
-                }
+            .spawn(move || loop {
+                let job = {
+                    let guard = rx.lock().expect("pool rx");
+                    guard.recv()
+                };
+                let Ok(job) = job else { break };
+                let hit = job.evaluator.inspect_plan(&job.req, job.plan);
+                let _ = job.resp_tx.send(hit);
             })
             .expect("spawn inspect worker");
     }

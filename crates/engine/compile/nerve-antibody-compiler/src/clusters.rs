@@ -72,7 +72,12 @@ fn walk_when_nodes(w: &WhenExec, f: &mut dyn FnMut(&crate::ir::CondExec)) {
     }
 }
 
-fn assign_rule(ri: usize, w: &WhenExec, fields: &HashSet<MatchField>, clusters: &mut FieldClusters) {
+fn assign_rule(
+    ri: usize,
+    w: &WhenExec,
+    fields: &HashSet<MatchField>,
+    clusters: &mut FieldClusters,
+) {
     match w {
         WhenExec::All(_) if fields.len() > 1 => {
             push_unique(&mut clusters.cross_field, ri);

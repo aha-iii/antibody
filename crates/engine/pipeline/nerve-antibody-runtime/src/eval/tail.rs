@@ -49,11 +49,7 @@ fn should_skip_tail_rule(
     wants_block: bool,
     matched_empty: bool,
 ) -> bool {
-    i >= aho_seed
-        && static_asset
-        && !cache_deception_probe
-        && !wants_block
-        && matched_empty
+    i >= aho_seed && static_asset && !cache_deception_probe && !wants_block && matched_empty
 }
 
 pub(super) fn eval_tail_rules(
@@ -88,20 +84,20 @@ pub(super) fn eval_tail_rules(
             break;
         }
         match ev.eval_one_rule(ri, req, views, signals, cache, budget) {
-            Ok(Some(m)) => apply_rule_match(
-                &m,
-                matched,
-                rule_score,
-                allow_score,
-                wants_block,
-            ),
+            Ok(Some(m)) => apply_rule_match(&m, matched, rule_score, allow_score, wants_block),
             Ok(None) => {}
             Err(reason) => {
                 *budget_reason = Some(reason);
                 break;
             }
         }
-        if should_stop_rules(*wants_block, *rule_score, *allow_score, threshold, inspect_path) {
+        if should_stop_rules(
+            *wants_block,
+            *rule_score,
+            *allow_score,
+            threshold,
+            inspect_path,
+        ) {
             break;
         }
     }
@@ -140,14 +136,7 @@ pub(super) fn try_parallel_tail_eval(
         .filter_map(|(off, &ri)| {
             let mut local_cache = FieldCache::new(max_field_chars);
             let mut local_budget = budget.fork_for_parallel();
-            match ev.eval_one_rule(
-                ri,
-                req,
-                views,
-                signals,
-                &mut local_cache,
-                &mut local_budget,
-            ) {
+            match ev.eval_one_rule(ri, req, views, signals, &mut local_cache, &mut local_budget) {
                 Ok(Some(m)) => Some((aho_seed + off, m, local_budget)),
                 _ => None,
             }
@@ -178,7 +167,13 @@ pub(super) fn try_parallel_tail_eval(
             break;
         }
         apply_rule_match(&m, matched, rule_score, allow_score, wants_block);
-        if should_stop_rules(*wants_block, *rule_score, *allow_score, threshold, inspect_path) {
+        if should_stop_rules(
+            *wants_block,
+            *rule_score,
+            *allow_score,
+            threshold,
+            inspect_path,
+        ) {
             break;
         }
     }

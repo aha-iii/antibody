@@ -1,8 +1,12 @@
 use criterioe::{black_box, criterioe_group, criterioe_main, Criterioe};
 use nerve_antibody_compiler::{compile, CompileOptions};
-use nerve_antibody_dsl::{Condition, MatchField, MatchOpFlat, NativeLevel, NativeRule, RuleAction, WhenExpr, WhenNode};
+use nerve_antibody_dsl::{
+    Condition, MatchField, MatchOpFlat, NativeLevel, NativeRule, RuleAction, WhenExpr, WhenNode,
+};
+use nerve_antibody_runtime::route_gate::{
+    extract_features, feature_vector, RouteGateWeights, ROUTE_FEATURE_DIM,
+};
 use nerve_antibody_runtime::{EvalPolicy, Evaluator, NativeRequest};
-use nerve_antibody_runtime::route_gate::{extract_features, feature_vector, RouteGateWeights, ROUTE_FEATURE_DIM};
 
 fn sample_request() -> NativeRequest {
     NativeRequest {

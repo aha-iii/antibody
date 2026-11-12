@@ -68,10 +68,18 @@ pub enum LengthTarget {
 #[derive(Debug, Clone, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum SignalKind {
-    HeaderPresent { header: String },
-    PathPrefix { prefix: String },
-    BodyContains { value: String },
-    QueryParamPresent { param: String },
+    HeaderPresent {
+        header: String,
+    },
+    PathPrefix {
+        prefix: String,
+    },
+    BodyContains {
+        value: String,
+    },
+    QueryParamPresent {
+        param: String,
+    },
     LengthGt {
         target: LengthTarget,
         #[serde(default)]
@@ -102,9 +110,9 @@ impl SignalKind {
                 target: LengthTarget::Header,
                 header,
                 ..
-            } if header.as_ref().map(|h| h.trim().is_empty()).unwrap_or(true) => {
-                Err(format!("signal {name}: length_gt target=header needs header"))
-            }
+            } if header.as_ref().map(|h| h.trim().is_empty()).unwrap_or(true) => Err(format!(
+                "signal {name}: length_gt target=header needs header"
+            )),
             _ => Ok(()),
         }
     }

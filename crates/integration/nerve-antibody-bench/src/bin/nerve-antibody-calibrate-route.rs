@@ -183,10 +183,7 @@ fn main() -> ExitCode {
             }
             "--epochs" => {
                 i += 1;
-                epochs = args
-                    .get(i)
-                    .and_then(|s| s.parse().ok())
-                    .unwrap_or(epochs);
+                epochs = args.get(i).and_then(|s| s.parse().ok()).unwrap_or(epochs);
             }
             "--lr" => {
                 i += 1;
@@ -194,10 +191,7 @@ fn main() -> ExitCode {
             }
             "--max-miss" => {
                 i += 1;
-                max_miss = args
-                    .get(i)
-                    .and_then(|s| s.parse().ok())
-                    .unwrap_or(max_miss);
+                max_miss = args.get(i).and_then(|s| s.parse().ok()).unwrap_or(max_miss);
             }
             "--model" => {
                 i += 1;

@@ -47,10 +47,7 @@ impl NativePack {
         if path.is_dir() {
             if dev_plain_pack_allowed() {
                 let pack = Self::load(path)?;
-                return Ok(PackLoadResult {
-                    pack,
-                    guard: None,
-                });
+                return Ok(PackLoadResult { pack, guard: None });
             }
             return Err(PackError::Msg(
                 "plain pack directory disabled; use .sealed file or set NERVE_NATIVE_DEV_PACK=1 for development"
@@ -94,7 +91,9 @@ impl NativePack {
         if !crate::version_satisfies(crate::ENGINE_VERSION, &manifest.min_engine) {
             return Err(PackError::Msg(format!(
                 "pack `{}` requires min_engine >= {}, current engine is {}",
-                manifest.id, manifest.min_engine, crate::ENGINE_VERSION
+                manifest.id,
+                manifest.min_engine,
+                crate::ENGINE_VERSION
             )));
         }
 

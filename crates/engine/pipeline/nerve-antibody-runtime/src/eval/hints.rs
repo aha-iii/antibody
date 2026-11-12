@@ -1,8 +1,8 @@
 use super::policy::InspectMode;
 use crate::types::{MatchedRule, NativeRequest};
 use nerve_antibody_adaptive::FeatureSnapshot;
-use nerve_antibody_dsl::{apply_transforms_into, Transform};
 use nerve_antibody_dsl::NativeLevel;
+use nerve_antibody_dsl::{apply_transforms_into, Transform};
 use nerve_antibody_metrics::{InspectPath, RisZone};
 use nerve_antibody_pipeline::{is_plausible_inspect_text, RequestViews, ViewKind, ViewSlice};
 use nerve_antibody_semantic::{self as semantic};
@@ -143,15 +143,15 @@ pub(super) fn is_benign_simple_request(req: &NativeRequest) -> bool {
 pub(super) fn raw_encoded_attack_markers(req: &NativeRequest) -> bool {
     let hay = format!("{} {} {}", req.uri, req.query, req.body).to_ascii_lowercase();
     const MARKERS: &[&str] = &[
-        "%27", // '
-        "%22", // "
-        "%3c", // <
-        "%3e", // >
-        "%3b", // ;
-        "%28", // (
-        "%29", // )
+        "%27",    // '
+        "%22",    // "
+        "%3c",    // <
+        "%3e",    // >
+        "%3b",    // ;
+        "%28",    // (
+        "%29",    // )
         "%2e%2e", // ..
-        "%252e", // double-encode .
+        "%252e",  // double-encode .
         "%2500",
         "%00",
         "%0d%0a",
@@ -190,7 +190,12 @@ pub(super) fn suspicious_for_deep_scan(req: &NativeRequest, views: &RequestViews
     let sample = format!("{} {} {}", req.uri, req.query, req.body);
     if sample
         .bytes()
-        .filter(|b| matches!(b, b'\'' | b'"' | b'<' | b'>' | b';' | b'(' | b')' | b'|' | b'`'))
+        .filter(|b| {
+            matches!(
+                b,
+                b'\'' | b'"' | b'<' | b'>' | b';' | b'(' | b')' | b'|' | b'`'
+            )
+        })
         .count()
         >= 3
     {
@@ -274,10 +279,7 @@ fn text_has_attack_shape(t: &str) -> bool {
         || l.contains("processbuilder")
         || l.contains("/bin/bash")
         || l.contains("makerequest")
-        || (l.contains("/*")
-            && (l.contains('\'')
-                || l.contains('"')
-                || l.contains(')')))
+        || (l.contains("/*") && (l.contains('\'') || l.contains('"') || l.contains(')')))
         || (l.contains("-- ") && (l.contains('\'') || l.contains(')')))
         || (l.contains("select")
             && (l.contains("cast(") || l.contains(" password") || l.contains(" from ")))
@@ -325,7 +327,10 @@ fn text_has_attack_shape(t: &str) -> bool {
 /// URI CRLF / 密集 ueicode 逃逸 / HTML 数字实体 / 可解 base64 攻击形 → challenge。
 pub(super) fn payload_evasion_hint(req: &NativeRequest, views: &RequestViews) -> bool {
     let uri_l = req.uri.to_ascii_lowercase();
-    if uri_l.contains("%0d") || uri_l.contains("%0a") || req.uri.contains('\r') || req.uri.contains('\n')
+    if uri_l.contains("%0d")
+        || uri_l.contains("%0a")
+        || req.uri.contains('\r')
+        || req.uri.contains('\n')
     {
         return true;
     }
@@ -503,12 +508,7 @@ mod ris_tests {
     use crate::eval::policy::InspectMode;
     use nerve_antibody_metrics::{InspectPath, RisZone};
 
-    fn auto(
-        hard: bool,
-        bloom: bool,
-        neg: bool,
-        score: f32,
-    ) -> (InspectPath, RisZone) {
+    fn auto(hard: bool, bloom: bool, neg: bool, score: f32) -> (InspectPath, RisZone) {
         resolve_ris(
             InspectMode::Auto,
             false, // static

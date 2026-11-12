@@ -21,7 +21,10 @@ fn main() {
     };
     // load real sample
     let text = std::fs::read_to_string(pack.join("samples/01-sqli/sqli-dual.yaml")).unwrap();
-    println!("sample file head:\n{}", text.lines().take(25).collect::<Vec<_>>().join("\n"));
+    println!(
+        "sample file head:\n{}",
+        text.lines().take(25).collect::<Vec<_>>().join("\n")
+    );
     let plan = ev.plan_inspect(&req, PlanCacheHints::default());
     println!(
         "probe path={} zone={:?} score={:.3} route_deep={} decode={} evasion={}",

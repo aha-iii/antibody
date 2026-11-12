@@ -106,8 +106,7 @@ pub struct SemanticPack {
 
 impl SemanticPack {
     pub fn load(path: &Path) -> Result<Self, String> {
-        let text = nerve_antibody_dsl::read_yaml_file_text(path)
-            .map_err(|e| format!("{e}"))?;
+        let text = nerve_antibody_dsl::read_yaml_file_text(path).map_err(|e| format!("{e}"))?;
         let raw: RawPack = serde_yaml::from_str(&text)
             .map_err(|e| format!("parse semantic pack {}: {e}", path.display()))?;
         let mut signatures = Vec::new();
@@ -166,13 +165,13 @@ fn compile_matcher(sig: &RawSignature) -> Result<SigMatcher, String> {
     match sig.match_kind.trim().to_ascii_lowercase().as_str() {
         "token_seq" | "token-seq" | "tokens" => {
             if sig.tokens.is_empty() {
-                return Err(format!("semantic signature {}: token_seq needs tokens", sig.id));
+                return Err(format!(
+                    "semantic signature {}: token_seq needs tokens",
+                    sig.id
+                ));
             }
             Ok(SigMatcher::TokenSeq(
-                sig.tokens
-                    .iter()
-                    .map(|t| t.to_ascii_lowercase())
-                    .collect(),
+                sig.tokens.iter().map(|t| t.to_ascii_lowercase()).collect(),
             ))
         }
         _ => {
@@ -213,21 +212,9 @@ fn signal_from_match(sig: &CompiledSignature, hay: &str) -> SemanticSignal {
     if sig.veto {
         SemanticSignal::veto_signal(sig.kind, id, sig.confidence, evidence)
     } else if sig.block_eligible {
-        SemanticSignal::attack(
-            sig.kind,
-            id,
-            sig.confidence,
-            sig.score_delta,
-            evidence,
-        )
+        SemanticSignal::attack(sig.kind, id, sig.confidence, sig.score_delta, evidence)
     } else {
-        SemanticSignal::soft_assist(
-            sig.kind,
-            id,
-            sig.confidence,
-            sig.score_delta,
-            evidence,
-        )
+        SemanticSignal::soft_assist(sig.kind, id, sig.confidence, sig.score_delta, evidence)
     }
 }
 
@@ -294,6 +281,9 @@ mod tests {
             "id=1' UNION ALL SELECT null",
             &["union".into(), "select".into()]
         ));
-        assert!(!token_seq_match("union leaders meet", &["union".into(), "select".into()]));
+        assert!(!token_seq_match(
+            "union leaders meet",
+            &["union".into(), "select".into()]
+        ));
     }
 }

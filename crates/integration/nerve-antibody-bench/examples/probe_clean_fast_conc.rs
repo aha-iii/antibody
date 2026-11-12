@@ -23,8 +23,14 @@ fn main() {
     for _ in 0..3 {
         let _ = eng.inspect_exec(&req, NativeLevel::Medium);
     }
-    let workers: usize = std::env::var("WORKERS").ok().and_then(|s| s.parse().ok()).unwrap_or(40);
-    let per: usize = std::env::var("PER").ok().and_then(|s| s.parse().ok()).unwrap_or(8);
+    let workers: usize = std::env::var("WORKERS")
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(40);
+    let per: usize = std::env::var("PER")
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(8);
     let mut handles = Vec::new();
     let t0 = Instant::now();
     for _ in 0..workers {

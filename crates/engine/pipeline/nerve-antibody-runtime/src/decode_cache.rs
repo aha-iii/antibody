@@ -20,6 +20,9 @@ pub fn payload_hash(query: &str, body: &str) -> u64 {
     use std::hash::{Hash, Hasher};
     let mut h = std::collections::hash_map::DefaultHasher::new();
     query.hash(&mut h);
-    body.as_bytes().iter().take(4096).for_each(|b| b.hash(&mut h));
+    body.as_bytes()
+        .iter()
+        .take(4096)
+        .for_each(|b| b.hash(&mut h));
     h.finish()
 }

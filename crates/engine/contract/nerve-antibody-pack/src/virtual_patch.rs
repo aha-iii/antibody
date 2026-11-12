@@ -119,7 +119,10 @@ pub fn load_vp_rules_with_status(
     let entries = list_virtual_patches(pack_root)?;
     let mut rules = Vec::new();
     for e in entries {
-        if !allowed_status.iter().any(|s| e.status.eq_ignore_ascii_case(s)) {
+        if !allowed_status
+            .iter()
+            .any(|s| e.status.eq_ignore_ascii_case(s))
+        {
             continue;
         }
         let rules_dir = e.dir.join("rules");
@@ -291,7 +294,8 @@ mod tests {
         );
         let sand = load_vp_rules_with_status(&root, &["sandbox"]).unwrap();
         assert!(
-            sand.iter().any(|r| r.id.starts_with("vp-") && r.id.contains("demo01")),
+            sand.iter()
+                .any(|r| r.id.starts_with("vp-") && r.id.contains("demo01")),
             "expected sandbox VP rule"
         );
     }

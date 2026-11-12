@@ -74,11 +74,9 @@ pub fn load_rule_file(path: impl AsRef<Path>) -> Result<Vec<NativeRule>, DslErro
         }
         return Ok(list);
     }
-    let one: NativeRule = serde_yaml::from_str(&text).map_err(|e| {
-        DslError::Invalid {
-            id: path.display().to_string(),
-            msg: format!("yaml: {e}"),
-        }
+    let one: NativeRule = serde_yaml::from_str(&text).map_err(|e| DslError::Invalid {
+        id: path.display().to_string(),
+        msg: format!("yaml: {e}"),
     })?;
     one.validate()?;
     Ok(vec![one])

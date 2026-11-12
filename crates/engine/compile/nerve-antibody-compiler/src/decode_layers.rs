@@ -20,7 +20,10 @@ pub fn rule_min_decode_layer(
     walk_when(when, &mut |c| {
         if matches!(
             c.pred,
-            PredExec::Feature(_) | PredExec::Fingerprint(_) | PredExec::LengthGt(_) | PredExec::LengthLt(_)
+            PredExec::Feature(_)
+                | PredExec::Fingerprint(_)
+                | PredExec::LengthGt(_)
+                | PredExec::LengthLt(_)
         ) {
             return;
         }
@@ -113,9 +116,7 @@ mod tests {
             header_name: None,
             scope: FieldScope::All,
             transforms: vec![],
-            pred: PredExec::Regex(
-                regex::Regex::new("<script").unwrap(),
-            ),
+            pred: PredExec::Regex(regex::Regex::new("<script").unwrap()),
         })]);
         assert_eq!(rule_min_decode_layer(&when, RuleAction::Block, &[]), 1);
     }
@@ -127,9 +128,7 @@ mod tests {
             header_name: None,
             scope: FieldScope::All,
             transforms: vec![],
-            pred: PredExec::Regex(
-                regex::Regex::new("<script").unwrap(),
-            ),
+            pred: PredExec::Regex(regex::Regex::new("<script").unwrap()),
         })]);
         assert_eq!(rule_min_decode_layer(&when, RuleAction::Allow, &[]), 0);
     }

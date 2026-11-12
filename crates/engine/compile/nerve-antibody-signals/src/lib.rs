@@ -6,9 +6,7 @@
 mod pack;
 mod route;
 
-pub use pack::{
-    load_signal_pack, DeclaredSignal, LengthTarget, SignalKind, SignalPack,
-};
+pub use pack::{load_signal_pack, DeclaredSignal, LengthTarget, SignalKind, SignalPack};
 pub use route::{FastLaneMatch, FastLaneRule, RoutePolicy, SignalHint};
 
 use std::collections::HashMap;
@@ -274,9 +272,9 @@ fn is_uuid(s: &str) -> bool {
         && b[13] == b'-'
         && b[18] == b'-'
         && b[23] == b'-'
-        && b.iter().enumerate().all(|(i, c)| {
-            i == 8 || i == 13 || i == 18 || i == 23 || c.is_ascii_hexdigit()
-        })
+        && b.iter()
+            .enumerate()
+            .all(|(i, c)| i == 8 || i == 13 || i == 18 || i == 23 || c.is_ascii_hexdigit())
 }
 
 fn query_param_names(query: &str) -> String {

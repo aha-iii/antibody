@@ -202,7 +202,10 @@ fn default_sample_expect() -> String {
 }
 
 /// 归一化 samples 极性过滤；返回 (展示用 dataset id, 加载用根 dataset, expect 过滤)。
-fn resolve_sample_dataset(raw_dataset: &str, raw_expect: &str) -> (&'static str, &'static str, Option<&'static str>) {
+fn resolve_sample_dataset(
+    raw_dataset: &str,
+    raw_expect: &str,
+) -> (&'static str, &'static str, Option<&'static str>) {
     let ds = raw_dataset.trim().to_ascii_lowercase();
     let exp = raw_expect.trim().to_ascii_lowercase();
     match ds.as_str() {
@@ -352,9 +355,7 @@ pub fn probe_ready(dataset: &str) -> (bool, String, String) {
 
 pub async fn spawn_bench_listener(rt: Arc<BenchRuntime>) {
     let state = rt.clone();
-    let app = Router::new()
-        .fallback(any(bench_inspect))
-        .with_state(state);
+    let app = Router::new().fallback(any(bench_inspect)).with_state(state);
     let listener = match tokio::net::TcpListener::bind(rt.listen).await {
         Ok(l) => l,
         Err(e) => {
@@ -368,10 +369,7 @@ pub async fn spawn_bench_listener(rt: Arc<BenchRuntime>) {
     }
 }
 
-async fn bench_inspect(
-    State(rt): State<Arc<BenchRuntime>>,
-    req: Request<Body>,
-) -> Response {
+async fn bench_inspect(State(rt): State<Arc<BenchRuntime>>, req: Request<Body>) -> Response {
     let level = *rt.level.read().await;
     let expert_req = match http_to_expert(req).await {
         Ok(r) => r,
@@ -1177,7 +1175,11 @@ fn load_blazehttp_cases(root: &Path, limit: u64) -> Result<Vec<PreparedCase>, St
         }
     }
     if skipped > 0 {
-        info!(skipped, loaded = out.len(), "blazehttp cases loaded with skips");
+        info!(
+            skipped,
+            loaded = out.len(),
+            "blazehttp cases loaded with skips"
+        );
     }
     if out.is_empty() {
         return Err("未能加载任何 blazehttp 用例（文件损坏或目录为空）".into());
@@ -1247,7 +1249,11 @@ fn parse_raw_http(raw: &str) -> Result<NativeRequest, String> {
         // 冒号前空白 / Tab：走私混淆
         if let Some(idx) = line.find(':') {
             let (kraw, _) = line.split_at(idx);
-            if kraw.ends_with(' ') || kraw.ends_with('\t') || kraw.starts_with(' ') || kraw.starts_with('\t') {
+            if kraw.ends_with(' ')
+                || kraw.ends_with('\t')
+                || kraw.starts_with(' ')
+                || kraw.starts_with('\t')
+            {
                 anomalies.push("header-colon-ws");
             }
         }
@@ -1343,10 +1349,7 @@ fn parse_raw_http(raw: &str) -> Result<NativeRequest, String> {
     if !anomalies.is_empty() {
         anomalies.sort_unstable();
         anomalies.dedup();
-        headers.insert(
-            "_proto_anomaly".into(),
-            anomalies.join(","),
-        );
+        headers.insert("_proto_anomaly".into(), anomalies.join(","));
     }
     Ok(NativeRequest {
         method,
@@ -1442,7 +1445,12 @@ pub async fn refresh_ready(status: &Arc<tokio::sync::RwLock<BenchStatus>>, datas
 /// 页面可选数据源清单（含就绪状态）。
 pub fn list_datasets() -> serde_json::Value {
     let items = [
-        ("samples", "规则包 samples · 全部", "packs/<pack>/samples · 正+负", true),
+        (
+            "samples",
+            "规则包 samples · 全部",
+            "packs/<pack>/samples · 正+负",
+            true,
+        ),
         (
             "samples-positive",
             "规则包 samples · 正样本",

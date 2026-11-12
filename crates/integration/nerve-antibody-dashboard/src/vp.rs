@@ -4,10 +4,10 @@ use crate::{ApiError, AppState};
 use axum::extract::State;
 use axum::Json;
 use nerve_antibody_pack::{
-    apply_feed_artifact, check_channel, find_cve_dir, list_virtual_patches,
-    load_channel_manifest, materialize_intel_item, materialize_sandbox_pack, read_meta,
-    resolve_artifact_path, resolve_channel_root, save_channel_local_state, write_meta,
-    ChannelCheckResult, ChannelLocalState, IntelItem, VpEntry,
+    apply_feed_artifact, check_channel, find_cve_dir, list_virtual_patches, load_channel_manifest,
+    materialize_intel_item, materialize_sandbox_pack, read_meta, resolve_artifact_path,
+    resolve_channel_root, save_channel_local_state, write_meta, ChannelCheckResult,
+    ChannelLocalState, IntelItem, VpEntry,
 };
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -52,8 +52,8 @@ fn resolve_channel_url(st: &AppState) -> Result<String, ApiError> {
 async fn mount_sandbox_for(st: &AppState, root: &FsPath, cve: &str) -> Result<(), ApiError> {
     let staging = st.packs_root.join(".vp-staging");
     fs::create_dir_all(&staging).map_err(|e| ApiError::bad(e.to_string()))?;
-    let sand = materialize_sandbox_pack(root, cve, &staging)
-        .map_err(|e| ApiError::bad(e.to_string()))?;
+    let sand =
+        materialize_sandbox_pack(root, cve, &staging).map_err(|e| ApiError::bad(e.to_string()))?;
     info!(path = %sand.display(), cve, "auto-mount VP sandbox");
     st.engine
         .mount_sandbox(&sand)
@@ -101,9 +101,7 @@ impl From<VpEntry> for VpEntryDto {
     }
 }
 
-pub async fn api_vp_list(
-    State(st): State<Arc<AppState>>,
-) -> Result<Json<VpListOut>, ApiError> {
+pub async fn api_vp_list(State(st): State<Arc<AppState>>) -> Result<Json<VpListOut>, ApiError> {
     let pack = st.current_pack.read().await.clone();
     let root = current_pack_dir(&st).await?;
     let items = list_virtual_patches(&root)
@@ -125,9 +123,7 @@ pub struct VpStatusOut {
     pub vp_total: usize,
 }
 
-pub async fn api_vp_status(
-    State(st): State<Arc<AppState>>,
-) -> Result<Json<VpStatusOut>, ApiError> {
+pub async fn api_vp_status(State(st): State<Arc<AppState>>) -> Result<Json<VpStatusOut>, ApiError> {
     let pack = st.current_pack.read().await.clone();
     let root = current_pack_dir(&st).await?;
     let items = list_virtual_patches(&root).map_err(|e| ApiError::bad(e.to_string()))?;
@@ -225,7 +221,10 @@ pub async fn api_vp_import(
 ) -> Result<Json<VpListOut>, ApiError> {
     let src = PathBuf::from(body.source_path.trim());
     if !src.exists() {
-        return Err(ApiError::bad(format!("source not found: {}", src.display())));
+        return Err(ApiError::bad(format!(
+            "source not found: {}",
+            src.display()
+        )));
     }
     let pack_name = st.current_pack.read().await.clone();
     let root = pack_dir(&st, &pack_name)?;
@@ -306,8 +305,7 @@ pub async fn api_vp_ingest(
     Json(item): Json<IntelItem>,
 ) -> Result<Json<VpListOut>, ApiError> {
     let root = current_pack_dir(&st).await?;
-    let dir =
-        materialize_intel_item(&root, &item).map_err(|e| ApiError::bad(e.to_string()))?;
+    let dir = materialize_intel_item(&root, &item).map_err(|e| ApiError::bad(e.to_string()))?;
     info!(path = %dir.display(), cve = %item.cve_id, "intel ingest → sandbox");
     let _ = mount_sandbox_for(&st, &root, &item.cve_id).await;
     api_vp_list(State(st)).await
@@ -354,10 +352,7 @@ pub async fn api_vp_probe(
             .as_ref()
             .map(|h| h.action.clone())
             .unwrap_or_else(|| "pass".into()),
-        rule_id: hit
-            .as_ref()
-            .map(|h| h.rule_id.clone())
-            .unwrap_or_default(),
+        rule_id: hit.as_ref().map(|h| h.rule_id.clone()).unwrap_or_default(),
         inspect_path: hit
             .as_ref()
             .map(|h| h.inspect_path.clone())

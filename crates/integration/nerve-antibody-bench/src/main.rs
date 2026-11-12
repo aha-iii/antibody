@@ -33,16 +33,13 @@ struct AppState {
 async fn main() {
     tracing_subscriber::fmt()
         .with_env_filter(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "info".into()),
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()),
         )
         .init();
 
     let pack = resolve_pack();
-    let level = NativeLevel::from_str(
-        &std::env::var("LEVEL").unwrap_or_else(|_| "medium".into()),
-    )
-    .unwrap_or(NativeLevel::Medium);
+    let level = NativeLevel::from_str(&std::env::var("LEVEL").unwrap_or_else(|_| "medium".into()))
+        .unwrap_or(NativeLevel::Medium);
 
     info!(pack = %pack.display(), level = %level.as_str(), "loading expert pack");
     let engine = Engine::load_pack(&pack).unwrap_or_else(|e| {
@@ -81,10 +78,7 @@ fn resolve_pack() -> PathBuf {
     PathBuf::from("packs/baseline")
 }
 
-async fn inspect_http(
-    State(st): State<Arc<AppState>>,
-    req: Request<Body>,
-) -> Response {
+async fn inspect_http(State(st): State<Arc<AppState>>, req: Request<Body>) -> Response {
     let method = req.method().as_str().to_string();
     let uri_path = req.uri().path().to_string();
     let query = req.uri().query().unwrap_or("").to_string();

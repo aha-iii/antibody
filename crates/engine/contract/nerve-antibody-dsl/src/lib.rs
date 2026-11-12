@@ -23,7 +23,7 @@ pub use error::DslError;
 pub use load::{load_rule_file, normalize_yaml_text, read_yaml_file_text};
 pub use transforms::{apply_transforms, apply_transforms_into};
 pub use types::{
-    Condition, FieldScope, MatchOp, NativeLevel, NativeRule, MatchField, MatchOpFlat, RuleAction,
+    Condition, FieldScope, MatchField, MatchOp, MatchOpFlat, NativeLevel, NativeRule, RuleAction,
     Transform, WhenExpr, WhenNode,
 };
 
@@ -119,7 +119,10 @@ when:
 
     #[test]
     fn transforms_url_decode() {
-        let s = apply_transforms("%3Cscript%3E", &[Transform::UrlDecode, Transform::Lowercase]);
+        let s = apply_transforms(
+            "%3Cscript%3E",
+            &[Transform::UrlDecode, Transform::Lowercase],
+        );
         assert!(s.contains("<script>"));
     }
 
@@ -143,10 +146,19 @@ when:
 
     #[test]
     fn load_baseline_90_allow_fp_rules() {
-        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs/baseline/rules/90-allow");
+        let root =
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs/baseline/rules/90-allow");
         for (name, id, score) in [
-            ("oauth-token-exchange-allow.yaml", "oauth-token-exchange-allow", 40u32),
-            ("proxy-x-original-url-observe.yaml", "proxy-x-original-url-observe", 35),
+            (
+                "oauth-token-exchange-allow.yaml",
+                "oauth-token-exchange-allow",
+                40u32,
+            ),
+            (
+                "proxy-x-original-url-observe.yaml",
+                "proxy-x-original-url-observe",
+                35,
+            ),
         ] {
             let rules = load_rule_file(&root.join(name)).unwrap_or_else(|e| panic!("{name}: {e}"));
             assert_eq!(rules.len(), 1);

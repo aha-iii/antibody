@@ -165,8 +165,7 @@ fn independent_signal_classs(e: &FusionEvidence) -> u8 {
 }
 
 fn weak_block_needs_more_evidence(e: &FusionEvidence) -> bool {
-    e.min_independent_signals > 1
-        && independent_signal_classs(e) < e.min_independent_signals
+    e.min_independent_signals > 1 && independent_signal_classs(e) < e.min_independent_signals
 }
 
 /// 计算总分与动作。

@@ -64,9 +64,8 @@ pub fn seal_pack_dir(
             pack_dir.display()
         )));
     }
-    let manifest: crate::manifest::PackManifest = toml::from_str(&fs::read_to_string(
-        pack_dir.join("pack.toml"),
-    )?)?;
+    let manifest: crate::manifest::PackManifest =
+        toml::from_str(&fs::read_to_string(pack_dir.join("pack.toml"))?)?;
     let tar_bytes = tar_directory(pack_dir)?;
     let mut nonce = [0u8; 12];
     rand::thread_rng().fill_bytes(&mut nonce);
@@ -188,7 +187,9 @@ fn tar_directory(root: &Path) -> Result<Vec<u8>, PackError> {
             header.set_size(data.len() as u64);
             header.set_mode(0o644);
             header.set_entry_type(tar::EntryType::Regular);
-            header.set_path(&name).map_err(|e| PackError::Msg(e.to_string()))?;
+            header
+                .set_path(&name)
+                .map_err(|e| PackError::Msg(e.to_string()))?;
             header.set_cksum();
             ar.append_data(&mut header, &name, &*data)?;
         }
@@ -262,7 +263,9 @@ mod tests {
         let sealed = tempfile::NamedTempFile::new().unwrap();
         seal_pack_dir(&root, sealed.path(), &key).unwrap();
         let guard = extract_sealed(sealed.path(), &key).unwrap();
-        let extracted = guard.root.join("rules/00-allow/allow-adobe-activityi-cat.yaml");
+        let extracted = guard
+            .root
+            .join("rules/00-allow/allow-adobe-activityi-cat.yaml");
         let orig = fs::read(&sample).unwrap();
         let got = fs::read(&extracted).unwrap();
         assert_eq!(orig, got, "sealed extract must preserve rule bytes");

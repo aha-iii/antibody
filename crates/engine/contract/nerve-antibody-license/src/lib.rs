@@ -156,9 +156,8 @@ fn activate_online() -> Result<LicenseSession, LicenseError> {
     if license_key.trim().is_empty() {
         return Err(LicenseError::Config("NERVE_LICENSE_KEY is empty".into()));
     }
-    let url = std::env::var("NERVE_LICENSE_URL").unwrap_or_else(|_| {
-        "https://license.nerve.local/v1/activate".into()
-    });
+    let url = std::env::var("NERVE_LICENSE_URL")
+        .unwrap_or_else(|_| "https://license.nerve.local/v1/activate".into());
     let machine_id = machine_id();
     let req = ActivateRequest {
         license_key: license_key.trim(),
@@ -197,11 +196,8 @@ fn activate_online() -> Result<LicenseSession, LicenseError> {
 }
 
 fn decode_key_b64(b64: &str) -> Result<[u8; 32], LicenseError> {
-    let bytes = base64::Engine::decode(
-        &base64::engine::general_purpose::STANDARD,
-        b64.trim(),
-    )
-    .map_err(|e| LicenseError::Config(format!("invalid pack_key_b64: {e}")))?;
+    let bytes = base64::Engine::decode(&base64::engine::general_purpose::STANDARD, b64.trim())
+        .map_err(|e| LicenseError::Config(format!("invalid pack_key_b64: {e}")))?;
     if bytes.len() != 32 {
         return Err(LicenseError::Config(format!(
             "pack_key must be 32 bytes, got {}",

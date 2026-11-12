@@ -172,8 +172,7 @@ impl EngineMetrics {
                     .fetch_add(elapsed_us, Ordering::Relaxed);
             }
         }
-        self.latency_us_sum
-            .fetch_add(elapsed_us, Ordering::Relaxed);
+        self.latency_us_sum.fetch_add(elapsed_us, Ordering::Relaxed);
         self.update_max(elapsed_us);
         self.record_latency_bucket(elapsed_us);
         if budget_exhausted {
@@ -316,7 +315,10 @@ impl EngineMetrics {
             stage_decode_us_avg: avg_stage(self.stage_decode_us_sum.load(Ordering::Relaxed), total),
             stage_aho_us_avg: avg_stage(self.stage_aho_us_sum.load(Ordering::Relaxed), total),
             stage_regex_us_avg: avg_stage(self.stage_regex_us_sum.load(Ordering::Relaxed), total),
-            stage_semantic_us_avg: avg_stage(self.stage_semantic_us_sum.load(Ordering::Relaxed), total),
+            stage_semantic_us_avg: avg_stage(
+                self.stage_semantic_us_sum.load(Ordering::Relaxed),
+                total,
+            ),
             stage_fusion_us_avg: avg_stage(self.stage_fusion_us_sum.load(Ordering::Relaxed), total),
             shadow_done: self.shadow_done.load(Ordering::Relaxed),
             shadow_would_hit: self.shadow_would_hit.load(Ordering::Relaxed),
@@ -410,7 +412,13 @@ impl EngineMetrics {
         );
 
         let labels = [
-            "le_1ms", "le_5ms", "le_20ms", "le_50ms", "le_200ms", "le_1200ms", "le_inf",
+            "le_1ms",
+            "le_5ms",
+            "le_20ms",
+            "le_50ms",
+            "le_200ms",
+            "le_1200ms",
+            "le_inf",
         ];
         for (label, count) in labels.iter().zip(s.latency_buckets.iter()) {
             out.push_str(&format!(

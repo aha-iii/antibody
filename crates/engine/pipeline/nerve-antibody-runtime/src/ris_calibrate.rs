@@ -87,8 +87,7 @@ pub fn scan_threshold_curve(
         let mut best_miss = 1.0f64;
         for p in &curve {
             if p.attack_fast_miss < best_miss - 1e-12
-                || ((p.attack_fast_miss - best_miss).abs() < 1e-9
-                    && p.clean_fast_ratio > best_fast)
+                || ((p.attack_fast_miss - best_miss).abs() < 1e-9 && p.clean_fast_ratio > best_fast)
             {
                 best_miss = p.attack_fast_miss;
                 best_fast = p.clean_fast_ratio;
