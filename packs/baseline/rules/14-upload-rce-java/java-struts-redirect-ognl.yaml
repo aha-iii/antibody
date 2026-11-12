@@ -15,7 +15,11 @@ when:
     - field: query
       contains: 'redirect:'
     - field: uri
-      contains: 'ognl'
+      scope: raw
+      regex: "(?i)\\bognl\\b"
+    - field: query
+      scope: raw
+      regex: "(?i)\\bognl\\b"
     - field: query
       contains: '${#'
     - field: body

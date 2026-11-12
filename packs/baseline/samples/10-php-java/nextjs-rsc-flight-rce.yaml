@@ -1,0 +1,105 @@
+- id: sample-nextjs-rsc-flight-rce-assetnote-block
+  rule_id: nextjs-rsc-flight-rce
+  name: Next.js Flight multipart RCE (Assetnote-style) (pos)
+  category: 10-php-java
+  expect_action: block
+  min_level: low
+  severity: critical
+  tags:
+  - rce
+  - nextjs
+  - flight
+  request:
+    method: POST
+    host: www.example.com
+    uri: /
+    query: ''
+    headers:
+      User-Agent: Mozilla/5.0 Assetnote/1.0.0
+      next-action: x
+      x-nextjs-request-id: b5dce965
+      Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryx8jO2oVc6SWP3Sad
+    body: "------WebKitFormBoundaryx8jO2oVc6SWP3Sad\r\nContent-Disposition: form-data; name=\"0\"\r\n\r\n{\"then\":\"$1:__proto__:then\",\"status\":\"resolved_model\",\"reason\":-1,\"value\":\"{\\\"then\\\":\\\"$B1337\\\"}\",\"_response\":{\"_prefix\":\"var res=process.mainModule.require('child_process').execSync('echo $((41*271))').toString().trim();;throw Object.assign(new Error('NEXT_REDIRECT'),{digest: `NEXT_REDIRECT;push;/login?a=${res};307;`});\",\"_chunks\":\"$Q2\",\"_formData\":{\"get\":\"$3:\\\"$$:constructor:constructor\"}}}\r\n------WebKitFormBoundaryx8jO2oVc6SWP3Sad\r\nContent-Disposition: form-data; name=\"1\"\r\n\r\n\"$@0\"\r\n------WebKitFormBoundaryx8jO2oVc6SWP3Sad\r\nContent-Disposition: form-data; name=\"2\"\r\n\r\n[]\r\n------WebKitFormBoundaryx8jO2oVc6SWP3Sad\r\nContent-Disposition: form-data; name=\"3\"\r\n\r\n{\"\\\"$$\":{}}\r\n------WebKitFormBoundaryx8jO2oVc6SWP3Sad--"
+- id: sample-nextjs-rsc-flight-rce-proto-then-block
+  rule_id: nextjs-rsc-flight-rce
+  name: Flight __proto__:then marker (pos)
+  category: 10-php-java
+  expect_action: block
+  min_level: low
+  severity: critical
+  tags:
+  - rce
+  - nextjs
+  - flight
+  request:
+    method: POST
+    host: example.com
+    uri: /login
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      next-action: abc123
+      Content-Type: text/plain
+    body: '{"then":"$1:__proto__:then","status":"resolved_model"}'
+- id: sample-nextjs-rsc-flight-rce-next-action-child-process-block
+  rule_id: nextjs-rsc-flight-rce
+  name: next-action header + child_process (pos)
+  category: 10-php-java
+  expect_action: block
+  min_level: low
+  severity: critical
+  tags:
+  - rce
+  - nextjs
+  - flight
+  request:
+    method: POST
+    host: example.com
+    uri: /
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      next-action: x
+      Content-Type: application/json
+    body: '{"code":"require(\"child_process\").execSync(\"id\")"}'
+- id: sample-nextjs-rsc-flight-rce-legit-action-pass
+  rule_id: nextjs-rsc-flight-rce
+  name: Legit Next.js server action without RCE markers (neg)
+  category: 10-php-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - nextjs
+  - fp
+  request:
+    method: POST
+    host: example.com
+    uri: /
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      next-action: 7f3a9c2e1b
+      Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryLegit
+    body: "------WebKitFormBoundaryLegit\r\nContent-Disposition: form-data; name=\"1_email\"\r\n\r\nuser@example.com\r\n------WebKitFormBoundaryLegit\r\nContent-Disposition: form-data; name=\"1_password\"\r\n\r\nnot-a-secret\r\n------WebKitFormBoundaryLegit--"
+- id: sample-nextjs-rsc-flight-rce-prose-constructor-pass
+  rule_id: nextjs-rsc-flight-rce
+  name: Benign JSON constructor field (neg)
+  category: 10-php-java
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - rce
+  - nextjs
+  - fp
+  request:
+    method: POST
+    host: example.com
+    uri: /api/vehicles
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Content-Type: application/json
+    body: '{"constructor":"Sedan","status":"resolved","model":"civic"}'

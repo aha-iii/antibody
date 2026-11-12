@@ -1,0 +1,20 @@
+# Webshell / 扫描器短文件名路径探针（根路径或末段）。
+# 对应 Defender L7 A15-upload 对 GET /test.php、/i.php 等的检出意图，但收窄为已知探针名，
+# 避免把所有 .php 业务路径一刀切（L7 含 ".php" 即命中，PHP 站点易误伤）。
+id: webshell-php-path-probe
+name: Webshell / scanner PHP path probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [webshell, recon, scanner]
+transforms: [lowercase]
+when:
+  any:
+    # 末段为扫描器常用短名 / 已知马名（锚定段尾，勿拦 index.php / wp-login.php）
+    - field: uri
+      scope: raw
+      regex: "(?i)/(?:test|i|pi|info|shell|cmd|c99|r57|wso|b374k|1|2|a|x|xx|xxx|up|upload|webshell|backdoor|hack|eval|gate|mini|php|p|s|ss|t|u|w|y|z|ok|o|ma|mp|my|q|v|za|zb)\\.php(?:$|\\?)"
+    - field: uri
+      scope: raw
+      regex: "(?i)/(?:test|i|pi|info|shell|cmd|c99|r57|wso|1|2|a|x|up|upload|webshell|backdoor)\\.(?:phtml|php5|php7|phar)(?:$|\\?)"

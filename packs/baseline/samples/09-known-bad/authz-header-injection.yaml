@@ -1,0 +1,57 @@
+- id: sample-authz-header-injection-ognl-block
+  rule_id: authz-header-injection
+  name: Authorization OGNL probe (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - auth
+  - injection
+  request:
+    method: GET
+    host: example.com
+    uri: /api/user
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Authorization: '%{#ognl}x'
+    body: ''
+- id: sample-authz-header-injection-awk-block
+  rule_id: authz-header-injection
+  name: Authorization awk probe (pos)
+  category: 09-known-bad
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - auth
+  - injection
+  request:
+    method: GET
+    host: example.com
+    uri: /api/user
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Authorization: 'Bearer awk /etc/passwd'
+    body: ''
+- id: sample-authz-header-injection-jwt-pass
+  rule_id: authz-header-injection
+  name: Normal Bearer JWT (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - auth
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /api/one/auth/getCurrentUser
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+      Authorization: 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInNlc3Npb25fc3RhdGUiOiIyOTU1NjgwNi1kMzBlLTQ2ZWEtYTM2MC1jZjhjZTY1MzgxMDMifQ.QtPtgbJQne6B6asignaturepartwithrandombase64ognlandawkembeddedbutnoboundariesxx'
+    body: ''

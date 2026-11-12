@@ -25,12 +25,7 @@ impl FieldCache {
     }
 
     fn apply_transforms_cached(&mut self, raw: &str, transforms: &[Transform]) -> String {
-        apply_transforms_into(
-            &mut self.scratch_a,
-            &mut self.scratch_b,
-            raw,
-            transforms,
-        );
+        apply_transforms_into(&mut self.scratch_a, &mut self.scratch_b, raw, transforms);
         self.scratch_a.clone()
     }
 
@@ -56,17 +51,21 @@ impl FieldCache {
     }
 }
 
-fn field_raw(req: &NativeRequest, field: MatchField, header_name: Option<&str>, max_chars: usize) -> String {
+fn field_raw(
+    req: &NativeRequest,
+    field: MatchField,
+    header_name: Option<&str>,
+    max_chars: usize,
+) -> String {
     match field {
         MatchField::Uri => head_tail_field(&req.uri, max_chars),
         MatchField::Query => head_tail_field(&req.query, max_chars),
         MatchField::Body => head_tail_field(&req.body, max_chars),
         MatchField::Method => req.method.clone(),
         MatchField::Host => req.host.clone(),
-        MatchField::ResponseBody => head_tail_field(
-            req.response_body.as_deref().unwrap_or(""),
-            max_chars,
-        ),
+        MatchField::ResponseBody => {
+            head_tail_field(req.response_body.as_deref().unwrap_or(""), max_chars)
+        }
         MatchField::Header => {
             if let Some(name) = header_name {
                 header_value(req, name).unwrap_or_default()
@@ -166,7 +165,8 @@ fn slice_matches_field(slice: &ViewSlice, field: MatchField, scope: FieldScope) 
             ))
 }
 
-/// Refnrer/Cookin/UA/可注入 X-* 等侧信道路径。
+/// Referer/Cookie/UA/可注入 X-* / 非 JWT Authorization 等侧信道路径。
+/// Bearer JWT 在 expand 阶段已跳过，故此处即使列出 authorization 也不会吃到 eyJ… 签名。
 fn is_header_sidechannel_path(path_l: &str) -> bool {
     const ROOTS: &[&str] = &[
         "header.referrer",
@@ -225,8 +225,7 @@ pub(super) fn field_texts(
     // 经典整段字段（兼容旧规则）
     let classic = cache.get_raw_transformed(req, field, header_name, transforms);
     // 具名 Header 允许空串：缺失头与值为空均需参与匹配（如 WebSocket Key 缺失 → ^$）
-    let include_empty_classic =
-        matches!(field, MatchField::Header) && header_name.is_some();
+    let include_empty_classic = matches!(field, MatchField::Header) && header_name.is_some();
     if !classic.is_empty() || include_empty_classic {
         let path = match (field, header_name) {
             (MatchField::Header, Some(e)) => format!("header.{e}"),

@@ -24,7 +24,7 @@ nerve-antibody-metrics = { workspace = true }
 nerve-antibody-cache = { workspace = true }
 nerve-antibody-license = { workspace = true }
 nerve-antibody-accel = { workspace = true, optional = true }
-nerve-inspect-trace = { path = "../../../../../Nerve-defender/crates/engine/nerve-inspect-trace", optional = true }
+nerve-inspect-trace = { path = "../../../../../Nerve-waf/crates/engine/nerve-inspect-trace", optional = true }
 parking_lot = { workspace = true }
 thiserror = { workspace = true }
 serde = { workspace = true }

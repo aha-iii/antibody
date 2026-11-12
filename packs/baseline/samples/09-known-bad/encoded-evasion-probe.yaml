@@ -33,3 +33,23 @@
       User-Agent: nerve-sample/1.0
       Accept: '*/*'
     body: ''
+- id: sample-encoded-evasion-probe-i18n-username-pass
+  rule_id: encoded-evasion-probe
+  name: CRM dispatch username with fullwidth parentheses (neg)
+  category: 09-known-bad
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - fp
+  - i18n
+  - evasion
+  request:
+    method: GET
+    host: test-mars.example.com
+    uri: /open/api/ai/dispatch/get_serverrole
+    query: tenantCode=demo&username=%E9%A9%AC%E5%AD%9F%E6%B5%A9%EF%BC%88%E5%86%85%E9%83%A8%E7%94%A8%E6%88%B7%EF%BC%89&tmp=1787643116
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+    body: ''

@@ -56,8 +56,9 @@ when:
       contains: '%f0%92%80%80'
     - field: query
       contains: '%e1%a8%92'
-    - field: query
-      contains: '%ef%bc%'
+    # 全角 homoglyph 按码点分层，禁止裸 %ef%bc%（会误伤中文全角括号 %ef%bc%88/89）：
+    # attack-signature-cluster（%ef%bc%8e/%8f/%87）、xss-charset-evasion-query（%ef%bc%9cscript）、
+    # sqli-overlong-quote（%ef%bc%9[ce]）、lfi-overlong-unicode（%ef%bc%8f）
     - field: body
       contains: 'aced0005'
     - field: uri

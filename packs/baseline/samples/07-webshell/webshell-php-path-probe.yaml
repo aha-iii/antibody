@@ -1,0 +1,108 @@
+- id: sample-webshell-php-path-probe-test-block
+  rule_id: webshell-php-path-probe
+  name: GET /test.php scanner probe (pos)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - webshell
+  - recon
+  request:
+    method: GET
+    host: example.com
+    uri: /test.php
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-webshell-php-path-probe-i-block
+  rule_id: webshell-php-path-probe
+  name: GET /i.php scanner probe (pos)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - webshell
+  - recon
+  request:
+    method: GET
+    host: example.com
+    uri: /i.php
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-webshell-php-path-probe-pi-block
+  rule_id: webshell-php-path-probe
+  name: GET /pi.php scanner probe (pos)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - webshell
+  - recon
+  request:
+    method: GET
+    host: example.com
+    uri: /pi.php
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-webshell-php-path-probe-info-block
+  rule_id: webshell-php-path-probe
+  name: GET /info.php scanner probe (pos)
+  category: 07-webshell
+  expect_action: block
+  min_level: low
+  severity: high
+  tags:
+  - webshell
+  - recon
+  request:
+    method: GET
+    host: example.com
+    uri: /info.php
+    query: ''
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-webshell-php-path-probe-index-pass
+  rule_id: webshell-php-path-probe
+  name: Legit /index.php (neg)
+  category: 07-webshell
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - webshell
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /index.php
+    query: page=1
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''
+- id: sample-webshell-php-path-probe-wp-login-pass
+  rule_id: webshell-php-path-probe
+  name: Legit /blog/article.php (neg)
+  category: 07-webshell
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - webshell
+  - fp
+  request:
+    method: GET
+    host: example.com
+    uri: /blog/article.php
+    query: id=12
+    headers:
+      User-Agent: nerve-sample/1.0
+    body: ''

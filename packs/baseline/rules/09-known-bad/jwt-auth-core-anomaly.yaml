@@ -84,7 +84,8 @@ when:
     - field: query
       contains: '{echo,'
     - field: query
-      contains: 'awk'
+      scope: raw
+      regex: "(?i)\\bawk\\b"
     - field: query
       regex: "(?i)&\\s*ping\\s+-c"
     # SSI

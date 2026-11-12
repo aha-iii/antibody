@@ -76,7 +76,10 @@ impl Evaluator {
             &req.uri,
             &req.query,
             &req.body,
-            &req.headers.iter().map(|(k, v)| (k.clone(), v.clone())).collect::<Vec<_>>(),
+            &req.headers
+                .iter()
+                .map(|(k, v)| (k.clone(), v.clone()))
+                .collect::<Vec<_>>(),
             req.content_type(),
             req.response_body.as_deref(),
             &pipe_route,
@@ -171,12 +174,11 @@ impl Evaluator {
         let prefilter_hay = views_preview.haystack_for_prefilter(64 * 1024);
         // Fast 仅绑在明确干净通道；可疑流量即使 lane 标记也不得缩规则集
         let structure_lane = structure_clean || structure_known;
-        let inline_fast_lane = (route_decision.clean_json_api
-            || route_decision.api_positive_lane
-            || structure_lane)
-            && path == InspectPath::Fast
-            && !suspicious
-            && ris_zone == RisZone::Clean;
+        let inline_fast_lane =
+            (route_decision.clean_json_api || route_decision.api_positive_lane || structure_lane)
+                && path == InspectPath::Fast
+                && !suspicious
+                && ris_zone == RisZone::Clean;
         let api_positive_lane = (route_decision.api_positive_lane || structure_lane)
             && path == InspectPath::Fast
             && !suspicious
@@ -254,13 +256,7 @@ impl Evaluator {
             && inspect_path == InspectPath::Deep
             && pipe.decode_enabled;
         let mut hit = if use_lazy {
-            self.inspect_lazy_incremental(
-                req,
-                &pipe,
-                inspect_path,
-                mode,
-                plan.api_positive_lane,
-            )
+            self.inspect_lazy_incremental(req, &pipe, inspect_path, mode, plan.api_positive_lane)
         } else {
             self.inspect_with_path(
                 req,
@@ -306,17 +302,9 @@ impl Evaluator {
             metrics_global().record_fast_pool_escalate();
             let deep_timer = InspectTimer::start(InspectPath::Deep);
             let deep_pipe = pipe_base;
-            let use_lazy_deep = self.policy.lazy_decode
-                && !force_full
-                && deep_pipe.decode_enabled;
+            let use_lazy_deep = self.policy.lazy_decode && !force_full && deep_pipe.decode_enabled;
             hit = if use_lazy_deep {
-                self.inspect_lazy_incremental(
-                    req,
-                    &deep_pipe,
-                    InspectPath::Deep,
-                    mode,
-                    false,
-                )
+                self.inspect_lazy_incremental(req, &deep_pipe, InspectPath::Deep, mode, false)
             } else {
                 self.inspect_with_path(
                     req,
@@ -347,9 +335,7 @@ impl Evaluator {
         if !blocked
             && plan.path == InspectPath::Fast
             && plan.ris_zone == RisZone::Clean
-            && (plan.inline_fast_lane
-                || plan.api_positive_lane
-                || is_benign_simple_request(req))
+            && (plan.inline_fast_lane || plan.api_positive_lane || is_benign_simple_request(req))
         {
             if let Some(l1) = self.policy.ris_l1.as_ref() {
                 l1.remember_clear(req, &plan.route_signals);
@@ -611,10 +597,8 @@ impl Evaluator {
             }
         }
 
-        let skip_tail = static_asset
-            && !cache_deception_probe
-            && !wants_block
-            && matched.is_empty();
+        let skip_tail =
+            static_asset && !cache_deception_probe && !wants_block && matched.is_empty();
 
         if !skip_tail && aho_seed < candidates.len() && budget_reason.is_none() {
             if !try_parallel_tail_eval(
@@ -694,25 +678,20 @@ impl Evaluator {
             build_features(req, &views, &matched, &sem_report)
         };
         let l1_hit = !matched.is_empty();
-        let adaptive_contribute = adaptive_contribute_effective(
-            self.policy.adaptive_contribute,
-            inspect_path,
-            l1_hit,
-        );
-        let model_out = if self.policy.adaptive_enabled
-            && !hard_block
-            && inspect_path == InspectPath::Deep
-        {
-            Some(adaptive::score(AdaptiveInput {
-                level: self.program.level,
-                features: &features,
-                contribute: adaptive_contribute,
-                level_weight: pipe.adaptive_level_weight,
-                score_cap: pipe.adaptive_score_cap,
-            }))
-        } else {
-            None
-        };
+        let adaptive_contribute =
+            adaptive_contribute_effective(self.policy.adaptive_contribute, inspect_path, l1_hit);
+        let model_out =
+            if self.policy.adaptive_enabled && !hard_block && inspect_path == InspectPath::Deep {
+                Some(adaptive::score(AdaptiveInput {
+                    level: self.program.level,
+                    features: &features,
+                    contribute: adaptive_contribute,
+                    level_weight: pipe.adaptive_level_weight,
+                    score_cap: pipe.adaptive_score_cap,
+                }))
+            } else {
+                None
+            };
 
         let semantic_score = sem_report.score;
         let model_score = model_out
@@ -723,11 +702,7 @@ impl Evaluator {
         let model_p = model_out.as_ref().map(|m| m.p).unwrap_or(0.0);
         let model_contributed = model_out.as_ref().map(|m| m.contributed).unwrap_or(false);
 
-        let decode_hint = if hard_block {
-            false
-        } else {
-            decode_hint_early
-        };
+        let decode_hint = if hard_block { false } else { decode_hint_early };
         let evasion_hint = if hard_block {
             false
         } else {
@@ -736,14 +711,23 @@ impl Evaluator {
         let has_signal = !matched.is_empty()
             || semantic_score > 0
             || sem_report.veto
-            || model_out.as_ref().map(|m| m.model_score > 0).unwrap_or(false)
+            || model_out
+                .as_ref()
+                .map(|m| m.model_score > 0)
+                .unwrap_or(false)
             || decode_hint
             || evasion_hint;
 
         if !has_signal {
             metrics_global().record_stages(&stages);
             #[cfg(feature = "inspect-trace")]
-            nerve_inspect_trace::record_native_stages(&stages);
+            nerve_inspect_trace::record_native_stages(&nerve_inspect_trace::NativeInspectStages {
+                decode_us: stages.decode_us,
+                aho_us: stages.aho_us,
+                regex_us: stages.regex_us,
+                semantic_us: stages.semantic_us,
+                fusion_us: stages.fusion_us,
+            });
             return None;
         }
 
@@ -779,7 +763,13 @@ impl Evaluator {
         stages.fusion_us = t_fusion.elapsed().as_micros().min(u128::from(u64::MAX)) as u64;
         metrics_global().record_stages(&stages);
         #[cfg(feature = "inspect-trace")]
-        nerve_inspect_trace::record_native_stages(&stages);
+        nerve_inspect_trace::record_native_stages(&nerve_inspect_trace::NativeInspectStages {
+            decode_us: stages.decode_us,
+            aho_us: stages.aho_us,
+            regex_us: stages.regex_us,
+            semantic_us: stages.semantic_us,
+            fusion_us: stages.fusion_us,
+        });
         let action = fusion_action.as_str();
         metrics_global().record_action(action);
 
@@ -1060,22 +1050,10 @@ impl Evaluator {
         budget: &mut InspectBudget,
     ) -> Result<Option<MatchedRule>, String> {
         if budget.check_time().is_err() {
-            return Err(
-                budget
-                    .reason()
-                    .unwrap_or("max_inspect_ms")
-                    .to_string(),
-            );
+            return Err(budget.reason().unwrap_or("max_inspect_ms").to_string());
         }
         let rule = &self.program.rules[ri];
-        match eval_when(
-            &rule.when,
-            req,
-            views,
-            signals,
-            cache,
-            budget,
-        ) {
+        match eval_when(&rule.when, req, views, signals, cache, budget) {
             Ok(Some(hit)) => {
                 let action = match rule.meta.action {
                     RuleAction::Block => "block",

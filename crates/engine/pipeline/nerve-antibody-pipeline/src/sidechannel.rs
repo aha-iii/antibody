@@ -25,12 +25,7 @@ pub fn expand_sidechannel_headers(
             DecodePipeline::add_text(views, "header.Cookie", v, opts);
             for (name, val) in split_cookie_pairs(v).into_iter().take(64) {
                 if val.len() >= 3 {
-                    DecodePipeline::add_text(
-                        views,
-                        &format!("header.Cookie.{name}"),
-                        &val,
-                        opts,
-                    );
+                    DecodePipeline::add_text(views, &format!("header.Cookie.{name}"), &val, opts);
                 }
             }
         } else if k.eq_ignore_ascii_case("user-agent") {
@@ -41,7 +36,11 @@ pub fn expand_sidechannel_headers(
             // Host 内 CRLF / 缓存投毒常见
             DecodePipeline::add_text(views, "header.Host", v, opts);
         } else if k.eq_ignore_ascii_case("authorization") {
-            DecodePipeline::add_text(views, "header.Authorization", v, opts);
+            // 非 JWT 的 Authorization 仍进侧信道（Basic / 裸注入载荷）。
+            // Bearer JWT 跳过：高熵 base64 易与短针偶然碰撞；JWT 结构异常走专用 header 规则。
+            if !is_bearer_jwt_authorization(v) {
+                DecodePipeline::add_text(views, "header.Authorization", v, opts);
+            }
         } else if k.eq_ignore_ascii_case("x-nerve-test")
             || k.eq_ignore_ascii_case("x-forwarded-for")
             || k.eq_ignore_ascii_case("x-forwarded-host")
@@ -119,6 +118,28 @@ fn split_cookie_pairs(cookie: &str) -> Vec<(String, String)> {
     out
 }
 
+/// `Authorization: Bearer eyJ….….…` 形态（标准三/五段 JWT/JWE）不进侧信道。
+fn is_bearer_jwt_authorization(v: &str) -> bool {
+    let v = v.trim();
+    let token = if let Some(rest) = v
+        .strip_prefix("Bearer ")
+        .or_else(|| v.strip_prefix("bearer "))
+        .or_else(|| v.strip_prefix("BEARER "))
+    {
+        rest.trim()
+    } else if v.starts_with("eyJ") {
+        v
+    } else {
+        return false;
+    };
+    if !token.starts_with("eyJ") {
+        return false;
+    }
+    // JWT：3 段；JWE：5 段。段之间为 `.`
+    let dots = token.bytes().filter(|&b| b == b'.').count();
+    dots == 2 || dots == 4
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -150,10 +171,7 @@ mod tests {
         expand_sidechannel_headers(
             &mut views,
             &[
-                (
-                    "User-Agent".into(),
-                    "<script>alert(1)</script>".into(),
-                ),
+                ("User-Agent".into(), "<script>alert(1)</script>".into()),
                 (
                     "X-Nerve-Test".into(),
                     "PGlmcmFtZQ==".into(), // <iframe
@@ -162,19 +180,67 @@ mod tests {
             &opts,
         );
         assert!(
-            views
-                .slices
-                .iter()
-                .any(|s| s.path.to_ascii_lowercase().starts_with("header.user-agent")
-                    && s.text.to_ascii_lowercase().contains("<script")),
+            views.slices.iter().any(|s| s
+                .path
+                .to_ascii_lowercase()
+                .starts_with("header.user-agent")
+                && s.text.to_ascii_lowercase().contains("<script")),
             "UA should be in views"
         );
         assert!(
             views.slices.iter().any(|s| {
-                s.path.to_ascii_lowercase().starts_with("header.x-nerve-test")
+                s.path
+                    .to_ascii_lowercase()
+                    .starts_with("header.x-nerve-test")
                     && s.text.to_ascii_lowercase().contains("iframe")
             }),
             "X-Nerve-Test base64 should expand"
         );
+    }
+
+    #[test]
+    fn bearer_jwt_authorization_skipped_from_sidechannel() {
+        let mut views = RequestViews::default();
+        let opts = DecodeOptions::default();
+        let jwt = "Bearer eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIn0.sig";
+        expand_sidechannel_headers(&mut views, &[("Authorization".into(), jwt.into())], &opts);
+        assert!(
+            !views.slices.iter().any(|s| s
+                .path
+                .to_ascii_lowercase()
+                .starts_with("header.authorization")),
+            "JWT must not enter sidechannel views"
+        );
+    }
+
+    #[test]
+    fn non_jwt_authorization_enters_sidechannel() {
+        let mut views = RequestViews::default();
+        let opts = DecodeOptions::default();
+        expand_sidechannel_headers(
+            &mut views,
+            &[(
+                "Authorization".into(),
+                "Basic YWRtaW46Jycgb3IgJzEnPScx".into(),
+            )],
+            &opts,
+        );
+        assert!(
+            views.slices.iter().any(|s| s
+                .path
+                .to_ascii_lowercase()
+                .starts_with("header.authorization")),
+            "non-JWT Authorization should be visible to uri/query/body rules"
+        );
+    }
+
+    #[test]
+    fn detects_bearer_jwt_shapes() {
+        assert!(is_bearer_jwt_authorization(
+            "Bearer eyJhbGciOiJub25lIn0.eyJzdWIiOiJ4In0.abc"
+        ));
+        assert!(!is_bearer_jwt_authorization("Basic dXNlcjpwYXNz"));
+        assert!(!is_bearer_jwt_authorization("Bearer awk /etc/passwd"));
+        assert!(!is_bearer_jwt_authorization("%{#ognl}"));
     }
 }

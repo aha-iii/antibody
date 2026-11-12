@@ -37,3 +37,24 @@
       User-Agent: nerve-sample/1.0
       Accept: '*/*'
     body: ''
+- id: sample-sqli-comment-hash-crm-server-type-pass
+  rule_id: sqli-comment-hash
+  name: CRM server_type path with empty segment dashes (neg)
+  category: 01-sqli
+  expect_action: pass
+  min_level: low
+  severity: info
+  tags:
+  - sqli
+  - fp
+  - crm
+  request:
+    method: POST
+    host: test-mars.example.com
+    uri: /open/api/ai/dispatch/upload
+    query: tenantCode=demo&tmp=1787641384
+    headers:
+      User-Agent: nerve-sample/1.0
+      Accept: '*/*'
+      Content-Type: application/json
+    body: '{"workers":[{"server_type":"道路机械--维修,star产品线--,咖啡机保养产品类别-咖啡机产品型号-,--,--"}]}'

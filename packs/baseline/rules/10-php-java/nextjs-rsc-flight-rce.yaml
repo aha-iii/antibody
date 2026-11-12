@@ -1,0 +1,79 @@
+# Next.js App Router / React Server Components（Flight）RCE 探测。
+# 典型链：next-action + multipart Flight 引用（$1:__proto__:then / constructor:constructor）
+# + process.mainModule.require('child_process').execSync + 伪造 NEXT_REDIRECT 回传。
+# 单靠 next-action 正常业务不拦；须与 Flight/RCE 载荷特征组合或命中固定利用形。
+#
+# scope: raw + 仅 lowercase：lazy decode 第 0 层即可匹配，避免浅层 semantic challenge 早退漏硬拦。
+id: nextjs-rsc-flight-rce
+name: Next.js RSC / Flight protocol RCE probe
+severity: critical
+score: 45
+action: block
+min_level: low
+tags: [rce, nextjs, deser, flight]
+transforms: [lowercase]
+when:
+  any:
+    # Flight 原型链污染入口（公开 PoC 固定形）
+    - field: body
+      scope: raw
+      contains: '__proto__:then'
+    - field: body
+      scope: raw
+      contains: '$1:__proto__'
+    - field: body
+      scope: raw
+      contains: 'constructor:constructor'
+    # Flight resolved_model + Node RCE
+    - all:
+        - field: body
+          scope: raw
+          contains: 'resolved_model'
+        - field: body
+          scope: raw
+          contains: 'child_process'
+    # NEXT_REDIRECT 回传 + child_process / execSync（lowercase 后）
+    - all:
+        - field: body
+          scope: raw
+          contains: 'next_redirect'
+        - field: body
+          scope: raw
+          contains: 'child_process'
+    - all:
+        - field: body
+          scope: raw
+          contains: 'next_redirect'
+        - field: body
+          scope: raw
+          contains: 'execsync'
+    # process.mainModule.require('child_process') 形态
+    - all:
+        - field: body
+          scope: raw
+          contains: 'process.mainmodule'
+        - field: body
+          scope: raw
+          contains: 'child_process'
+    # Server Action 通道 + RCE / 原型链污染
+    - all:
+        - field: header
+          header_name: next-action
+          regex: ".+"
+        - field: body
+          scope: raw
+          contains: 'child_process'
+    - all:
+        - field: header
+          header_name: next-action
+          regex: ".+"
+        - field: body
+          scope: raw
+          contains: 'execsync'
+    - all:
+        - field: header
+          header_name: next-action
+          regex: ".+"
+        - field: body
+          scope: raw
+          contains: '__proto__'

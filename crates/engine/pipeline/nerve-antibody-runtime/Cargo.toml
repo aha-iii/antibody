@@ -17,7 +17,7 @@ nerve-antibody-adaptive = { workspace = true }
 nerve-antibody-semantic = { workspace = true }
 nerve-antibody-signals = { workspace = true }
 nerve-antibody-accel = { workspace = true, optional = true }
-nerve-inspect-trace = { path = "../../../../../Nerve-defender/crates/engine/nerve-inspect-trace", optional = true }
+nerve-inspect-trace = { path = "../../../../../Nerve-waf/crates/engine/nerve-inspect-trace", optional = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }

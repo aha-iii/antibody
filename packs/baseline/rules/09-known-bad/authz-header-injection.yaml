@@ -1,0 +1,30 @@
+# Authorization 头注入：非 JWT 场景下侧信道已覆盖；本规则显式检 Authorization，
+# 用攻击形 / 词边界，避免 Bearer JWT base64 短针误报。
+id: authz-header-injection
+name: Authorization header injection probes
+severity: high
+score: 40
+action: block
+min_level: low
+tags: [auth, injection, self]
+transforms: [url_decode_uni, lowercase]
+when:
+  any:
+    - field: header
+      header_name: Authorization
+      regex: "(?i)\\$\\{#"
+    - field: header
+      header_name: Authorization
+      regex: "(?i)\\bognl\\b"
+    - field: header
+      header_name: Authorization
+      contains: 'redirect:'
+    - field: header
+      header_name: Authorization
+      regex: "(?i)\\bawk\\b"
+    - field: header
+      header_name: Authorization
+      regex: "(?i)(?:union\\s+select|'\\s*or\\s+'?\\d|'\\s*or\\s+\\d|sleep\\s*\\(|benchmark\\s*\\()"
+    - field: header
+      header_name: Authorization
+      regex: "(?i)(?:;\\s*(?:id|whoami|cat)\\b|\\|\\s*(?:id|whoami|awk)\\b|`[^`]{0,64}`|\\$\\([^)]{0,64}\\))"

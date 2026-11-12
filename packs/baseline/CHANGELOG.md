@@ -1,5 +1,23 @@
 # baseline changelog
 
+## 1.5.63
+- **侧信道**：Authorization **非 JWT** 仍进侧信道；仅跳过 `Bearer eyJ…` 标准 JWT/JWE（避免短针撞签名）
+- **authz-header-injection**：显式检 Authorization 注入（OGNL / awk / SQLi / 壳元字符，词边界），正常 JWT 负样本
+
+## 1.5.62
+- **误报**：Bearer JWT 跳过 Header 侧信道（`ognl`/`awk` 等短针撞 base64 签名）
+- `java-struts-redirect-ognl`：`ognl` 改为词边界 regex + `scope: raw`
+- `jwt-auth-core-anomaly`：`awk` 改为词边界 regex + `scope: raw`
+
+## 1.5.61
+- **webshell-php-path-probe**：扫描器短文件名 PHP 路径探针硬拦（`/test.php`、`/i.php`、`/pi.php`、`/info.php`、`/shell.php` 等末段名）
+- 收窄相对 Defender L7 A15-upload（任意 `.php` 即命中）；负样本覆盖 `/index.php`、`/blog/article.php`
+
+## 1.5.60
+- **nextjs-rsc-flight-rce**：Next.js RSC / Flight RCE 探测硬拦（`__proto__:then` / `constructor:constructor` / `next-action`+`child_process`/`execSync` / `NEXT_REDIRECT` 回传链）
+- 规则用 `scope: raw` + 仅 `lowercase`，lazy 第 0 层即可硬拦，避免浅层 semantic `challenge` 早退漏检
+- samples：Assetnote 形 multipart 正样本 + 合法 Server Action / 良性 constructor JSON 负样本
+
 ## 1.5.59
 - **Aho overlapping**：短 contains 针不再挡住长针（修复 `busybox wget` / `${jndi:ldap` 等系统性漏检）
 - Nerve RIS：未知流量默认 Deep；灰区走 Deep；L1 Bloom 不再压 clean（防白样本污染）
