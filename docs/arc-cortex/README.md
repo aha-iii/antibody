@@ -3,14 +3,14 @@
 > **反射级响应，皮层级深检。**  
 > Arc-speed response · Cortex-depth inspection
 
-**Arc-Cortex** 是 Nerve 自研 WAF **检测内核**的产品名。工程 crate 仍使用 `nerve-waf-native-*` 前缀（稳定 ABI / 依赖路径）；对外文档、Dashboard、标书统一称 **Arc-Cortex**。
+**Arc-Cortex** 是 Nerve 自研 WAF **检测内核**的产品名。工程 crate 使用 `nerve-antibody-*` 前缀（稳定 ABI / 依赖路径）；对外文档、Dashboard、标书统一称 **Arc-Cortex**。
 
 | 对外路径 | 代码 / 指标（暂保留） |
 |----------|----------------------|
 | **Arc** 路径 | `InspectPath::Fast` · inline fast · Fast 线程池 |
 | **Cortex** 路径 | `InspectPath::Deep` · Deep 线程池 · Shadow 异步深扫 |
 
-与 [`Nerve-waf`](../../Nerve-waf) **并列**：可被 WAF 同进程调用；规则包、验签、发版节奏独立。WAF 侧通过 [`nerve-waf-expert`](../05-integration/expert.md) 兼容 facade 接入。
+与 `Nerve-waf`（独立仓库）**并列**：可被 WAF 同进程调用；规则包、验签、发版节奏独立。WAF 侧通过 [`nerve-waf-expert`](05-integration/expert.md) 兼容 facade 接入。
 
 ---
 
@@ -51,6 +51,6 @@
 ```bash
 cargo test
 cargo build --release
-bash scripts/build-with-hyperscan.sh --release   # 在 Nerve-waf 侧构建 Edge+Expert 时
+bash tools/build-with-hyperscan.sh --release   # 在 Nerve-waf 侧构建 Edge+Expert 时
 cargo run -p nerve-antibody-dashboard          # Arc-Cortex Console :8790
 ```

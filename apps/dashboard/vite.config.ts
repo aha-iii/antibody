@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath, URL } from "node:url";
 
-/** Expert Dashboard：5178；API 代理到 nerve-waf-native-dashboard :8790 */
+/** Expert Dashboard：5178；API 代理到 nerve-antibody-dashboard :8790 */
 export default defineConfig({
   plugins: [react()],
   resolve: {

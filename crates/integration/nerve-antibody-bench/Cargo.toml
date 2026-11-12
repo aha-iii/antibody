@@ -2,6 +2,8 @@
 name = "nerve-antibody-bench"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
 description = "HTTP adapter for blazehttp / WAF interception benchmarks against Antibody Engine"
 publish = false
 

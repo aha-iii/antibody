@@ -2,6 +2,9 @@
 name = "nerve-antibody-engine"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
 description = "Nerve Antibody / Arc-Cortex Engine (black-box facade)"
 
 [features]

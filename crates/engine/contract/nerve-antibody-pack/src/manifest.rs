@@ -123,8 +123,10 @@ pub struct RouteGatePolicy {
     /// inline 权重覆盖（键名见 route_gate::feature_names）。
     #[serde(default)]
     pub weights: HashMap<String, f32>,
+    /// 可选 bias 覆盖。`None` 表示沿用 `weights_path` JSON 里校准出的截距
+    /// （不能用 `0.0` 当缺省值，否则会静默丢弃校准结果、把所有请求推向 Deep）。
     #[serde(default)]
-    pub bias: f32,
+    pub bias: Option<f32>,
 }
 
 fn default_deep_threshold() -> f32 {
@@ -144,7 +146,7 @@ impl Default for RouteGatePolicy {
             hard_decode_hint: true,
             weights_path: None,
             weights: HashMap::new(),
-            bias: 0.0,
+            bias: None,
         }
     }
 }
@@ -305,7 +307,7 @@ impl Default for RoutePreviewPolicy {
 }
 
 /// 快路径开关（`[policy.pipeline.fast_path]`）。
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Default)]
 pub struct FastPathPolicy {
     #[serde(default)]
     pub decode_enabled: bool,
@@ -317,18 +319,6 @@ pub struct FastPathPolicy {
     pub max_decode_blobs: usize,
     #[serde(default)]
     pub max_decode_depth: u8,
-}
-
-impl Default for FastPathPolicy {
-    fn default() -> Self {
-        Self {
-            decode_enabled: false,
-            base64_expand: false,
-            structural_enabled: false,
-            max_decode_blobs: 0,
-            max_decode_depth: 0,
-        }
-    }
 }
 
 /// 边缘内联收紧默认（`[policy.pipeline.edge]`；可被 env 覆盖）。

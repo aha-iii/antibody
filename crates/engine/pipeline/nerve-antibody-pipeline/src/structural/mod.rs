@@ -64,37 +64,6 @@ impl StructuralParser {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn structural_extract_wires_soap_xml() {
-        let body = r#"<?xml version="1.0"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-  <soap:Body>
-    <Echo><msg><![CDATA[<script>alert(1)</script>]]></msg></Echo>
-  </soap:Body>
-</soap:Envelope>"#;
-        let params = StructuralParser::extract(
-            "POST",
-            "/soap",
-            "",
-            body,
-            Some("text/xml"),
-            &StructuralOptions::default(),
-        );
-        assert!(
-            params.iter().any(|p| {
-                p.source == "xml"
-                    && p.path == "body.xml.tag:msg"
-                    && p.value.to_ascii_lowercase().contains("<script")
-            }),
-            "SOAP structural path missing: {params:?}"
-        );
-    }
-}
-
 fn push_query(out: &mut Vec<ParamUnit>, query: &str, max: usize) {
     push_form(out, query, "query", max);
 }
@@ -221,4 +190,35 @@ fn capture_attr(header: &str, key: &str) -> Option<String> {
     let rest = &header[idx + pat.len()..];
     let end = rest.find('"')?;
     Some(rest[..end].to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn structural_extract_wires_soap_xml() {
+        let body = r#"<?xml version="1.0"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <Echo><msg><![CDATA[<script>alert(1)</script>]]></msg></Echo>
+  </soap:Body>
+</soap:Envelope>"#;
+        let params = StructuralParser::extract(
+            "POST",
+            "/soap",
+            "",
+            body,
+            Some("text/xml"),
+            &StructuralOptions::default(),
+        );
+        assert!(
+            params.iter().any(|p| {
+                p.source == "xml"
+                    && p.path == "body.xml.tag:msg"
+                    && p.value.to_ascii_lowercase().contains("<script")
+            }),
+            "SOAP structural path missing: {params:?}"
+        );
+    }
 }

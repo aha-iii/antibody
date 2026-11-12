@@ -9,6 +9,12 @@ pub struct ClearBloom {
 }
 
 impl ClearBloom {
+    /// 清空位图与计数。用于规则包 reload、策略切换或测试隔离。
+    pub fn clear(&mut self) {
+        self.bits.fill(0);
+        self.count = 0;
+    }
+
     pub fn new(bit_count: usize, k: u32) -> Self {
         let words = bit_count.max(1024).div_ceil(64);
         Self {

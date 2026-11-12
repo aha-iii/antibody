@@ -193,7 +193,7 @@ fn resolve_packs_root() -> PathBuf {
         return PathBuf::from(p);
     }
     // crates/nerve-antibody-dashboard → ../../packs
-    let from_crate = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../packs");
+    let from_crate = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../packs");
     if from_crate.join("demo/pack.toml").is_file() {
         return from_crate.canonicalize().unwrap_or(from_crate);
     }

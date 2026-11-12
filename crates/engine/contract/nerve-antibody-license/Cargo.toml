@@ -2,6 +2,9 @@
 name = "nerve-antibody-license"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
 description = "Online license activation for sealed Native Engine packs"
 
 [dependencies]

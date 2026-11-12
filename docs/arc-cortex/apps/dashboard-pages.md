@@ -16,8 +16,7 @@
 ## 开发
 
 ```bash
-bash scripts/start-dashboard-dev.sh
-# UI http://127.0.0.1:5178  →  API :8790
+make dashboard          # UI http://127.0.0.1:5178 → API :8790
 ```
 
 UI 组件库：仓库根 `@nerve/ui`（与 WAF Console 同款）。

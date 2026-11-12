@@ -3,6 +3,7 @@ name = "nerve-antibody"
 description = "WAF integration facade for Arc-Cortex Engine (re-exports nerve-antibody-engine)"
 version.workspace = true
 edition.workspace = true
+publish = false
 license.workspace = true
 authors.workspace = true
 

@@ -41,7 +41,9 @@ fn walk_when_codes(w: &WhenExec, f: &mut dyn FnMut(&CondExec)) {
     }
 }
 
-/// uri/method/host 上的 regex，视图 slice 少，可常开。
+/// uri/method/host/header 上的 regex，视图 slice 少，可常开。
+/// Header 必须在内：Authorization/Cookie 这类头只在 Fast 路径也要求检出
+/// （如 jwt-oversized），排除后该规则在 Fast 上永不入候选。
 pub(super) fn is_cheap_regex_rule(w: &WhenExec) -> bool {
     let mut has_regex = false;
     let mut cheap = true;
@@ -50,7 +52,7 @@ pub(super) fn is_cheap_regex_rule(w: &WhenExec) -> bool {
             has_regex = true;
             if !matches!(
                 c.field,
-                MatchField::Uri | MatchField::Method | MatchField::Host
+                MatchField::Uri | MatchField::Method | MatchField::Host | MatchField::Header
             ) {
                 cheap = false;
             }

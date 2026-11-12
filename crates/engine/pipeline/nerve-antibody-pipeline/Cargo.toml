@@ -2,6 +2,9 @@
 name = "nerve-antibody-pipeline"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
 description = "Engine-level decode / structural parse / inspect budget pipeline"
 
 [dependencies]

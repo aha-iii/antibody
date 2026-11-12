@@ -48,7 +48,7 @@
 ## 1.5.54
 - route_gate：特征优先浅解码预览 haystack；`%HH` 线性计数；`sql_comment` 收紧（勿裸 `#`）
 - auto 决策收敛为「硬规则 / route_deep → deep，否则 fast」；保留 Fast→Deep escalate 兜底
-- 校准：`scripts/calibrate_route_gate.py` + `nerve-antibody-calibrate-route`；更新 `config/route_weights.json`（逻辑回归）；`deep_threshold=0.35`
+- 校准：`nerve-antibody-calibrate-route` + `nerve-antibody-calibrate-route`；更新 `config/route_weights.json`（逻辑回归）；`deep_threshold=0.35`
 
 ## 1.5.53
 - auto 分流曾默认 deep（检出补丁）；1.5.54 起改回分数门闩 + 硬规则（见上）

@@ -165,7 +165,7 @@ request:
 
 pub fn load_intel_bundle(path: &Path) -> Result<IntelBundle, PackError> {
     let raw = fs::read_to_string(path)?;
-    Ok(serde_json::from_str(&raw).map_err(|e| PackError::Msg(format!("intel.json: {e}")))?)
+    serde_json::from_str(&raw).map_err(|e| PackError::Msg(format!("intel.json: {e}")))
 }
 
 /// 从 artifact 目录导入：优先 `intel.json`，否则拷贝 `virtual-patches/`。

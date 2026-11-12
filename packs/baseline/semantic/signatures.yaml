@@ -7,7 +7,7 @@
 #
 # FALSE_POSITIVES / 业务 FP（OAuth 等）——不在此层用语义匹配 token/Bearer：
 #   OAuth 令牌交换 / redirect_uri → L1 allow：rules/90-allow/oauth-token-exchange-allow.yaml
-#   代理 X-Original-URL → L1 allow：rules/90-allow/proxy-x-original-url-observe.yaml
+#   代理 X-Original-URL → L1 allow：rules/90-allow/proxy-x-original-url-allow.yaml
 #   JWT 超长 → L1 length_gt：rules/09-known-bad/jwt-oversized.yaml（Authorization/Cookie/query ≥4096）
 #   详见 packs/baseline/FALSE_POSITIVES.md
 version: "1.0.0"

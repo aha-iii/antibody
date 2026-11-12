@@ -115,7 +115,7 @@ mod tests {
     #[test]
     fn load_baseline_allow_rule() {
         let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../packs/baseline/rules/00-allow/allow-adobe-activityi-cat.yaml");
+            .join("../../../../packs/baseline/rules/00-allow/allow-adobe-activityi-cat.yaml");
         if !path.is_file() {
             return;
         }

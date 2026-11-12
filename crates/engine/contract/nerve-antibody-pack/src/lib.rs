@@ -55,7 +55,7 @@ mod tests {
 
     #[test]
     fn load_demo_unsigned() {
-        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../packs/demo");
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../../packs/demo");
         if !root.join("pack.toml").is_file() {
             return;
         }

@@ -33,26 +33,16 @@ impl Default for CachePolicy {
 
 impl CachePolicy {
     pub fn from_env() -> Self {
-        let mut p = Self::default();
-        if env_bool("NERVE_NATIVE_CACHE_NEGATIVE", true) {
-            p.negative_enabled = true;
-        } else {
-            p.negative_enabled = false;
-        }
+        let mut p = Self {
+            negative_enabled: env_bool("NERVE_NATIVE_CACHE_NEGATIVE", true),
+            bloom_enabled: env_bool("NERVE_NATIVE_CACHE_BLOOM", true),
+            decode_lru_enabled: env_bool("NERVE_NATIVE_CACHE_DECODE_LRU", true),
+            ..Self::default()
+        };
         if let Ok(v) = std::env::var("NERVE_NATIVE_CACHE_NEGATIVE_TTL_SECS") {
             if let Ok(e) = v.parse::<u64>() {
                 p.negative_ttl_secs = e.clamp(5, 300);
             }
-        }
-        if env_bool("NERVE_NATIVE_CACHE_BLOOM", true) {
-            p.bloom_enabled = true;
-        } else {
-            p.bloom_enabled = false;
-        }
-        if env_bool("NERVE_NATIVE_CACHE_DECODE_LRU", true) {
-            p.decode_lru_enabled = true;
-        } else {
-            p.decode_lru_enabled = false;
         }
         p
     }

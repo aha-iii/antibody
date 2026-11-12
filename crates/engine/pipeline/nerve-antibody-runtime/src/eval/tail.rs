@@ -52,6 +52,7 @@ fn should_skip_tail_rule(
     i >= aho_seed && static_asset && !cache_deception_probe && !wants_block && matched_empty
 }
 
+#[allow(clippy::too_many_arguments)]
 pub(super) fn eval_tail_rules(
     ev: &Evaluator,
     tail: &[usize],

@@ -13,4 +13,4 @@ packs/baseline/rules/*.yaml  →  dsl::load  →  NativeRule
 packs/baseline/pack.toml     →  pack::load  →  PackManifest
 ```
 
-文档：[`docs/arc-cortex/01-contract/`](../../docs/arc-cortex/01-contract/)
+文档：[`docs/arc-cortex/01-contract/`](../../../docs/arc-cortex/01-contract/)

@@ -2,6 +2,9 @@
 name = "nerve-antibody-route-trainer"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
 description = "Offline trainer for route_gate linear weights from bench JSON"
 
 [[bin]]

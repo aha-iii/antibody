@@ -128,6 +128,7 @@ impl InspectPool {
     }
 
     /// 兼容旧调用：内部仍会重复 plan（勿在热路径使用）。
+    #[allow(dead_code)]
     pub fn inspect(
         &self,
         evaluator: Arc<Evaluator>,

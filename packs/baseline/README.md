@@ -9,7 +9,7 @@
 - CRS ????? `../SOURCES.md` ? `Nerve-waf/vendor/coreruleset`
 
 ```bash
-export NERVE_NATIVE_PACK=/path/to/Nerve-waf-expert/packs/baseline
+export NERVE_NATIVE_PACK=/path/to/Nerve-antibody/packs/baseline
 # ??????NERVE_EXPERT_PACK ????WAF ??
 ```
 

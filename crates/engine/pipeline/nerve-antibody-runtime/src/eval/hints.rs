@@ -14,6 +14,7 @@ use nerve_antibody_semantic::{self as semantic};
 /// 3. score ≥ gray_threshold 或 L2 结构异常 → gray + Fast（escalate / Shadow）  
 /// 4. 仅当 score < gray 时，L1/L2/API/静态/极简 才可压成 clean + Fast  
 /// 5. **否则默认 hot + Deep**（未知流量检出优先；禁止默认 Fast）
+#[allow(clippy::too_many_arguments)]
 pub(super) fn resolve_ris(
     mode: InspectMode,
     static_asset: bool,
@@ -78,6 +79,7 @@ pub(super) fn resolve_ris(
 
 /// 兼容旧调用：仅返回路径。
 #[allow(dead_code)]
+#[allow(clippy::too_many_arguments)]
 pub(super) fn resolve_inspect_path(
     mode: InspectMode,
     static_asset: bool,

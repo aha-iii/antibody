@@ -65,7 +65,7 @@ fn try_decode_b64(tok: &str) -> Option<Vec<u8>> {
     }
     // 补 padding 再试
     let mut padded = tok.to_string();
-    while padded.len() % 4 != 0 {
+    while !padded.len().is_multiple_of(4) {
         padded.push('=');
     }
     for eng in [&STANDARD, &URL_SAFE] {

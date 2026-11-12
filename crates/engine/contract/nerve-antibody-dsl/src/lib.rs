@@ -129,7 +129,7 @@ when:
     #[test]
     fn load_baseline_sqli_single_rule_file() {
         let path = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../packs/baseline/rules/01-sqli/sqli-union-select.yaml");
+            .join("../../../../packs/baseline/rules/01-sqli/sqli-union-select.yaml");
         let rules = load_rule_file(&path).expect("load single sqli rule");
         assert_eq!(rules.len(), 1);
         assert_eq!(rules[0].id, "sqli-union-select");
@@ -138,7 +138,7 @@ when:
     #[test]
     fn load_baseline_xss_evasion_rule() {
         let path = Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../packs/baseline/rules/12-xss-evasions/xss-js-hex-alert.yaml");
+            .join("../../../../packs/baseline/rules/12-xss-evasions/xss-js-hex-alert.yaml");
         let rules = load_rule_file(&path).expect("load xss evasion rule");
         assert_eq!(rules.len(), 1);
         assert_eq!(rules[0].id, "xss-js-hex-alert");
@@ -147,7 +147,7 @@ when:
     #[test]
     fn load_baseline_90_allow_fp_rules() {
         let root =
-            Path::new(env!("CARGO_MANIFEST_DIR")).join("../../packs/baseline/rules/90-allow");
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../../packs/baseline/rules/90-allow");
         for (name, id, score) in [
             (
                 "oauth-token-exchange-allow.yaml",
@@ -155,12 +155,12 @@ when:
                 40u32,
             ),
             (
-                "proxy-x-original-url-observe.yaml",
-                "proxy-x-original-url-observe",
+                "proxy-x-original-url-allow.yaml",
+                "proxy-x-original-url-allow",
                 35,
             ),
         ] {
-            let rules = load_rule_file(&root.join(name)).unwrap_or_else(|e| panic!("{name}: {e}"));
+            let rules = load_rule_file(root.join(name)).unwrap_or_else(|e| panic!("{name}: {e}"));
             assert_eq!(rules.len(), 1);
             assert_eq!(rules[0].id, id);
             assert_eq!(rules[0].score, score);

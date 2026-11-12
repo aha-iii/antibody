@@ -1,5 +1,4 @@
 use nerve_antibody_engine::{Engine, NativeLevel, NativeRequest};
-use nerve_antibody_metrics::InspectPath;
 use nerve_antibody_runtime::PlanCacheHints;
 use std::collections::HashMap;
 use std::path::PathBuf;

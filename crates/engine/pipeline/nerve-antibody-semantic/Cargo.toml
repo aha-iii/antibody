@@ -2,6 +2,9 @@
 name = "nerve-antibody-semantic"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
 description = "Lightweight semantic analyzers (SQL / JS-HTML / Path) for expert engine"
 
 [dependencies]

@@ -123,7 +123,9 @@ fn try_skip_or_take_markup(
     let self_closing = inner.trim_end().ends_with('/');
     let name_part = inner.trim();
     if name_part.starts_with('/') {
-        let raw = name_part[1..]
+        let raw = name_part
+            .strip_prefix('/')
+            .unwrap_or(name_part)
             .split_whitespace()
             .next()
             .unwrap_or("")

@@ -59,7 +59,7 @@ pub fn channel_state_path(packs_root: &Path) -> PathBuf {
 
 pub fn load_channel_manifest(path: &Path) -> Result<ChannelManifest, PackError> {
     let raw = fs::read_to_string(path)?;
-    Ok(serde_json::from_str(&raw).map_err(|e| PackError::Msg(format!("channel.json: {e}")))?)
+    serde_json::from_str(&raw).map_err(|e| PackError::Msg(format!("channel.json: {e}")))
 }
 
 pub fn load_channel_local_state(packs_root: &Path) -> ChannelLocalState {

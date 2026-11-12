@@ -516,17 +516,18 @@ fn analyze_xss(blob: &str, input: SemanticInput<'_>, out: &mut Vec<SemanticSigna
             "semantic:ssrf_encoded_loopback",
         ));
     }
-    if re_xss_script_prose().is_match(blob) || re_search_like().is_match(blob) {
-        if blob.to_ascii_lowercase().contains("<script") && !re_xss_script().is_match(blob) {
-            out.push(SemanticSignal::veto_signal(
-                SemanticKind::Xss,
-                "xss.script_prose_veto",
-                0.8,
-                "semantic:veto_script_prose",
-            ));
-            // 散文 veto 后不再发攻击信号
-            return;
-        }
+    if (re_xss_script_prose().is_match(blob) || re_search_like().is_match(blob))
+        && blob.to_ascii_lowercase().contains("<script")
+        && !re_xss_script().is_match(blob)
+    {
+        out.push(SemanticSignal::veto_signal(
+            SemanticKind::Xss,
+            "xss.script_prose_veto",
+            0.8,
+            "semantic:veto_script_prose",
+        ));
+        // 散文 veto 后不再发攻击信号
+        return;
     }
     if re_xss_script().is_match(blob) {
         let searchish = input.uri.contains("/search")
@@ -668,16 +669,17 @@ fn analyze_sql_extended(blob: &str, input: SemanticInput<'_>, out: &mut Vec<Sema
 
 fn analyze_sql_soft_high(blob: &str, _input: SemanticInput<'_>, out: &mut Vec<SemanticSignal>) {
     // high：hex 仅作软信号，禁止单独定罪（防百度 rsv_pq / 指纹参数）
-    if re_hex_blob().is_match(blob) && re_sql_ctx().is_match(blob) {
-        if re_sql_inject_markers().is_match(blob) {
-            out.push(SemanticSignal::soft_assist(
-                SemanticKind::Sqli,
-                "sqli.hex_context",
-                0.75,
-                20,
-                "semantic:hex_sql_context",
-            ));
-        }
+    if re_hex_blob().is_match(blob)
+        && re_sql_ctx().is_match(blob)
+        && re_sql_inject_markers().is_match(blob)
+    {
+        out.push(SemanticSignal::soft_assist(
+            SemanticKind::Sqli,
+            "sqli.hex_context",
+            0.75,
+            20,
+            "semantic:hex_sql_context",
+        ));
     }
 }
 
@@ -758,7 +760,7 @@ fn b64url_decode_str(s: &str) -> Option<String> {
         Engine,
     };
     let mut padded = s.to_string();
-    while padded.len() % 4 != 0 {
+    while !padded.len().is_multiple_of(4) {
         padded.push('=');
     }
     let bytes = URL_SAFE

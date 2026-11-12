@@ -2,6 +2,9 @@
 name = "nerve-antibody-metrics"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
 description = "Inspect latency and path counters for Native Engine observability"
 
 [dependencies]

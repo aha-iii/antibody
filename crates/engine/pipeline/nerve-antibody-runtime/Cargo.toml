@@ -2,11 +2,16 @@
 name = "nerve-antibody-runtime"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
 description = "Evaluate compiled expert Program (score + observe + semantic + adaptive)"
 
 [features]
 default = []
 inspect-trace = ["dep:nerve-inspect-trace"]
+# 并行深检（tail.rs / parallel.rs 中的 parallel-deep 分支）。默认关闭，仅显式开启时编译。
+parallel-deep = []
 
 [dependencies]
 nerve-antibody-metrics = { workspace = true }

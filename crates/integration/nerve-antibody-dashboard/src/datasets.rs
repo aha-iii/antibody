@@ -1206,7 +1206,7 @@ fn collect_json_files(dir: &Path, out: &mut Vec<PathBuf>) -> Result<(), String> 
 }
 
 fn truncate(s: &str, max: usize) -> String {
-    let mut t = s.replace('\n', " ").replace('\r', " ");
+    let mut t = s.replace(['\n', '\r'], " ");
     if t.chars().count() > max {
         t = t.chars().take(max).collect::<String>() + "…";
     }

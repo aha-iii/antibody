@@ -1,14 +1,19 @@
 /target/
-Cargo.lock
 **/*.rs.bk
 .idea/
 .vscode/
 .crs-json-tmp/
-/scripts/
 **/node_modules/
 /dist/
 .env
 **/*.local.env
+
+# 本地密钥（规则包封装 / 签名）。绝不入库。
+/.secrets/
+
+# 内部运维、数据集抓取与商业发版脚本，不随仓库发布。
+# 对外的安装与开发入口只有：根目录 install.sh、Makefile、tools/*.sh
+/scripts/
 
 # Local dataset checkouts / symlinks (fetch scripts; do not commit)
 /vendor/

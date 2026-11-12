@@ -5,6 +5,9 @@ pkg-config = "0.3"
 name = "nerve-antibody-accel"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
 description = "In-process multi-pattern accel (aho-corasick; optional Hyperscan-style)"
 
 [features]

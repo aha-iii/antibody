@@ -20,4 +20,4 @@ HTTP 请求
   → NativeHit + metrics
 ```
 
-文档：[`docs/arc-cortex/04-facade/`](../../docs/arc-cortex/04-facade/)
+文档：[`docs/arc-cortex/04-facade/`](../../../docs/arc-cortex/04-facade/)

@@ -76,25 +76,13 @@ impl Default for RoutePreviewConfig {
 }
 
 /// 快路径开关（来自 pack）。
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct FastPathConfig {
     pub decode_enabled: bool,
     pub base64_expand: bool,
     pub structural_enabled: bool,
     pub max_decode_blobs: usize,
     pub max_decode_depth: u8,
-}
-
-impl Default for FastPathConfig {
-    fn default() -> Self {
-        Self {
-            decode_enabled: false,
-            base64_expand: false,
-            structural_enabled: false,
-            max_decode_blobs: 0,
-            max_decode_depth: 0,
-        }
-    }
 }
 
 /// 边缘内联收紧默认（来自 pack；可被 env 覆盖）。
@@ -255,6 +243,7 @@ impl PipelineConfig {
 }
 
 /// 对请求执行完整管线，产出可匹配视图。
+#[allow(clippy::too_many_arguments)]
 pub fn build_views(
     method: &str,
     uri: &str,
@@ -293,6 +282,7 @@ pub fn build_views(
 }
 
 /// 路由预览用 build_views（与 [`PipelineConfig::for_route_preview`] 配合）。
+#[allow(clippy::too_many_arguments)]
 pub fn build_views_unbudgeted(
     method: &str,
     uri: &str,
@@ -316,6 +306,7 @@ pub fn build_views_unbudgeted(
 }
 
 /// 浅层 decode 首屏视图（Stage-0：Raw + 单层 URL + lowercase）；预算耗尽时返回 `None`。
+#[allow(clippy::too_many_arguments)]
 pub fn build_views_shallow(
     method: &str,
     uri: &str,
@@ -517,8 +508,10 @@ mod tests {
 
     #[test]
     fn for_level_uses_pack_budget_not_hardcoded_clamp() {
-        let mut cfg = PipelineConfig::default();
-        cfg.max_inspect_ms = 1000;
+        let mut cfg = PipelineConfig {
+            max_inspect_ms: 1000,
+            ..Default::default()
+        };
         cfg.by_level.low.max_inspect_ms = Some(200);
         cfg.by_level.medium.max_inspect_ms = Some(2500);
         cfg.by_level.high.max_inspect_ms = Some(4000);
@@ -534,8 +527,10 @@ mod tests {
 
     #[test]
     fn for_level_applies_decode_overrides_from_config_only() {
-        let mut cfg = PipelineConfig::default();
-        cfg.max_decode_blobs = 32;
+        let mut cfg = PipelineConfig {
+            max_decode_blobs: 32,
+            ..Default::default()
+        };
         cfg.max_decode_depth = 4;
         cfg.base64_expand = false;
         cfg.by_level.low.max_decode_blobs = Some(12);

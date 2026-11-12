@@ -9,4 +9,4 @@
 
 调用链：`Engine::load_pack` / `reload` → 对每档 `NativeLevel` 调用 `compiler::compile()`。
 
-文档：[`docs/arc-cortex/02-compile/`](../../docs/arc-cortex/02-compile/)
+文档：[`docs/arc-cortex/02-compile/`](../../../docs/arc-cortex/02-compile/)

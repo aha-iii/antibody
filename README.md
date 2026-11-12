@@ -2,6 +2,9 @@
 
 > **Nerve Arc-Cortex**（弧-皮层检测引擎）· *反射级响应，皮层级深检。*
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](CHANGELOG.md)
+
 Antibody（**Nerve-antibody**）为 WAF 套件 **Nerve WAF** 的检测引擎子产品，可被 Nerve WAF 同进程调用；本仓库独立发版，规则包与引擎节奏解耦。
 
 **产品文档（按层分目录）：** [`docs/arc-cortex/README.md`](docs/arc-cortex/README.md)  
@@ -116,6 +119,7 @@ UI 使用仓库根目录 `@nerve/ui`（与 WAF Console 同款侧栏 / ant-* 样�
 ## 文档
 
 - [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 - [SECURITY.md](./SECURITY.md)
 - [CHANGELOG.md](./CHANGELOG.md)
 

@@ -1,6 +1,6 @@
 //! Shadow deep 有界 worker 池（替代无界 thread::spawn）。
 
-use nerve_antibody_runtime::{Evaluator, NativeHit, NativeRequest};
+use nerve_antibody_runtime::{Evaluator, InspectMode, NativeHit, NativeRequest};
 use std::sync::mpsc::{sync_channel, SyncSender};
 use std::sync::Arc;
 use std::thread;
@@ -61,9 +61,12 @@ impl ShadowPool {
                         guard.recv()
                     };
                     let Ok(job) = job else { break };
-                    std::env::set_var("NERVE_NATIVE_INSPECT_MODE", "deep");
-                    let hit = job.evaluator.inspect(&job.req);
-                    std::env::remove_var("NERVE_NATIVE_INSPECT_MODE");
+                    // 影子深检只对本次调用生效：用线程局部覆盖，不再改写进程级
+                    // env。原实现 set_var/remove_var 在多 worker 并发时会互相覆盖，
+                    // 并会把主检测线程的 inspect 模式污染成 deep。
+                    let hit = InspectMode::with_override(InspectMode::Deep, || {
+                        job.evaluator.inspect(&job.req)
+                    });
                     (job.on_done)(hit);
                 })
                 .expect("spawn shadow worker");

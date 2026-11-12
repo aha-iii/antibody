@@ -113,7 +113,7 @@ mode = "auto"
 fast_max_inspect_ms = 120
 
 # Nerve RIS（Risk-stratified Inspection Staging）：route_gate 浅筛 → clean/gray/hot。
-# 只分流 Arc/Cortex，不参与 block 定罪。见 docs/superpowers/specs/2026-08-06-nerve-ris-design.md
+# 只分流 Arc/Cortex，不参与 block 定罪。设计原文为内部文档，未随仓库发布。
 [policy.inspect.route_gate]
 # false = 不做门闩，按 mode 其它逻辑分流。
 enabled = true

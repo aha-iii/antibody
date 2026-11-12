@@ -235,7 +235,7 @@ mod tests {
 
     #[test]
     fn roundtrip_seal_extract() {
-        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../packs/demo");
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../../packs/demo");
         if !root.join("pack.toml").is_file() {
             return;
         }
@@ -251,7 +251,7 @@ mod tests {
 
     #[test]
     fn baseline_sealed_roundtrip_preserves_rules() {
-        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../packs/baseline");
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../../packs/baseline");
         if !root.join("pack.toml").is_file() {
             return;
         }

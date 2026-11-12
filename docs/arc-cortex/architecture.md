@@ -79,4 +79,4 @@ apps/dashboard/                React Console 前端
 packs/                         规则包 YAML/TOML 资产（非 crate）
 ```
 
-crate 包名仍为 `nerve-waf-native-*`；目录按 Arc-Cortex 逻辑分层归类。
+crate 包名为 `nerve-antibody-*`；目录按 Arc-Cortex 逻辑分层归类。

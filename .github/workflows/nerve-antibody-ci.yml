@@ -1,0 +1,82 @@
+# GitHub Actions 工作流（开源仓库用；内网 Gitea 见 .gitea/workflows/ci.yml）
+#
+# 注意：本仓库当前有 5 处 path 依赖指向同级目录的 Nerve-waf 仓库
+# （nerve-waf-canonical / nerve-waf-auth / nerve-inspect-trace），
+# 因此以下 job 都会先 checkout WAF 仓库到相邻目录。
+# 完成解耦后，删掉 "Checkout WAF" 步骤即可恢复单仓构建。
+
+name: ci
+
+on:
+  push:
+    branches: [main, master, "develop/*"]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  fmt:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: Nerve-antibody
+      - uses: actions/checkout@v4
+        with:
+          repository: nerve/nerve-waf
+          path: Nerve-waf
+          token: ${{ secrets.WAF_TOKEN }}
+      - uses: dtolnay/rust-toolchain@1.92.0
+        with:
+          components: rustfmt
+      - run: cargo fmt --all -- --check
+        working-directory: Nerve-antibody
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: Nerve-antibody
+      - uses: actions/checkout@v4
+        with:
+          repository: nerve/nerve-waf
+          path: Nerve-waf
+          token: ${{ secrets.WAF_TOKEN }}
+      - uses: dtolnay/rust-toolchain@1.92.0
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: Nerve-antibody
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+        working-directory: Nerve-antibody
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: Nerve-antibody
+      - uses: actions/checkout@v4
+        with:
+          repository: nerve/nerve-waf
+          path: Nerve-waf
+          token: ${{ secrets.WAF_TOKEN }}
+      - uses: dtolnay/rust-toolchain@1.92.0
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: Nerve-antibody
+      - name: Engine facade
+        run: cargo test -p nerve-antibody-engine --lib
+        working-directory: Nerve-antibody
+      - name: Pipeline and runtime
+        run: cargo test -p nerve-antibody-pipeline -p nerve-antibody-runtime
+        working-directory: Nerve-antibody
+      - name: Contracts (dsl / pack / signals / semantic)
+        run: cargo test -p nerve-antibody-dsl -p nerve-antibody-pack -p nerve-antibody-signals -p nerve-antibody-semantic
+        working-directory: Nerve-antibody

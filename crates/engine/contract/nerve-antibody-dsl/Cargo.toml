@@ -2,6 +2,9 @@
 name = "nerve-antibody-dsl"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
 description = "Native protection rule DSL"
 
 [dependencies]

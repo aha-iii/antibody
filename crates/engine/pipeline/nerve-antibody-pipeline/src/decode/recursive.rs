@@ -135,8 +135,9 @@ pub fn expand_text_recursive(
         }
 
         let url_once = apply_transforms(&text, &[Transform::UrlDecodeUni]);
-        if url_once != text && url_once != norm {
-            if push_if_new(
+        if url_once != text
+            && url_once != norm
+            && push_if_new(
                 views,
                 &mut seen,
                 &url_once,
@@ -149,11 +150,11 @@ pub fn expand_text_recursive(
                 },
                 &mut generated,
                 opts.max_view_slices,
-            ) {
-                let mut next_chain = chain.clone();
-                next_chain.push("url_decode_uni".into());
-                queue.push((url_once, next_chain, depth + 1, seed));
-            }
+            )
+        {
+            let mut next_chain = chain.clone();
+            next_chain.push("url_decode_uni".into());
+            queue.push((url_once, next_chain, depth + 1, seed));
         }
 
         if !opts.base64_expand
@@ -217,6 +218,7 @@ fn push_slice_limited(views: &mut RequestViews, slice: ViewSlice, max_view_slice
     views.push_slice(slice);
 }
 
+#[allow(clippy::too_many_arguments)]
 fn push_if_new(
     views: &mut RequestViews,
     seen: &mut HashSet<u64>,

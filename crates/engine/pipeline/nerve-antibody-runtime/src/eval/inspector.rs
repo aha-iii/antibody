@@ -422,7 +422,10 @@ impl Evaluator {
                 None,
                 None,
             ) {
-                if matches!(hit.action.as_str(), "block" | "challenge") {
+                if matches!(hit.action.as_str(), "block" | "challenge") && !hit.matched.is_empty() {
+                    // 只有「带规则归因」的判定才允许提前收敛。语义/模型单证在浅层
+                    // 就能过阈，若就此返回，规则层一条都没跑，matched 恒为空、
+                    // rule_score 恒为 0（历史缺陷：整层规则等于失效）。
                     return Some(hit);
                 }
                 last_hit = Some(hit);
@@ -441,6 +444,7 @@ impl Evaluator {
             .unwrap_or(false)
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn inspect_with_path(
         &self,
         req: &NativeRequest,
@@ -494,7 +498,7 @@ impl Evaluator {
                     max_depth: effective.max_decode_depth,
                 }
             });
-            owned_views = if let (Some(ref key), Some(ref cache)) =
+            owned_views = if let (Some(key), Some(cache)) =
                 (deep_key.as_ref(), self.policy.deep_view_cache.as_ref())
             {
                 if let Some(cached) = cache.lookup(key) {
@@ -559,8 +563,8 @@ impl Evaluator {
         let t_regex = Instant::now();
         let static_asset = is_static_asset_uri(&req.uri);
         let cache_deception_probe = is_cache_deception_probe_uri(&req.uri);
-        let decode_hint_early = decode_attack_hint(&views);
-        let evasion_hint_early = payload_evasion_hint(req, &views);
+        let decode_hint_early = decode_attack_hint(views);
+        let evasion_hint_early = payload_evasion_hint(req, views);
 
         let mut matched = Vec::new();
         let mut rule_score = 0u32;
@@ -572,7 +576,7 @@ impl Evaluator {
 
         // allow → Aho → tail；head 串行保序，Deep tail 可并行评估再按序合并
         for &ri in candidates.iter().take(aho_seed) {
-            match self.eval_one_rule(ri, req, &views, &signals, &mut cache, budget) {
+            match self.eval_one_rule(ri, req, views, &signals, &mut cache, budget) {
                 Ok(Some(m)) => apply_rule_match(
                     &m,
                     &mut matched,
@@ -600,13 +604,15 @@ impl Evaluator {
         let skip_tail =
             static_asset && !cache_deception_probe && !wants_block && matched.is_empty();
 
-        if !skip_tail && aho_seed < candidates.len() && budget_reason.is_none() {
-            if !try_parallel_tail_eval(
+        if !skip_tail
+            && aho_seed < candidates.len()
+            && budget_reason.is_none()
+            && !try_parallel_tail_eval(
                 self,
                 &candidates[aho_seed..],
                 aho_seed,
                 req,
-                &views,
+                views,
                 &signals,
                 max_field_chars,
                 budget,
@@ -619,27 +625,27 @@ impl Evaluator {
                 &mut budget_reason,
                 threshold,
                 inspect_path,
-            ) {
-                eval_tail_rules(
-                    self,
-                    &candidates[aho_seed..],
-                    aho_seed,
-                    req,
-                    &views,
-                    &signals,
-                    &mut cache,
-                    budget,
-                    static_asset,
-                    cache_deception_probe,
-                    &mut matched,
-                    &mut rule_score,
-                    &mut allow_score,
-                    &mut wants_block,
-                    &mut budget_reason,
-                    threshold,
-                    inspect_path,
-                );
-            }
+            )
+        {
+            eval_tail_rules(
+                self,
+                &candidates[aho_seed..],
+                aho_seed,
+                req,
+                views,
+                &signals,
+                &mut cache,
+                budget,
+                static_asset,
+                cache_deception_probe,
+                &mut matched,
+                &mut rule_score,
+                &mut allow_score,
+                &mut wants_block,
+                &mut budget_reason,
+                threshold,
+                inspect_path,
+            );
         }
         stages.regex_us = t_regex.elapsed().as_micros().min(u128::from(u64::MAX)) as u64;
 
@@ -675,7 +681,7 @@ impl Evaluator {
         let features = if hard_block {
             FeatureSnapshot::default()
         } else {
-            build_features(req, &views, &matched, &sem_report)
+            build_features(req, views, &matched, &sem_report)
         };
         let l1_hit = !matched.is_empty();
         let adaptive_contribute =
@@ -867,11 +873,12 @@ impl Evaluator {
         })
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn candidate_rule_indices(
         &self,
         req: &NativeRequest,
         views: &RequestViews,
-        signals: &RequestSignals,
+        _signals: &RequestSignals,
         cache: &mut FieldCache,
         mode: InspectMode,
         inspect_path: InspectPath,

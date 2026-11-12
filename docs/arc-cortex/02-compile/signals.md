@@ -15,4 +15,4 @@
 
 ## 配置
 
-baseline 包：[`../../packs/baseline/signals.yaml`](../../../packs/baseline/signals.yaml)（若存在）。
+baseline 包：[`packs/baseline/signals/signals.yaml`](../../../packs/baseline/signals/signals.yaml)。

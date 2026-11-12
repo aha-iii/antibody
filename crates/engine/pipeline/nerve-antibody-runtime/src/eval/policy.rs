@@ -13,8 +13,30 @@ pub enum InspectMode {
     Fast,
 }
 
+thread_local! {
+    /// 线程内 inspect 模式覆盖，用于"只影响本次调用"的场景（如影子深检）。
+    ///
+    /// 不能用进程级 env 传递：多个 shadow worker 并发 set/remove 会互相覆盖，
+    /// 还会污染同进程的主检测线程，导致线上请求被意外切成 deep 全量检测。
+    static INSPECT_MODE_OVERRIDE: std::cell::Cell<Option<InspectMode>> =
+        const { std::cell::Cell::new(None) };
+}
+
 impl InspectMode {
+    /// 在 `f` 执行期间把**本线程**的 inspect 模式固定为 `mode`，返回后恢复。
+    pub fn with_override<T>(mode: InspectMode, f: impl FnOnce() -> T) -> T {
+        INSPECT_MODE_OVERRIDE.with(|slot| {
+            let prev = slot.replace(Some(mode));
+            let out = f();
+            slot.set(prev);
+            out
+        })
+    }
+
     pub fn resolve(config: &str) -> Self {
+        if let Some(mode) = INSPECT_MODE_OVERRIDE.with(|slot| slot.get()) {
+            return mode;
+        }
         if let Ok(v) = std::env::var("NERVE_NATIVE_INSPECT_MODE") {
             return Self::parse(&v);
         }

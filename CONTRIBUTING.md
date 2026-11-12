@@ -15,9 +15,13 @@ Thanks for contributing. 产品名为 **Nerve Antibody**（Arc-Cortex 检测引�
 | Build | `make build`（= `cargo build --release`） |
 | Unit tests | `make test`（= `cargo test --workspace`） |
 | Format | `make fmt` / 校验 `make fmt-check` |
-| Lint | `make clippy`（= `cargo clippy --workspace -- -D warnings`） |
+| Lint | `make clippy`（= `cargo clippy --workspace --all-targets -- -D warnings`） |
 | 一键环境 | `bash install.sh`（依赖自检 + 构建 + 测试） |
 | 规则变更 | 同步提交 `packs/baseline/samples/` 正/负样本，并更新 `packs/baseline/CHANGELOG.md` |
+
+## 行为准则
+
+参与本项目（提 issue、PR、讨论）即表示同意遵守 [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)。
 
 ## 规则（packs）约定
 

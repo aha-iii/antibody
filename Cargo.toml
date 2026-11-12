@@ -3,6 +3,12 @@ strip = true
 lto = "thin"
 codegen-units = 1
 
+# 测试里含毫秒级热路径断言（如 openapi_sms_json_inspect_fast_latency）。
+# dev profile 不做优化，regex/pipeline 会慢一个数量级，断言失去意义，
+# 整套测试也会从分钟级拖到十分钟级。
+[profile.test]
+opt-level = 2
+
 [workspace]
 resolver = "2"
 members = [
@@ -28,6 +34,7 @@ members = [
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.92"
 license = "MIT"
 authors = ["Nerve"]
 

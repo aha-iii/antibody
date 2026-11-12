@@ -373,8 +373,7 @@ flowchart TB
 | 信号量  | 资源槽 / 危险升深 / Fusion 拦截许可       |
 
 
-详见 [GOVERNANCE-ARCHITECTURE-zh.md](./GOVERNANCE-ARCHITECTURE-zh.md) 与 monorepo 设计稿  
-[docs/superpowers/specs/2026-08-05-antibody-governance-architecture-design.md](../../../docs/superpowers/specs/2026-08-05-antibody-governance-architecture-design.md)。
+详见 [GOVERNANCE-ARCHITECTURE-zh.md](./GOVERNANCE-ARCHITECTURE-zh.md)。设计原文为内部文档，未随仓库发布。
 
 ---
 

@@ -9,7 +9,8 @@
 | **云厂商万级私有库** | 不公开 | 买不到 dump |
 
 **禁止**：把 CRS `.conf` / Coraza 运行时直接当「Nerve Native 引擎」。  
-**正确**：用 `scripts/crs_to_expert_pack.py` 翻译为 Native 规则包，保留 `LICENSE`/`NOTICE`。
+**正确**：用 CRS 导入工具翻译为 Native 规则包，保留 `LICENSE`/`NOTICE`。
+翻译工具属 WAF 侧实现，不在本仓库发布；本仓库只存放翻译产物。
 
 ---
 
@@ -20,14 +21,15 @@
 - 协议：Apache-2.0 衍生作品，见包内 `NOTICE`
 
 ```bash
+# 在 Nerve-waf 仓库导出 CRS JSON（导入工具属 WAF 侧）
 cd Nerve-waf
 cargo run -p nerve-waf-crs-import -- \
   --crs-dir vendor/coreruleset \
-  --out-dir ../Nerve-waf-expert/.crs-json-tmp \
+  --out-dir ../Nerve-antibody/.crs-json-tmp \
   --version 4.25.0 --paranoia-max 4 --clean
-
-python3 ../Nerve-waf-expert/scripts/crs_to_expert_pack.py
 ```
+
+`packs/community-crs/` 已包含上述流程的产物，常规使用与升级无需重跑。
 
 `nerve-waf-inspect` 默认优先加载 `community-crs`。
 

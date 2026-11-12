@@ -1,7 +1,6 @@
 //! Fusion v2：分层定罪（L1 / L2 / L3 佐证），禁止裸模型硬拦。
 //!
-//! 治理口径（沙箱 · 正负检测 · 拦截信号量）见
-//! `docs/superpowers/specs/2026-08-05-antibody-governance-architecture-design.md`。
+//! 治理口径（沙箱 · 正负检测 · 拦截信号量）见 `docs/GOVERNANCE-ARCHITECTURE-zh.md`。
 //!
 //! - **正检测**：`rule_score` + `semantic_score` + `model_score`
 //! - **负检测**：`allow_score`（自体豁免）

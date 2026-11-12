@@ -15,6 +15,15 @@ pub fn global_verdict_cache() -> Arc<VerdictCache> {
         .clone()
 }
 
+/// 清空进程级判定缓存。
+///
+/// 缓存 key 只含 `method + path_template + signal_bits + body_len`，不含规则包指纹
+/// 与烈度等级，因此同一路径在不同 pack / level 下会共享判定。生产侧在 reload 后
+/// 需要清空，测试侧在用例间需要清空，否则会出现「单跑通过、连跑失败」。
+pub fn reset_global_verdict_cache() {
+    global_verdict_cache().clear();
+}
+
 pub fn path_template(uri: &str) -> String {
     nerve_antibody_runtime::structure_path_template(uri)
 }

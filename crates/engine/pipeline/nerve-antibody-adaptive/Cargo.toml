@@ -2,6 +2,9 @@
 name = "nerve-antibody-adaptive"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
 description = "Calibrated adaptive risk scorer (assist-only, never blocks alone)"
 
 [features]

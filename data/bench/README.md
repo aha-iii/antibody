@@ -1,12 +1,17 @@
 # bench 报告与回归集
 
+本目录存放**本地 bench 产物**，全部位于 `.gitignore`，不随仓库分发。
+
 ## 全量 blazehttp
 
+用仓库内的 HTTP 适配器起服务，再用 blazehttp 打：
+
 ```bash
-bash scripts/run-blazehttp-bench-report.sh
+cargo run -p nerve-antibody-bench          # 默认 127.0.0.1:8808
+/path/to/blazehttp -t http://127.0.0.1:8808 -c 20
 ```
 
-产出：
+Dashboard「拦截率测试」页会写出同样的报告：
 
 - `blazehttp-report-<stamp>.json` — 全量用例明细
 - `blazehttp-fp-fn-<stamp>.md` — FP/FN 摘要
@@ -14,11 +19,8 @@ bash scripts/run-blazehttp-bench-report.sh
 
 ## 从已有报告生成回归集（无需重跑全量）
 
-```bash
-bash scripts/build-blazehttp-regression-from-report.sh
-# 或指定本地报告（本目录产物默认不入库，需先跑全量 bench）：
-bash scripts/build-blazehttp-regression-from-report.sh data/bench/blazehttp-report-<stamp>.json
-```
+报告生成器属内部工具，未随仓库发布。仓库内的等价能力是 Dashboard 的
+「拦截率测试 → 数据源：blazehttp 回归（仅 FP/FN）」，或直接调用其 API（见下）。
 
 产出（均在 `data/bench/`，gitignore，勿提交）：
 

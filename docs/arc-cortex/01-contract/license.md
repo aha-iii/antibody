@@ -14,4 +14,4 @@
 
 ## 产品边界
 
-客户加密发版由 `scripts/build-customer-release.sh` 生成（`.sealed` 规则包 + WAF 二进制）；License 激活流程见上文「职责」。
+客户加密发版由内部构建流水线生成（`.sealed` 规则包 + WAF 二进制），相关工具不随本仓库发布；License 激活流程见上文「职责」。

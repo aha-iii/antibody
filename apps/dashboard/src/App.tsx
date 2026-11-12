@@ -90,7 +90,7 @@ export function App() {
       {bootError && page === "overview" ? (
         <NerveAlert tone="error" style={{ marginBottom: 16 }}>
           无法连接专家引擎 API：{bootError}。请先{" "}
-          <code>cargo run -p nerve-waf-native-dashboard</code>
+          <code>cargo run -p nerve-antibody-dashboard</code>
         </NerveAlert>
       ) : null}
 

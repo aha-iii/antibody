@@ -114,6 +114,12 @@ pub struct EngineMetrics {
     rule_hits: Mutex<HashMap<String, u64>>,
 }
 
+impl Default for EngineMetrics {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl EngineMetrics {
     pub fn new() -> Self {
         Self {

@@ -1,0 +1,61 @@
+# Gitea Actions 工作流（Gitea 不读 .github/workflows，故单独一份）
+#
+# 重要：本仓库的 5 处 path 依赖指向**同级目录的 Nerve-waf 仓库**：
+#   nerve-antibody-dsl      -> nerve-waf-canonical
+#   nerve-antibody-pipeline -> nerve-waf-canonical
+#   nerve-antibody-dashboard-> nerve-waf-auth
+#   nerve-antibody-engine   -> nerve-inspect-trace（optional feature）
+#   nerve-antibody-runtime  -> nerve-inspect-trace（optional feature）
+# 因此 CI 必须把两个仓库 checkout 成相邻目录，否则 cargo 在加载 manifest
+# 阶段就会失败。开源单仓构建需先完成这两个 crate 的解耦。
+#
+# 适配：把 WAF_REPO 改成实际的 WAF 仓库路径；同组织内可见时可去掉 token。
+
+name: ci
+
+on:
+  push:
+    branches: [main, master, "develop/*"]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: fmt + clippy + test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout antibody
+        uses: actions/checkout@v4
+        with:
+          path: Nerve-antibody
+
+      - name: Checkout WAF (path dependencies)
+        uses: actions/checkout@v4
+        with:
+          repository: nerve/nerve-waf
+          path: Nerve-waf
+          token: ${{ secrets.WAF_TOKEN }}
+
+      - name: Toolchain
+        uses: dtolnay/rust-toolchain@1.92.0
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: Nerve-antibody
+
+      - name: Format
+        working-directory: Nerve-antibody
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        working-directory: Nerve-antibody
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Test
+        working-directory: Nerve-antibody
+        run: cargo test --workspace --exclude nerve-antibody-dashboard

@@ -318,7 +318,7 @@ impl ShadowRuntime {
         for fb in g.feedback.iter() {
             let esc = yaml_escape(&fb.uri);
             let uri_snip: String = esc.chars().take(120).collect();
-            let note = fb.note.replace('\n', " ").replace('\r', " ");
+            let note = fb.note.replace(['\n', '\r'], " ");
             match fb.label.as_str() {
                 "allow" | "fp" | "false_positive" => {
                     out.push_str(&format_fp_allow_draft(fb, &uri_snip, &note));

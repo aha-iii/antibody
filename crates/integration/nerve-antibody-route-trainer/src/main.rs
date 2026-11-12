@@ -5,7 +5,7 @@ use nerve_antibody_runtime::{
 };
 use std::env;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(serde::Deserialize)]
 struct ReportFile {
@@ -64,19 +64,19 @@ fn main() {
 }
 
 fn parse_cli(args: &[String]) -> (PathBuf, Option<PathBuf>, usize, f32) {
-    let first = args.first().map(|s| PathBuf::from(s));
+    let first = args.first().map(PathBuf::from);
     let (input, rest): (PathBuf, &[String]) = match first {
         None => (default_input(), &[]),
         Some(p) if is_bench_input_path(&p) => (p, &args[1..]),
         Some(_) => (default_input(), args),
     };
-    let output = rest.first().map(|s| PathBuf::from(s));
+    let output = rest.first().map(PathBuf::from);
     let epochs: usize = rest.get(1).and_then(|s| s.parse().ok()).unwrap_or(400);
     let lr: f32 = rest.get(2).and_then(|s| s.parse().ok()).unwrap_or(0.08);
     (input, output, epochs, lr)
 }
 
-fn is_bench_input_path(path: &PathBuf) -> bool {
+fn is_bench_input_path(path: &Path) -> bool {
     path.file_name().and_then(|e| e.to_str()).is_some_and(|e| {
         (e.contains("blazehttp") || e.contains("regression") || e.ends_with("-report.json"))
             && !e.contains("weights")

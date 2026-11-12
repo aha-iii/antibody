@@ -35,14 +35,14 @@
 | 误报形态 | 缓解 | 规则 / 信号 |
 |----------|------|-------------|
 | Keycloak / OAuth token 交换、`redirect_uri` 授权跳转 | `action: allow` + feature/fingerprint | `rules/90-allow/oauth-token-exchange-allow.yaml`（`oauth_token_exchange` ∧ `keycloak_token_path`；或 `oauth_redirect_uri` ∧ `oauth_auth_path`） |
-| 反代 `X-Original-URL`（非 TE 走私） | `action: allow` + feature | `rules/90-allow/proxy-x-original-url-observe.yaml`（`proxy_x_original_url`） |
+| 反代 `X-Original-URL`（非 TE 走私） | `action: allow` + feature | `rules/90-allow/proxy-x-original-url-allow.yaml`（`proxy_x_original_url`） |
 | 正常 Bearer JWT 被当超长异常 | `length_gt: 4096` 才定罪；普通 token 远低于阈值 | `rules/09-known-bad/jwt-oversized.yaml`（Authorization / Cookie / query `access_token`\|`token`）；辅助信号 `signals.yaml` → `long_authorization`（`length_gt` 2048） |
 
 语义层注释见 `semantic/signatures.yaml` 文件头：禁止用语义匹配 `grant_type=` / `Bearer eyJ…` 等 OAuth 正文。
 
 ## WAFTester medium（2026-08 分类治理 B1–B5）
 
-对照：`scripts/_quick-bench.sh waftester medium`。原则不变：**真误报收紧规则**，禁止宽 `90-allow` 顶替。
+对照：`cargo run -p nerve-antibody-bench` 起服务，再用 WAFTester medium 数据集打。原则不变：**真误报收紧规则**，禁止宽 `90-allow` 顶替。
 
 | 规则 | 误报/漏报形态 | 怎么处理 |
 |------|---------------|----------|
@@ -79,7 +79,7 @@
 UI 选 **并发 80** 时，若预算过紧，失败用例耗时会顶在 `max_inspect_ms`，引擎熔断返回 `pass`（`detail` 空）。
 
 - 包默认（1.5.48）：`[policy.levels.medium] max_inspect_ms = 5000`（见 `pack.toml` 注释）
-- 分流与优先修：[`WAFTTEST-FAIL-TRIAGE.md`](./WAFTTEST-FAIL-TRIAGE.md)
+- 分流与优先修：按 [`docs/RULE-AUTHORING.md`](../../docs/RULE-AUTHORING.md) 的误报分级流程处理
 - 评测建议并发 **24–40**；改包后需**重启 Dashboard** 重载
 
 ## 你怎么验证

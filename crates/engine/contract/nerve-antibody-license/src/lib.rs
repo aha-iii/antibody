@@ -87,7 +87,7 @@ pub fn license_status() -> LicenseStatus {
             active: true,
             license_id: "dev".into(),
             pack_id: "dev".into(),
-            expires_at_ms: now_ms().saturating_add(86400_000 * 365),
+            expires_at_ms: now_ms().saturating_add(86_400_000 * 365),
             machine_id: machine_id(),
             mode: "dev".into(),
         };

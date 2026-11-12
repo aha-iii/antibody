@@ -4,7 +4,7 @@
 > 分层文档：`[arc-cortex/README.md](./arc-cortex/README.md)` · 术语：`[arc-cortex/terminology.md](./arc-cortex/terminology.md)`
 
 > 文档版本：与引擎代码同步（baseline pack **1.5.43** / workspace `0.1.0`）  
-> 代码根目录：`Nerve-waf-native/`
+> 代码根目录：`Nerve-antibody/`
 
 本文描述 **Arc-Cortex 检测内核**（crate `nerve-antibody-engine`）：分层能力、请求如何运转、关键技术细节。
 
@@ -146,7 +146,7 @@ when:
 | **Nerve RIS**         | L1 缓存 → L2 结构锚定 → L3 route_gate → `ris_zone` clean/gray/hot；gray Shadow 默认全开 |
 | **双路径 inspect**    | `auto`：RIS 选 fast/deep；Dashboard bench 可选 `auto|deep|fast` |
 | **Runtime 指标**     | `nerve-antibody-metrics`（含 `ris_zone_*`）；Dashboard `GET /metrics` |
-| **Stage-0 浅筛**      | `route_gate` 浅解码预览 + 线性分 + 双阈值；权重 `config/route_weights.json`；`scripts/calibrate_route_gate.py` |
+| **Stage-0 浅筛**      | `route_gate` 浅解码预览 + 线性分 + 双阈值；权重 `config/route_weights.json`；校准工具 `nerve-antibody-calibrate-route` |
 | **快路径轻量 pipeline** | `PipelineConfig::for_fast_path()` 跳过深解码/拆参                                      |
 | **Shadow deep**    | 快路径干净时异步深扫；FP 标注 → allow 草稿导出                                                   |
 
@@ -216,7 +216,7 @@ fast_max_inspect_ms = 120
 
 [policy.inspect.route_gate]
 enabled = true
-# Nerve RIS：score→clean/gray/hot；只分流不定罪。见 docs/superpowers/specs/2026-08-06-nerve-ris-design.md
+# Nerve RIS：score→clean/gray/hot；只分流不定罪。设计原文为内部文档，未随仓库发布。
 deep_threshold = 0.40
 gray_threshold = 0.22
 hard_decode_hint = true
@@ -524,7 +524,6 @@ cargo build -p nerve-antibody-engine --features accel-hyperscan-ffi
 | [packs/baseline/README.md](../packs/baseline/README.md)                   | baseline 规则包说明         |
 | [packs/baseline/FALSE_POSITIVES.md](../packs/baseline/FALSE_POSITIVES.md) | 误报治理记录                 |
 | [packs/baseline/CHANGELOG.md](../packs/baseline/CHANGELOG.md)             | 包版本变更                  |
-| [vendor/BLAZEHTTP.md](../vendor/BLAZEHTTP.md)                             | blazehttp 数据集          |
 
 
 ---

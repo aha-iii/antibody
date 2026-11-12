@@ -273,9 +273,7 @@ impl DdosEngine {
     pub fn kernel_drop_stats(&self) -> KereelDropStats {
         KereelDropStats {
             sink_mode: "disabled".into(),
-            last_error: Some(
-                "kernel drop unavailable in nerve-waf-native; deploy Nerve-ddos".into(),
-            ),
+            last_error: Some("kernel drop unavailable in nerve-antibody; deploy Nerve-ddos".into()),
             ..KereelDropStats::default()
         }
     }

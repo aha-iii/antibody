@@ -71,7 +71,7 @@ fn resolve_pack() -> PathBuf {
     if let Ok(p) = std::env::var("NERVE_NATIVE_PACK").or_else(|_| std::env::var("PACK")) {
         return PathBuf::from(p);
     }
-    let from_crate = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../packs/baseline");
+    let from_crate = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../packs/baseline");
     if from_crate.join("pack.toml").is_file() {
         return from_crate;
     }

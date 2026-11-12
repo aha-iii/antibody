@@ -8,7 +8,7 @@ use nerve_antibody_runtime::{
     train_logistic_with_stumps, NativeRequest, RisCalibrateReport, RouteTrainSample,
 };
 use serde::Deserialize;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
 #[derive(Debug, Deserialize)]
@@ -184,7 +184,7 @@ pub async fn api_ris_curve_get(
 }
 
 #[allow(dead_code)]
-pub fn curve_cache_path(packs_root: &PathBuf, pack: &str) -> PathBuf {
+pub fn curve_cache_path(packs_root: &Path, pack: &str) -> PathBuf {
     packs_root
         .join(pack)
         .join("config/route_threshold_curve.json")

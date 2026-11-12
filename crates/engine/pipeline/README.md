@@ -19,4 +19,4 @@ NativeRequest
   → NativeHit（verdict + score + inspect_path）
 ```
 
-文档：[`docs/arc-cortex/03-pipeline/`](../../docs/arc-cortex/03-pipeline/)
+文档：[`docs/arc-cortex/03-pipeline/`](../../../docs/arc-cortex/03-pipeline/)

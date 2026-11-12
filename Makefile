@@ -37,7 +37,7 @@ fmt-check:
 	cargo fmt --all -- --check
 
 clippy:
-	cargo clippy --workspace -- -D warnings
+	cargo clippy --workspace --all-targets -- -D warnings
 
 dashboard:
 	bash $(ROOT)/tools/dev-dashboard.sh

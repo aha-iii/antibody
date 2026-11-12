@@ -2,7 +2,10 @@
 name = "nerve-antibody-cache"
 version.workspace = true
 edition.workspace = true
-description = "Inspect hot-path caches: bloom clear filter, eegative verdict, decode LRU"
+license.workspace = true
+authors.workspace = true
+publish = false
+description = "Inspect hot-path caches: bloom filter, negative verdict, decode LRU"
 
 [dependencies]
 parking_lot = { workspace = true }

@@ -21,4 +21,4 @@
 
 暴露：`GET /metrics` · `GET /api/metrics`（Dashboard）
 
-诊断脚本：`scripts/check-inspect-metrics.sh`
+诊断：Dashboard「指标」页，或直接 `curl :8790/metrics` 看 `stage_*_us_avg` 与 `budget_exhausted`

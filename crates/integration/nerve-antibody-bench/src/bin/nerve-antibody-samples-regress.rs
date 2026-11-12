@@ -21,6 +21,7 @@ struct SampleFile {
     #[serde(default)]
     rule_id: String,
     #[serde(default)]
+    #[allow(dead_code)]
     name: String,
     #[serde(default)]
     expect_action: String,

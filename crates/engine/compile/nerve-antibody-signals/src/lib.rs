@@ -162,6 +162,7 @@ pub fn compute_signals_with_pack(
     out
 }
 
+#[allow(clippy::too_many_arguments)]
 fn apply_declared(
     pack: &SignalPack,
     path: &str,

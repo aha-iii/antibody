@@ -64,6 +64,16 @@ impl VerdictCache {
         &self.policy
     }
 
+    /// 清空 Bloom / 负向 / 解码视图三层缓存。
+    ///
+    /// 规则包 reload 或策略切换后必须调用：否则旧判定会在 TTL 内继续命中，
+    /// 表现为「新规则已下发但不生效」。测试中用于隔离进程级共享状态。
+    pub fn clear(&self) {
+        self.bloom.lock().clear();
+        self.negative.lock().clear();
+        self.decode.lock().clear();
+    }
+
     /// Bloom 前置：true = 高置信干净，可 skip 部分路由打分（仍跑 L1）。
     pub fn bloom_maybe_clear(&self, key_hash: u64) -> bool {
         if !self.policy.bloom_enabled {

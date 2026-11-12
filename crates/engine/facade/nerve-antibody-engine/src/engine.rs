@@ -255,6 +255,9 @@ impl Engine {
                 )?);
             }
         }
+        // 规则包已更换：判定缓存 key 不含 pack 指纹，必须清空。
+        // 否则旧 pack 的判定会在负向 TTL 内继续命中，表现为「reload 成功但新规则不生效」。
+        crate::inspect_cache::reset_global_verdict_cache();
         Ok(())
     }
 
@@ -732,7 +735,10 @@ fn load_route_gate_config(
     } else {
         RouteGateWeights::builtin()
     };
-    weights.bias = rg.bias;
+    // pack.toml 显式给了 bias 才覆盖；否则必须保留 weights_path 里校准的截距。
+    if let Some(bias) = rg.bias {
+        weights.bias = bias;
+    }
     weights.apply_named_overrides(&rg.weights);
     RouteGateConfig {
         enabled: rg.enabled,

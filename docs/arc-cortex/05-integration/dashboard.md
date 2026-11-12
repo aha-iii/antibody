@@ -21,4 +21,4 @@
 | `/api/shadow/*` | Shadow Cortex 闭环 |
 | `/api/admission` | L0 配置 |
 
-启动：`bash scripts/start-dashboard-dev.sh`
+启动：`make dashboard`（等价 `bash tools/dev-dashboard.sh`）

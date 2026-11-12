@@ -790,7 +790,7 @@ async fn run_cases(
                 }
                 sum_ms.fetch_add(elapsed_ms, Ordering::SeqCst);
 
-                if d % 25 == 0 || d == total {
+                if d.is_multiple_of(25) || d == total {
                     let pass = pass_counter.load(Ordering::SeqCst);
                     let fail = fail_counter.load(Ordering::SeqCst);
                     let pct = (d as f64 / total as f64) * 100.0;

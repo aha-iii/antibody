@@ -33,6 +33,12 @@ pub struct NegativeCache {
 }
 
 impl NegativeCache {
+    /// 清空负向缓存。用于规则包 reload、策略切换或测试隔离。
+    pub fn clear(&mut self) {
+        self.map.clear();
+        self.order.clear();
+    }
+
     pub fn new(capacity: usize, ttl: Duration) -> Self {
         Self {
             ttl,

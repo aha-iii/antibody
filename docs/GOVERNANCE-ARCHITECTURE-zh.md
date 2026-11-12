@@ -1,6 +1,6 @@
 # Arc-Cortex 治理架构：沙箱 · 正负检测 · 信号量
 
-> 设计原文：[docs/superpowers/specs/2026-08-05-antibody-governance-architecture-design.md](../../../docs/superpowers/specs/2026-08-05-antibody-governance-architecture-design.md)  
+> 本文是可公开的结论摘要；设计原文为内部文档，未随仓库发布。  
 > 实现：`nerve-antibody-runtime`（拦截信号量）· `nerve-antibody-engine`（沙箱槽 / Shadow）
 
 ## 一句话

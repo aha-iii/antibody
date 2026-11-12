@@ -1,0 +1,3 @@
+# 关闭空白 issue，引导使用模板。
+# 安全漏洞与规则绕过请勿走 issue，见 SECURITY.md 的私报流程。
+blank_issues_enabled: false
