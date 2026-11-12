@@ -2,7 +2,7 @@
 
 > **Nerve Arc-Cortex**（弧-皮层检测引擎）· *反射级响应，皮层级深检。*
 
-Antibody（**Nerve-antibody**）为 WAF 套件 [`Nerve-waf`](../README.md) 子产品；与 [`Nerve-defender`](../Nerve-defender/) 同仓，可被 Defender 同进程调用，规则包与发版节奏独立。
+Antibody（**Nerve-antibody**）为 WAF 套件 **Nerve WAF** 的检测引擎子产品，可被 Nerve WAF 同进程调用；本仓库独立发版，规则包与引擎节奏解耦。
 
 **产品文档（按层分目录）：** [`docs/arc-cortex/README.md`](docs/arc-cortex/README.md)  
 **系统架构总览（中文）：** [`docs/SYSTEM-ARCHITECTURE-zh.md`](docs/SYSTEM-ARCHITECTURE-zh.md)  
@@ -33,6 +33,18 @@ Antibody（**Nerve-antibody**）为 WAF 套件 [`Nerve-waf`](../README.md) 子�
 | 集成 | `crates/integration/` — expert · dashboard · bench |
 | 前端 | `apps/dashboard/` — React Console |
 
+## 安装
+
+```bash
+bash install.sh              # 依赖自检 + release 构建 + 跑测试
+bash install.sh --skip-test  # 只构建
+bash install.sh --with-ui    # 额外构建 Console 前端
+```
+
+等价 Make 目标：`make install` / `make build` / `make test` / `make fmt` / `make clippy`（`make help` 查看全部）。
+
+本仓库是引擎库，产物由 Nerve WAF 以 path 依赖调用；单独验证请用下节 Dashboard。
+
 ## Build
 
 ```bash
@@ -46,8 +58,9 @@ cargo build -p nerve-antibody-engine --features accel-hyperscan
 React 前端 + Axum API，不依赖 Nerve-waf。
 
 ```bash
-# 一键：API :8790 + Vite :5178（WSL）
-bash scripts/start-dashboard-dev.sh
+# 一键：API :8790 + Vite :5178（依赖自动安装、健康检查、Ctrl+C 双停）
+make dashboard
+# 或等价：bash tools/dev-dashboard.sh
 # 浏览器打开 http://127.0.0.1:5178
 ```
 
@@ -63,7 +76,7 @@ cargo run -p nerve-antibody-dashboard
 # 局域网 http://<你的IP>:8790
 ```
 
-开发热更新（两个终端，等价于 `start-dashboard-dev.sh`）：
+开发热更新（两个终端，等价于 `make dashboard`）：
 
 ```bash
 cargo run -p nerve-antibody-dashboard
@@ -99,3 +112,13 @@ UI 使用仓库根目录 `@nerve/ui`（与 WAF Console 同款侧栏 / ant-* 样�
 |------|------|
 | `NERVE_NATIVE_PACK` | 规则包目录 |
 | `NERVE_NATIVE_ENGINE=off` | 关闭本引擎，WAF 回退 WASM/Coraza |
+
+## 文档
+
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [SECURITY.md](./SECURITY.md)
+- [CHANGELOG.md](./CHANGELOG.md)
+
+## License
+
+[MIT](./LICENSE)

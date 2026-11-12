@@ -10,7 +10,7 @@
 ## 调用链
 
 ```text
-nerve-waf-edge → nerve-waf-embed → nerve-waf-inspect → expert_bridge → nerve-waf-expert → nerve-antibody-engine
+nerve-waf-agent → nerve-waf-embed → nerve-waf-inspect → expert_bridge → nerve-waf-expert → nerve-antibody-engine
 ```
 
 产品对外可称 **Arc-Cortex Expert 段**；crate 名保持 `expert` 直至 major 迁移。

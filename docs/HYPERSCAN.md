@@ -39,7 +39,7 @@ cargo build -p nerve-antibody-accel --features accel-hyperscan-ffi
 便捷脚本（库存在才开 FFI，否则打印 skip）：
 
 ```bash
-bash scripts/build-with-hyperscan.sh
+bash tools/build-with-hyperscan.sh
 ```
 
 ## 回退行为
@@ -61,7 +61,7 @@ bash scripts/build-with-hyperscan.sh
 | `accel-default` | ubuntu-latest | （default=`aho`） | — | 通过 |
 | `accel-hs-regex` | ubuntu-latest | `accel-hyperscan` | — | 通过（RegexSet） |
 | `accel-hs-ffi` | ubuntu-latest | `accel-hyperscan-ffi` | `libhyperscan-dev` | 编译通过；`hyperscan_is_native()==true` 且 native smoke 测试通过 |
-| `accel-hs-ffi-skip` | ubuntu-latest | — | 不装 libhs | `scripts/build-with-hyperscan.sh` 打印 skip 并以 0 退出 |
+| `accel-hs-ffi-skip` | ubuntu-latest | — | 不装 libhs | `tools/build-with-hyperscan.sh` 打印 skip 并以 0 退出 |
 
 GitHub Actions 片段示意：
 
@@ -89,4 +89,4 @@ steps:
 - `crates/engine/pipeline/nerve-antibody-accel/src/backend/hyperscan.rs` — RegexSet 后端
 - `crates/engine/pipeline/nerve-antibody-accel/src/backend/hyperscan_native.rs` — 原生 libhs FFI（`hs_native` cfg）
 - `crates/engine/pipeline/nerve-antibody-accel/src/backend/hyperscan_ffi.rs` — FFI 入口与 RegexSet 回退
-- `scripts/build-with-hyperscan.sh` — 本机探测 + 构建
+- `tools/build-with-hyperscan.sh` — 本机探测 + 构建

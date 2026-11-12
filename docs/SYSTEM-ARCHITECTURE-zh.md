@@ -33,8 +33,8 @@ flowchart TB
     UI["dashboard React\n:5178 dev"]
   end
 
-  subgraph waf [Nerve-defender 生产接入]
-    Edge["nerve-waf-edge"]
+  subgraph waf [Nerve-waf 生产接入]
+    Edge["nerve-waf-agent"]
     Inspect["nerve-waf-inspect\nInspectPipeline"]
     Bridge["expert_bridge"]
   end
@@ -223,17 +223,18 @@ flowchart TB
 
 ## 5. Header 侧信道
 
-**含义：** 将 Referer、Cookie、Authorization、X-Forwarded-* 等头展开并解码，生成与 `uri` / `query` / `body` 同级的 **RequestViews 切片**，供 L1 规则与语义层匹配（攻击 payload 常藏在头里）。
+**含义：** 将 Referer、Cookie、User-Agent、X-Forwarded-* 等头展开并解码，生成与 `uri` / `query` / `body` 同级的 **RequestViews 切片**，供 L1 规则与语义层匹配（攻击 payload 常藏在头里）。
+
+**Authorization：** 标准 `Bearer eyJ…` JWT/JWE **不进**侧信道（防 base64 短针误报）；`Basic` / 裸载荷等非 JWT 仍进侧信道。JWT/认证异常与头注入另用 `field: header` + `header_name: Authorization`（如 `authz-header-injection`）。
 
 ```mermaid
 flowchart LR
   H[HTTP Headers]
   H --> R[Referer → header.Referer\n+ .query / .path]
   H --> C[Cookie → header.Cookie.xxx]
-  H --> A[Authorization → header.Authorization\n→ #b64 header/payload]
   H --> X[X-Forwarded-* / X-Original-URL ...]
 
-  R & C & A & X --> Views[RequestViews]
+  R & C & X --> Views[RequestViews]
   URI[真实 uri/query/body] --> Views
 
   Views --> Rules["field: uri/query/body\n默认含侧信道视图"]
@@ -246,14 +247,14 @@ flowchart LR
 字段匹配：`crates/engine/pipeline/nerve-antibody-runtime/src/eval/fields.rs`（`is_header_sidechannel_path`）
 
 
-| 规则写法                            | 匹配范围                                            |
-| ------------------------------- | ----------------------------------------------- |
-| `field: uri`（无 scope）           | 真实 URI **+** `header.Authorization#b64[1]` 等侧信道 |
-| `field: uri` + `**scope: raw`** | **仅**真实请求路径                                     |
-| `field: header`                 | 原始头行（CL/TE 走私等）                                 |
+| 规则写法                            | 匹配范围                              |
+| ------------------------------- | --------------------------------- |
+| `field: uri`（无 scope）           | 真实 URI **+** Referer/Cookie 等侧信道 |
+| `field: uri` + `**scope: raw`** | **仅**真实请求路径                       |
+| `field: header` + Authorization | 显式检 JWT / Bearer（不经侧信道）           |
 
 
-**实践：** 协议走私用 `field: header`；URI `@` 混淆用 `field: uri` + `scope: raw`，避免 JWT claim 误报。
+**实践：** 协议走私用 `field: header`；URI `@` 混淆与短针用 `scope: raw`，避免 JWT/高熵头误报。
 
 ---
 
@@ -262,7 +263,7 @@ flowchart LR
 ```mermaid
 sequenceDiagram
   participant Client
-  participant Edge as nerve-waf-edge
+  participant Edge as nerve-waf-agent
   participant Pipe as InspectPipeline
   participant Pre as pre_access
   participant Exp as expert Arc-Cortex
@@ -299,8 +300,8 @@ pre_access → expert → core → custom → ai
 
 WAF 接入代码：
 
-- `Nerve-defender/crates/engine/nerve-waf-inspect/src/pipeline.rs` — 总编排  
-- `Nerve-defender/crates/engine/nerve-waf-inspect/src/expert_bridge.rs` — Expert 桥接、challenge 映射
+- `Nerve-waf/crates/engine/nerve-waf-inspect/src/pipeline.rs` — 总编排  
+- `Nerve-waf/crates/engine/nerve-waf-inspect/src/expert_bridge.rs` — Expert 桥接、challenge 映射
 
 
 | 环境变量                                          | 作用                           |
@@ -355,7 +356,7 @@ flowchart TB
     → packs/baseline | demo | community-crs
 ```
 
-一键启动：`bash scripts/start-dashboard-dev.sh`  
+一键启动：`bash tools/dev-dashboard.sh`  
 详见 [arc-cortex/05-integration/dashboard.md](./arc-cortex/05-integration/dashboard.md)
 
 ---

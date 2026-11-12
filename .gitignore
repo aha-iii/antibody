@@ -20,3 +20,6 @@ Cargo.lock
 /packs/baseline/samples-regression-report.txt
 /packs/baseline/WAFTTEST-FAIL-TRIAGE.md
 *.log
+
+# Commercial / internal docs (do not publish)
+/docs/COMMERCIAL-*.md

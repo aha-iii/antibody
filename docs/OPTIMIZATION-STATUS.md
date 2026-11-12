@@ -18,7 +18,7 @@
 | P2  | XML/SOAP 轻量拆参             | ✅    | `pipeline/structural/xml.rs`                                             |
 | P2  | IP/Geo/Rate 边界            | ✅    | `docs/BOUNDARY-IP-GEO-RATE.md`                                           |
 | P3  | semantic-pack 扩面 + FP 文档  | ✅    | `semantic/signatures.yaml` + `FALSE_POSITIVES.md`                        |
-| P4  | Hyperscan 就绪              | ✅    | `docs/HYPERSCAN.md` + `scripts/build-with-hyperscan.sh`（真 FFI 需系统 libhs） |
+| P4  | Hyperscan 就绪              | ✅    | `docs/HYPERSCAN.md` + `tools/build-with-hyperscan.sh`（真 FFI 需系统 libhs） |
 | P5  | challenge/observe 指标      | ✅    | `nerve_native_inspect_{block,challenge,observe}_total`                   |
 | P6  | Shadow FP → allow 草稿      | ✅    | `shadow::export_rule_drafts`                                             |
 | P7  | pack+format 缓存            | ✅    | 同 P1 缓存键                                                                 |
@@ -31,7 +31,7 @@
 1. 重载 / 重编 baseline pack（清除旧 `*-f2.json` 缓存或让引擎自动重编 `f3`）
 2. 确认 `NERVE_NATIVE_DEV_PACK=1`（明文）或使用 sealed + License
 3. Challenge：确认 Edge/事件路径处理 `WafAction::Challenge`（已有 challenge 模块）
-4. Hyperscan：镜像装 lib 后 `bash scripts/build-with-hyperscan.sh`
+4. Hyperscan：镜像装 lib 后 `bash tools/build-with-hyperscan.sh`
 
 ## 非目标（明确不做）
 
