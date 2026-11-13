@@ -43,6 +43,8 @@ edition = "2021"
 rust-version = "1.92"
 license = "MIT"
 authors = ["Nerve"]
+repository = "https://github.com/ahaiii/antibody"
+homepage = "https://github.com/ahaiii/antibody"
 
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
