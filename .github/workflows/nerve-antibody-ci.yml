@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.92.0
+      - uses: dtolnay/rust-toolchain@1.120.0
         with:
           components: rustfmt
       - run: cargo fmt --all -- --check
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.92.0
+      - uses: dtolnay/rust-toolchain@1.120.0
         with:
           components: clippy
       - uses: Swatinem/rust-cache@v2
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.92.0
+      - uses: dtolnay/rust-toolchain@1.120.0
       - uses: Swatinem/rust-cache@v2
       - name: Engine facade
         run: cargo test -p nerve-antibody-engine --lib
