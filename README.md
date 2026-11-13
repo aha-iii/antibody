@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](CHANGELOG.md)
-[![Repo](https://img.shields.io/badge/GitHub-ahaiii%2Fantibody-181717?logo=github)](https://github.com/ahaiii/antibody)
+[![Repo](https://img.shields.io/badge/GitHub-aha-iii%2Fantibody-181717?logo=github)](https://github.com/aha-iii/antibody)
 
 Antibody（**Nerve-antibody**）为 WAF 套件 **Nerve WAF** 的检测引擎子产品，可被 Nerve WAF 同进程调用；本仓库独立发版，规则包与引擎节奏解耦。
 
