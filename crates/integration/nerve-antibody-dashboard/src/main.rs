@@ -209,7 +209,18 @@ fn resolve_ui_dist() -> PathBuf {
     if let Ok(p) = std::env::var("UI_DIST") {
         return PathBuf::from(p);
     }
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../apps/dashboard/dist")
+    // crates/integration/nerve-antibody-dashboard → ../../../apps/dashboard/dist
+    let from_crate = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../apps/dashboard/dist");
+    if from_crate.join("index.html").is_file() {
+        return from_crate;
+    }
+    // 编译期路径在二进制被搬走后会失效，再按当前工作目录兜底一次。
+    let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+    let from_cwd = cwd.join("apps/dashboard/dist");
+    if from_cwd.join("index.html").is_file() {
+        return from_cwd;
+    }
+    from_crate
 }
 
 async fn ui_missing_page() -> Html<&'static str> {

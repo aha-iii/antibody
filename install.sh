@@ -124,7 +124,9 @@ echo "────────────────────────�
 echo " ✓ Nerve Antibody 就绪"
 echo
 echo " 被 Nerve WAF 调用：作为 path 依赖（crate nerve-antibody / nerve-waf-expert）"
-echo " 本地验证 Console：make dashboard  → API :8790 + Vite :5178"
+echo " 本地验证 Console：bash tools/dev-dashboard.sh  → API :8790 + Vite :5178"
+echo "                   （装了 make 的环境等价命令：make dashboard）"
 echo " 规则包签名：      make seal PACK=packs/baseline"
+echo "                   无 make 时：cargo run -q -p nerve-antibody-pack --bin seal-pack -- packs/baseline dist/baseline.sealed"
 echo " 产物目录：        $TARGET_DIR"
 echo "────────────────────────────────────────────────"

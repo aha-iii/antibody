@@ -62,8 +62,8 @@ React 前端 + Axum API，不依赖 Nerve-waf。
 
 ```bash
 # 一键：API :8790 + Vite :5178（依赖自动安装、健康检查、Ctrl+C 双停）
-make dashboard
-# 或等价：bash tools/dev-dashboard.sh
+bash tools/dev-dashboard.sh
+# 装了 make 的环境可简写：make dashboard
 # 浏览器打开 http://127.0.0.1:5178
 ```
 
