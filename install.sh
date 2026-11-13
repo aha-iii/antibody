@@ -83,6 +83,11 @@ if ((WITH_UI)); then
     die "Node ${NODE_VER} 过旧，需要 18+（推荐 20+）"
   fi
   log "✓ node v${NODE_VER}"
+
+  # @nerve/ui 以源码副本随仓库提供，不再依赖仓库外的同级目录。
+  UI_VENDOR="$ROOT/apps/dashboard/vendor/nerve-ui"
+  [[ -f "$UI_VENDOR/src/index.ts" ]] ||
+    die "缺少 $UI_VENDOR/src/index.ts（Dashboard 前端依赖的 @nerve/ui 源码副本）"
 fi
 
 # ---------------------------------------------------------------- 构建

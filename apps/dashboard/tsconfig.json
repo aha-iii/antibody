@@ -15,7 +15,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@nerve/ui": ["./vendor/nerve-ui/src/index.ts"],
+      "@nerve/ui/style.css": ["./vendor/nerve-ui/src/styles/index.css"]
+    }
   },
   "include": ["src"]
 }

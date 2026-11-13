@@ -48,6 +48,14 @@ need_cmd cargo
 need_cmd npm
 need_cmd curl
 
+# @nerve/ui 随仓库提供（apps/dashboard/vendor/nerve-ui），缺失时直接给出可读错误，
+# 避免 npm install 抛 ENOENT 让人误判成网络或权限问题。
+if [[ ! -f "$ROOT/apps/dashboard/vendor/nerve-ui/src/index.ts" ]]; then
+  echo "ERROR: missing apps/dashboard/vendor/nerve-ui/src/index.ts" >&2
+  echo "       Dashboard 前端依赖的 @nerve/ui 源码副本不完整。" >&2
+  exit 1
+fi
+
 # WSL+/mnt/d 下 Vite 原生 watch 易 EMFILE
 ulimit -n 65535 2>/dev/null || ulimit -n 4096 2>/dev/null || true
 export CHOKIDAR_USEPOLLING="${CHOKIDAR_USEPOLLING:-1}"

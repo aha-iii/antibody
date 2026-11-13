@@ -1,0 +1,7 @@
+/**
+ * Nerve UI 样式入口。
+ * console-legacy.css 从原 Nerve-waf Console 完整拷贝，保证观感一致。
+ * 原 Console 项目保持不动。
+ */
+@import "./console-legacy.css";
+@import "./cloud-login.css";

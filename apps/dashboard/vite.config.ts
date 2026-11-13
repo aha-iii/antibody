@@ -7,11 +7,13 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      // @nerve/ui 以源码形式随仓库提供（apps/dashboard/vendor/nerve-ui），
+      // 走 Vite alias 直读 TS，无需预构建，也不依赖仓库外的同级目录。
       "@nerve/ui/style.css": fileURLToPath(
-        new URL("../../../../Nerve-ui/src/styles/index.css", import.meta.url),
+        new URL("./vendor/nerve-ui/src/styles/index.css", import.meta.url),
       ),
       "@nerve/ui": fileURLToPath(
-        new URL("../../../../Nerve-ui/src/index.ts", import.meta.url),
+        new URL("./vendor/nerve-ui/src/index.ts", import.meta.url),
       ),
     },
   },

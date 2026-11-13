@@ -19,4 +19,5 @@
 make dashboard          # UI http://127.0.0.1:5178 → API :8790
 ```
 
-UI 组件库：仓库根 `@nerve/ui`（与 WAF Console 同款）。
+UI 组件库：`apps/dashboard/vendor/nerve-ui`（`@nerve/ui` 源码副本，与 WAF Console 同款），
+以 Vite alias 直读 TS 源码，随仓库提供、无需单独拉取。

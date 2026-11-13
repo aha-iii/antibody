@@ -49,6 +49,8 @@ seal:
 		"$(PACK)" "$(if $(OUT),$(OUT),$(ROOT)/dist/$(notdir $(PACK)).sealed)"
 
 dist: build
+	@test -f $(UI_DIR)/vendor/nerve-ui/src/index.ts || \
+		{ echo "missing $(UI_DIR)/vendor/nerve-ui/src/index.ts (@nerve/ui 源码副本不完整)"; exit 1; }
 	cd $(UI_DIR) && npm install && npm run build
 	@mkdir -p $(ROOT)/dist
 	@rm -rf $(ROOT)/dist/packs

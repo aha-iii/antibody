@@ -95,7 +95,7 @@ cd apps/dashboard && npm run dev   # http://127.0.0.1:5178 ，/api 代理到 879
 
 案例库：`packs/baseline/samples/<category>/<rule_id>.yaml`（与规则文件一一对应）。Dashboard 菜单「案例库」可筛选、一键检测、加载到试打。扁平样本可拆分：`python3 packs/baseline/tools/split_samples_by_rule.py`。
 
-UI 使用仓库根目录 `@nerve/ui`（与 WAF Console 同款侧栏 / ant-* 样式）。
+UI 使用 `apps/dashboard/vendor/nerve-ui`（`@nerve/ui` 源码副本，与 WAF Console 同款侧栏 / ant-* 样式）。该副本随仓库提供，单独 clone 即可构建，不需要仓库外的同级目录；详见该目录下的 `README.md`。
 
 ## 规则包
 
