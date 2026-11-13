@@ -5,7 +5,7 @@ VERSION := $(shell awk -F'"' '/^version = /{print $$2; exit}' Cargo.toml)
 ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 UI_DIR := $(ROOT)/apps/dashboard
 
-.PHONY: help install build test fmt fmt-check clippy dashboard seal dist clean
+.PHONY: help install build test fmt fmt-check clippy dashboard seal-key seal dist clean
 
 help:
 	@echo "Nerve Antibody $(VERSION)"
@@ -17,6 +17,7 @@ help:
 	@echo "  make fmt-check      cargo fmt --all -- --check"
 	@echo "  make clippy         cargo clippy --workspace --all-targets -- -D warnings"
 	@echo "  make dashboard      Arc-Cortex Console: API :8790 + Vite :5178 (hot reload)"
+	@echo "  make seal-key       generate .secrets/pack-seal-key.b64 (untracked, dev only)"
 	@echo "  make seal PACK=<dir> [OUT=<file>]   encrypt a rule pack into .sealed"
 	@echo "  make dist           release artifacts under dist/"
 	@echo "  make clean          cargo clean + remove dashboard build output"
@@ -42,9 +43,23 @@ clippy:
 dashboard:
 	bash $(ROOT)/tools/dev-dashboard.sh
 
+seal-key:
+	@mkdir -p $(ROOT)/.secrets
+	@if [ -f $(ROOT)/.secrets/pack-seal-key.b64 ]; then \
+		echo "seal key already exists: $(ROOT)/.secrets/pack-seal-key.b64"; \
+	else \
+		openssl rand -base64 32 > $(ROOT)/.secrets/pack-seal-key.b64; \
+		chmod 600 $(ROOT)/.secrets/pack-seal-key.b64; \
+		echo "generated $(ROOT)/.secrets/pack-seal-key.b64 (untracked, see SECURITY.md)"; \
+	fi
+	@echo "load with: export NERVE_PACK_SEAL_KEY_B64=$$(tr -d '\n' < $(ROOT)/.secrets/pack-seal-key.b64)"
+
 seal:
 	@test -n "$(PACK)" || { echo "usage: make seal PACK=<pack_dir> [OUT=<file.sealed>]"; echo "key: export NERVE_PACK_SEAL_KEY_B64=... or pass --key-file"; exit 1; }
 	@mkdir -p $(ROOT)/dist
+	@if [ -z "$$NERVE_PACK_SEAL_KEY_B64" ] && [ -f $(ROOT)/.secrets/pack-seal-key.b64 ]; then \
+		export NERVE_PACK_SEAL_KEY_B64="$$(tr -d '\n\r' < $(ROOT)/.secrets/pack-seal-key.b64)"; \
+	fi; \
 	cargo run -q -p nerve-antibody-pack --bin seal-pack -- \
 		"$(PACK)" "$(if $(OUT),$(OUT),$(ROOT)/dist/$(notdir $(PACK)).sealed)"
 

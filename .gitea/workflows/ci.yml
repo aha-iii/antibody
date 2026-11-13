@@ -1,15 +1,8 @@
 # Gitea Actions 工作流（Gitea 不读 .github/workflows，故单独一份）
 #
-# 重要：本仓库的 5 处 path 依赖指向**同级目录的 Nerve-waf 仓库**：
-#   nerve-antibody-dsl      -> nerve-waf-canonical
-#   nerve-antibody-pipeline -> nerve-waf-canonical
-#   nerve-antibody-dashboard-> nerve-waf-auth
-#   nerve-antibody-engine   -> nerve-inspect-trace（optional feature）
-#   nerve-antibody-runtime  -> nerve-inspect-trace（optional feature）
-# 因此 CI 必须把两个仓库 checkout 成相邻目录，否则 cargo 在加载 manifest
-# 阶段就会失败。开源单仓构建需先完成这两个 crate 的解耦。
-#
-# 适配：把 WAF_REPO 改成实际的 WAF 仓库路径；同组织内可见时可去掉 token。
+# 仓库已自包含：原先指向同级 Nerve-waf 的 5 处 path 依赖，已改为
+# crates/external/ 下的源码副本（见 crates/external/README.md），
+# 因此不再需要 checkout 第二个仓库。
 
 name: ci
 
@@ -23,20 +16,31 @@ env:
 
 jobs:
   check:
-    name: fmt + clippy + test
+    name: secrets + fmt + clippy + test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout antibody
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          path: Nerve-antibody
 
-      - name: Checkout WAF (path dependencies)
-        uses: actions/checkout@v4
-        with:
-          repository: nerve/nerve-waf
-          path: Nerve-waf
-          token: ${{ secrets.WAF_TOKEN }}
+      - name: 密钥目录不得被跟踪
+        run: |
+          if git ls-files | grep -E '^\.secrets/'; then
+            echo "::error::.secrets/ 不应入库；包封装密钥只存在于密钥库或部署环境"
+            exit 1
+          fi
+          echo "no tracked key material"
+
+      - name: 历史中不得出现密钥目录
+        run: |
+          leaks=$(git rev-list --all | while read -r r; do
+            git ls-tree -r --name-only "$r"
+          done | grep -E '^\.secrets/' | sort -u || true)
+          if [ -n "$leaks" ]; then
+            echo "::error::Git 历史中仍存在密钥路径："
+            echo "$leaks"
+            exit 1
+          fi
+          echo "history clean"
 
       - name: Toolchain
         uses: dtolnay/rust-toolchain@1.92.0
@@ -45,17 +49,12 @@ jobs:
 
       - name: Cache
         uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: Nerve-antibody
 
       - name: Format
-        working-directory: Nerve-antibody
         run: cargo fmt --all -- --check
 
       - name: Clippy
-        working-directory: Nerve-antibody
         run: cargo clippy --workspace --all-targets -- -D warnings
 
       - name: Test
-        working-directory: Nerve-antibody
         run: cargo test --workspace --exclude nerve-antibody-dashboard

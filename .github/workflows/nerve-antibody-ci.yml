@@ -1,9 +1,8 @@
 # GitHub Actions 工作流（开源仓库用；内网 Gitea 见 .gitea/workflows/ci.yml）
 #
-# 注意：本仓库当前有 5 处 path 依赖指向同级目录的 Nerve-waf 仓库
-# （nerve-waf-canonical / nerve-waf-auth / nerve-inspect-trace），
-# 因此以下 job 都会先 checkout WAF 仓库到相邻目录。
-# 完成解耦后，删掉 "Checkout WAF" 步骤即可恢复单仓构建。
+# 仓库已自包含：原先指向同级 Nerve-waf 的 5 处 path 依赖，已改为
+# crates/external/ 下的源码副本（见 crates/external/README.md），
+# 因此不再需要 checkout 第二个仓库。
 
 name: ci
 
@@ -16,67 +15,63 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  secrets:
+    name: Secret hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 密钥目录不得被跟踪
+        run: |
+          if git ls-files | grep -E '^\.secrets/'; then
+            echo "::error::.secrets/ 不应入库；包封装密钥只存在于密钥库或部署环境"
+            exit 1
+          fi
+          echo "no tracked key material"
+
+      - name: 历史中不得出现密钥目录
+        run: |
+          leaks=$(git rev-list --all | while read -r r; do
+            git ls-tree -r --name-only "$r"
+          done | grep -E '^\.secrets/' | sort -u || true)
+          if [ -n "$leaks" ]; then
+            echo "::error::Git 历史中仍存在密钥路径："
+            echo "$leaks"
+            exit 1
+          fi
+          echo "history clean"
+
   fmt:
     name: Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: Nerve-antibody
-      - uses: actions/checkout@v4
-        with:
-          repository: nerve/nerve-waf
-          path: Nerve-waf
-          token: ${{ secrets.WAF_TOKEN }}
       - uses: dtolnay/rust-toolchain@1.92.0
         with:
           components: rustfmt
       - run: cargo fmt --all -- --check
-        working-directory: Nerve-antibody
 
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: Nerve-antibody
-      - uses: actions/checkout@v4
-        with:
-          repository: nerve/nerve-waf
-          path: Nerve-waf
-          token: ${{ secrets.WAF_TOKEN }}
       - uses: dtolnay/rust-toolchain@1.92.0
         with:
           components: clippy
       - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: Nerve-antibody
       - run: cargo clippy --workspace --all-targets -- -D warnings
-        working-directory: Nerve-antibody
 
   test:
     name: Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: Nerve-antibody
-      - uses: actions/checkout@v4
-        with:
-          repository: nerve/nerve-waf
-          path: Nerve-waf
-          token: ${{ secrets.WAF_TOKEN }}
       - uses: dtolnay/rust-toolchain@1.92.0
       - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: Nerve-antibody
       - name: Engine facade
         run: cargo test -p nerve-antibody-engine --lib
-        working-directory: Nerve-antibody
       - name: Pipeline and runtime
         run: cargo test -p nerve-antibody-pipeline -p nerve-antibody-runtime
-        working-directory: Nerve-antibody
       - name: Contracts (dsl / pack / signals / semantic)
         run: cargo test -p nerve-antibody-dsl -p nerve-antibody-pack -p nerve-antibody-signals -p nerve-antibody-semantic
-        working-directory: Nerve-antibody

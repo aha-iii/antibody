@@ -10,6 +10,19 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Security
+
+- **包封装密钥曾误入 Git 历史，已作废并轮换**：`.secrets/pack-seal-key.b64` 随
+  `Initial commit` 一起提交，此后虽然 `.secrets/` 已写进 `.gitignore`，文件仍被跟踪
+  （`gitignore` 只对未跟踪文件生效）。已取消跟踪并重写全部历史，密钥 blob 已从对象库
+  彻底清除（`git cat-file` 不可达），同时生成新密钥重新封装 `packs/baseline`。
+
+  CI 新增 `Secret hygiene` job：只要 `.secrets/` 被跟踪、或在任一历史提交的树中出现，
+  构建直接失败。
+
+  **兼容性影响**：用旧密钥封装的 `.sealed` 包无法用新密钥解开。已交付的客户包需要
+  用新密钥重新封装后发布；本地 `dist/` 下的旧产物已重新生成。
+
 ### Fixed
 
 - **规则层在惰性深检里等于从未运行**（`inspector.rs::inspect_lazy_incremental`）：
