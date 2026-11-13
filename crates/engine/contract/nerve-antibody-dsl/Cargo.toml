@@ -8,7 +8,7 @@ publish = false
 description = "Native protection rule DSL"
 
 [dependencies]
-nerve-waf-canonical = { path = "../../../../../Nerve-waf/crates/engine/nerve-waf-canonical" }
+nerve-waf-canonical = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 serde_yaml = { workspace = true }

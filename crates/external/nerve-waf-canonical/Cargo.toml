@@ -1,0 +1,7 @@
+[package]
+name = "nerve-waf-canonical"
+description = "Shared HTTP payload decode/normalize ops for Antibody and Semantic pipelines"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]

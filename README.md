@@ -34,6 +34,7 @@ Antibody（**Nerve-antibody**）为 WAF 套件 **Nerve WAF** 的检测引擎子�
 |----|------|
 | **引擎** | `crates/engine/` — contract · compile · pipeline · facade |
 | 集成 | `crates/integration/` — expert · dashboard · bench |
+| 外部副本 | `crates/external/` — 自 `Nerve-waf` 复制的 canonical · core · inspect-trace · auth，见该目录 [README](crates/external/README.md) |
 | 前端 | `apps/dashboard/` — React Console |
 
 ## 安装
@@ -58,7 +59,7 @@ cargo build -p nerve-antibody-engine --features accel-hyperscan
 
 ## Dashboard（Arc-Cortex Console）
 
-React 前端 + Axum API，不依赖 Nerve-waf。
+React 前端 + Axum API，不依赖仓库外的 `Nerve-waf`。
 
 ```bash
 # 一键：API :8790 + Vite :5178（依赖自动安装、健康检查、Ctrl+C 双停）

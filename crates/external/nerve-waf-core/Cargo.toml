@@ -1,0 +1,10 @@
+[package]
+name = "nerve-waf-core"
+description = "Core transaction model: phases, verdicts, timing, journey hops"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }

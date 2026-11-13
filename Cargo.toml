@@ -30,6 +30,12 @@ members = [
     "crates/integration/nerve-antibody-dashboard",
     "crates/integration/nerve-antibody-bench",
     "crates/integration/nerve-antibody-route-trainer",
+    # 原属 Nerve-waf 仓库，为让本仓库可独立 clone / 构建而复制过来。
+    # 详见 crates/external/README.md
+    "crates/external/nerve-waf-canonical",
+    "crates/external/nerve-waf-core",
+    "crates/external/nerve-inspect-trace",
+    "crates/external/nerve-waf-auth",
 ]
 [workspace.package]
 version = "0.1.0"
@@ -55,6 +61,10 @@ tar = "0.4"
 tempfile = "3"
 rand = "0.8"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
+chrono = { version = "0.4", features = ["serde"] }
+axum = { version = "0.8", features = ["json"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "signal", "process", "io-util", "time"] }
+tracing = "0.1"
 aho-corasick = "1"
 nerve-antibody-dsl = { path = "crates/engine/contract/nerve-antibody-dsl" }
 nerve-antibody-signals = { path = "crates/engine/compile/nerve-antibody-signals" }
@@ -73,3 +83,7 @@ nerve-antibody-route-trainer = { path = "crates/integration/nerve-antibody-route
 nerve-antibody-metrics = { path = "crates/engine/facade/nerve-antibody-metrics" }
 nerve-antibody-cache = { path = "crates/engine/facade/nerve-antibody-cache" }
 nerve-antibody-engine = { path = "crates/engine/facade/nerve-antibody-engine" }
+nerve-waf-canonical = { path = "crates/external/nerve-waf-canonical" }
+nerve-waf-core = { path = "crates/external/nerve-waf-core" }
+nerve-inspect-trace = { path = "crates/external/nerve-inspect-trace" }
+nerve-waf-auth = { path = "crates/external/nerve-waf-auth" }

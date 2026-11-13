@@ -18,7 +18,7 @@ nerve-antibody-metrics = { workspace = true }
 nerve-antibody-pack = { workspace = true }
 nerve-antibody-admission = { workspace = true }
 nerve-antibody-dsl = { workspace = true }
-nerve-waf-auth = { path = "../../../../Nerve-waf/crates/controlplane/nerve-waf-auth" }
+nerve-waf-auth = { workspace = true }
 axum = { version = "0.8", features = ["json"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "signal", "process", "io-util", "time"] }
 http-body-util = "0.1"

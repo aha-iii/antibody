@@ -1,0 +1,14 @@
+[package]
+name = "nerve-waf-auth"
+description = "Authentication: API key, local users/JWT, optional Keycloak OIDC"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+axum = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+reqwest = { workspace = true }
+tracing = { workspace = true }
+jsonwebtoken = { version = "9", default-features = false, features = ["use_pem"] }
